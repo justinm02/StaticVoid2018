@@ -3,13 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gyroscope;
 
 @TeleOp(name = "TestTeleOp", group = "TeleOp")
 
 public class TestTeleOp extends OpMode {
 
-    private Gyroscope gyro;
     private PIDControl driveTrainPID;
     private double targetXPower, targetYPower;
     private DcMotor leftRear, rightRear, leftFront, rightFront;
@@ -17,7 +15,6 @@ public class TestTeleOp extends OpMode {
     @Override
     public void init() {
         driveTrainPID = new PIDControl(0,0,0);
-        gyro = hardwareMap.get(Gyroscope.class, "Gyro");
         targetXPower = 0;
         targetYPower = 0;
     }
