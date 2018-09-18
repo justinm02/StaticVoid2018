@@ -28,6 +28,10 @@ public class TestTeleOp extends OpMode {
         //omniDirectionalMovement();
     }
 
+    /*
+     * Moves the Robot in only the four cardinal directions, depending on which controller axis is being pushed the furthest.
+     * Goes forward, backward, left, and right.
+     */
     //Untested
     public void fourDirectionalMovement() {
         if(Math.abs(targetXPower) > Math.abs(targetYPower)) {
@@ -43,7 +47,10 @@ public class TestTeleOp extends OpMode {
         }
     }
 
-
+    /*
+     * Moves the Robot in all 360 degrees of direction.
+     * Takes thr average of the left controller stick direction and applies it to the Robot.
+     */
     //Untested
     public void omniDirectionalMovement() {
         rightRear.setPower(targetXPower + targetYPower);
