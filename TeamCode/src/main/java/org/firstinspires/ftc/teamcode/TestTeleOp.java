@@ -12,6 +12,7 @@ public class TestTeleOp extends OpMode {
     private double targetXPower, targetYPower;
     private DcMotor rearLeft, rearRight, frontLeft, frontRight;
 
+
     @Override
     public void init() {
         driveTrainPID = new PIDControl(0,0,0);
@@ -27,8 +28,17 @@ public class TestTeleOp extends OpMode {
     public void loop() {
         targetXPower = this.gamepad1.left_stick_x;
         targetYPower = -this.gamepad1.left_stick_y;
-        fourDirectionalMovement();
+        //fourDirectionalMovement();
         //omniDirectionalMovement();
+        if(gamepad1.a) {
+            targetYPower = .5;
+        } else {
+            targetYPower = 0;
+        }
+        frontLeft.setPower(targetYPower);
+        frontRight.setPower(-targetYPower);
+        telemetry.addData("Target X Power: ", targetXPower);
+        telemetry.addData("Target Y Power: ", targetYPower);
     }
 
     /*
@@ -42,6 +52,7 @@ public class TestTeleOp extends OpMode {
             rearLeft.setPower(-targetXPower);
             frontRight.setPower(-targetXPower);
             frontLeft.setPower(targetXPower);
+
         } else {
             frontLeft.setPower(targetYPower);
             frontRight.setPower(targetYPower);
