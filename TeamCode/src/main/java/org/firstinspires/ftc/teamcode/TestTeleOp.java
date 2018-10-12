@@ -26,27 +26,26 @@ public class TestTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        targetXPower = this.gamepad1.left_stick_x;
-        targetYPower = -this.gamepad1.left_stick_y;
-        //fourDirectionalMovement();
+        targetXPower = gamepad1.left_stick_x;
+        targetYPower = gamepad1.left_stick_y;
+        fourDirectionalMovement();
         //omniDirectionalMovement();
+
+
+        //Absolutely Dumb testing: B is Forward, A is Backwards
+        /*
         if(gamepad1.a) {
             targetYPower = .5;
         } else if(gamepad1.b) {
             targetYPower = -.5;
-        } else {
-            targetYPower = 0;
         }
+        */
 
-        frontLeft.setPower(targetYPower);
-        frontRight.setPower(-targetYPower);
+        //frontLeft.setPower(targetYPower);
+        //frontRight.setPower(-targetYPower);
 
-
-
-        telemetry.addData("Target X Power: ", targetXPower);
-        telemetry.addData("Target Y Power: ", targetYPower);
-        telemetry.addData("Gamepad1 Left Stick X: ", gamepad1.left_stick_x);
-        telemetry.addData("Gamepad1 Left Stick Y: ", gamepad1.left_stick_y);
+        telemetry.addData("Gamepad1 Left Stick X", gamepad1.left_stick_x);
+        telemetry.addData("Gamepad1 Left Stick Y", gamepad1.left_stick_y);
     }
 
     /*
@@ -55,18 +54,23 @@ public class TestTeleOp extends OpMode {
      */
     //Untested
     public void fourDirectionalMovement() {
+        boolean lateral = false;
         if(Math.abs(targetXPower) > Math.abs(targetYPower)) {
-            rearRight.setPower(targetXPower);
+            rearRight.setPower(-targetXPower);
             rearLeft.setPower(-targetXPower);
-            frontRight.setPower(-targetXPower);
+            frontRight.setPower(targetXPower);
             frontLeft.setPower(targetXPower);
-
+            lateral = true;
         } else {
             frontLeft.setPower(targetYPower);
-            frontRight.setPower(targetYPower);
-            rearLeft.setPower(targetYPower);
-            rearRight.setPower(targetYPower);
+            frontRight.setPower(-targetYPower);
+            //rearLeft.setPower(targetYPower);
+            //rearRight.setPower(targetYPower);
+            lateral = false;
         }
+        telemetry.addData("Lateral", lateral);
+        telemetry.addData("frontRight Power", frontRight.getPower());
+        telemetry.addData("frontLeft Power", frontLeft.getPower());
     }
 
     /*
