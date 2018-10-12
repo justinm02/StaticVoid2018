@@ -32,13 +32,21 @@ public class TestTeleOp extends OpMode {
         //omniDirectionalMovement();
         if(gamepad1.a) {
             targetYPower = .5;
+        } else if(gamepad1.b) {
+            targetYPower = -.5;
         } else {
             targetYPower = 0;
         }
+
         frontLeft.setPower(targetYPower);
         frontRight.setPower(-targetYPower);
+
+
+
         telemetry.addData("Target X Power: ", targetXPower);
         telemetry.addData("Target Y Power: ", targetYPower);
+        telemetry.addData("Gamepad1 Left Stick X: ", gamepad1.left_stick_x);
+        telemetry.addData("Gamepad1 Left Stick Y: ", gamepad1.left_stick_y);
     }
 
     /*
