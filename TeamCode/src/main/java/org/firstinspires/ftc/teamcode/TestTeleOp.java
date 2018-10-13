@@ -26,6 +26,11 @@ public class TestTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        rearLeft.setPower(0);
+        rearRight.setPower(0);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+
         targetXPower = gamepad1.left_stick_x;
         targetYPower = gamepad1.left_stick_y;
         fourDirectionalMovement();
