@@ -35,19 +35,7 @@ public class TestTeleOp extends OpMode {
         targetYPower = gamepad1.left_stick_y;
         fourDirectionalMovement();
         //omniDirectionalMovement();
-
-
-        //Absolutely Dumb testing: B is Forward, A is Backwards
-        /*
-        if(gamepad1.a) {
-            targetYPower = .5;
-        } else if(gamepad1.b) {
-            targetYPower = -.5;
-        }
-        */
-
-        //frontLeft.setPower(targetYPower);
-        //frontRight.setPower(-targetYPower);
+        rotate();
 
         telemetry.addData("Gamepad1 Left Stick X", gamepad1.left_stick_x);
         telemetry.addData("Gamepad1 Left Stick Y", gamepad1.left_stick_y);
@@ -59,7 +47,7 @@ public class TestTeleOp extends OpMode {
      */
     //Untested
     public void fourDirectionalMovement() {
-        boolean lateral = false;
+        boolean lateral;
         if(Math.abs(targetXPower) > Math.abs(targetYPower)) {
             rearRight.setPower(-targetXPower);
             rearLeft.setPower(-targetXPower);
@@ -67,10 +55,10 @@ public class TestTeleOp extends OpMode {
             frontLeft.setPower(targetXPower);
             lateral = true;
         } else {
-            frontLeft.setPower(targetYPower);
-            frontRight.setPower(-targetYPower);
-            //rearLeft.setPower(targetYPower);
-            //rearRight.setPower(targetYPower);
+            frontLeft.setPower(-targetYPower);
+            frontRight.setPower(targetYPower);
+            rearLeft.setPower(-targetYPower);
+            rearRight.setPower(targetYPower);
             lateral = false;
         }
         telemetry.addData("Lateral", lateral);
@@ -88,6 +76,14 @@ public class TestTeleOp extends OpMode {
         frontRight.setPower(-targetXPower + targetYPower);
         rearLeft.setPower(-targetXPower + targetYPower);
         frontLeft.setPower(targetXPower + targetYPower);
+    }
+
+    public void rotate() {
+        float targetRotatePower = gamepad1.right_stick_x;
+        rearRight.setPower(targetRotatePower);
+        frontRight.setPower(targetRotatePower);
+        rearLeft.setPower(targetRotatePower);
+        frontLeft.setPower(targetRotatePower);
     }
 
 }
