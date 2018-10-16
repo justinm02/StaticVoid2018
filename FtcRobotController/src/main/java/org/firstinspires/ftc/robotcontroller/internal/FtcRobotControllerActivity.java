@@ -33,15 +33,12 @@ package org.firstinspires.ftc.robotcontroller.internal;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,24 +56,14 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-
 import com.google.blocks.ftcrobotcontroller.BlocksActivity;
 import com.google.blocks.ftcrobotcontroller.ProgrammingModeActivity;
 import com.google.blocks.ftcrobotcontroller.ProgrammingModeControllerImpl;
 import com.google.blocks.ftcrobotcontroller.ProgrammingWebHandlers;
 import com.google.blocks.ftcrobotcontroller.runtime.BlocksOpMode;
-import com.qualcomm.ftccommon.ClassManagerFactory;
-import com.qualcomm.ftccommon.FtcAboutActivity;
-import com.qualcomm.ftccommon.FtcEventLoop;
-import com.qualcomm.ftccommon.FtcEventLoopIdle;
-import com.qualcomm.ftccommon.FtcRobotControllerService;
+import com.qualcomm.ftccommon.*;
 import com.qualcomm.ftccommon.FtcRobotControllerService.FtcRobotControllerBinder;
-import com.qualcomm.ftccommon.FtcRobotControllerSettingsActivity;
-import com.qualcomm.ftccommon.LaunchActivityConstantsList;
 import com.qualcomm.ftccommon.LaunchActivityConstantsList.RequestCode;
-import com.qualcomm.ftccommon.ProgrammingModeController;
-import com.qualcomm.ftccommon.Restarter;
-import com.qualcomm.ftccommon.UpdateUI;
 import com.qualcomm.ftccommon.configuration.EditParameters;
 import com.qualcomm.ftccommon.configuration.FtcLoadFileActivity;
 import com.qualcomm.ftccommon.configuration.RobotConfigFile;
@@ -95,19 +82,12 @@ import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.wifi.NetworkConnection;
 import com.qualcomm.robotcore.wifi.NetworkConnectionFactory;
 import com.qualcomm.robotcore.wifi.NetworkType;
-
 import org.firstinspires.ftc.ftccommon.external.SoundPlayingRobotMonitor;
 import org.firstinspires.ftc.ftccommon.internal.FtcRobotControllerWatchdogService;
 import org.firstinspires.ftc.ftccommon.internal.ProgramAndManageActivity;
 import org.firstinspires.ftc.robotcore.external.navigation.MotionDetection;
 import org.firstinspires.ftc.robotcore.internal.hardware.DragonboardLynxDragonboardIsPresentPin;
-import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManager;
-import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManagerFactory;
-import org.firstinspires.ftc.robotcore.internal.network.WifiDirectDeviceNameManager;
-import org.firstinspires.ftc.robotcore.internal.network.PreferenceRemoterRC;
-import org.firstinspires.ftc.robotcore.internal.network.StartResult;
-import org.firstinspires.ftc.robotcore.internal.network.WifiMuteEvent;
-import org.firstinspires.ftc.robotcore.internal.network.WifiMuteStateMachine;
+import org.firstinspires.ftc.robotcore.internal.network.*;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.system.Assert;
 import org.firstinspires.ftc.robotcore.internal.system.PreferencesHelper;
@@ -125,6 +105,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @SuppressWarnings("WeakerAccess")
 public class FtcRobotControllerActivity extends Activity
   {
+
+  public static MediaPlayer surprise;
+
   public static final String TAG = "RCActivity";
   public String getTag() { return TAG; }
 
@@ -336,6 +319,8 @@ public class FtcRobotControllerActivity extends Activity
     if (preferencesHelper.readBoolean(getString(R.string.pref_wifi_automute), false)) {
       initWifiMute(true);
     }
+
+    surprise = MediaPlayer.create(this, R.raw.song1);
   }
 
   protected UpdateUI createUpdateUI() {

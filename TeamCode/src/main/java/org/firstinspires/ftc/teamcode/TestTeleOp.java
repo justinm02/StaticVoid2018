@@ -3,15 +3,17 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
 @TeleOp(name = "TestTeleOp", group = "TeleOp")
 
 public class TestTeleOp extends OpMode {
 
+
+    private boolean isSurprising;
     private PIDControl driveTrainPID;
     private double targetXPower, targetYPower;
     private DcMotor rearLeft, rearRight, frontLeft, frontRight;
-
 
     @Override
     public void init() {
@@ -22,6 +24,7 @@ public class TestTeleOp extends OpMode {
         rearRight = hardwareMap.get(DcMotor.class, "backRight");
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        isSurprising = false;
     }
 
     @Override
@@ -39,13 +42,15 @@ public class TestTeleOp extends OpMode {
 
         telemetry.addData("Gamepad1 Left Stick X", gamepad1.left_stick_x);
         telemetry.addData("Gamepad1 Left Stick Y", gamepad1.left_stick_y);
+
+        checkForSurprise();
     }
+
 
     /*
      * Moves the Robot in only the four cardinal directions, depending on which controller axis is being pushed the furthest.
      * Goes forward, backward, left, or right.
      */
-    //Untested
     public void fourDirectionalMovement() {
         boolean lateral;
         if(Math.abs(targetXPower) > Math.abs(targetYPower)) {
@@ -65,6 +70,7 @@ public class TestTeleOp extends OpMode {
         telemetry.addData("frontRight Power", frontRight.getPower());
         telemetry.addData("frontLeft Power", frontLeft.getPower());
     }
+
 
     /*
      * Moves the Robot in all 360 degrees of direction.
@@ -86,4 +92,14 @@ public class TestTeleOp extends OpMode {
         frontLeft.setPower(targetRotatePower);
     }
 
+
+    public void checkForSurprise() {
+        if(gamepad1.start && gamepad1.left_stick_button && !isSurprising) {
+            FtcRobotControllerActivity.surprise.start();
+            isSurprising = true;
+        } else if(gamepad1.start && gamepad1.left_stick_button && isSurprising) {
+            FtcRobotControllerActivity.surprise.stop();
+            isSurprising = false;
+        }
+    }
 }
