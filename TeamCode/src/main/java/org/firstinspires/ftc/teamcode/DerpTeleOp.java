@@ -5,26 +5,30 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
-@TeleOp(name = "TestTeleOp", group = "TeleOp")
 
-public class TestTeleOp extends OpMode {
+@TeleOp(name = "TeleOp", group = "TeleOp")
+public class DerpTeleOp extends OpMode {
 
-
-    private boolean isSurprising;
+    private boolean isSurprising, eightDirectional;
     private PIDControl driveTrainPID;
-    private double targetXPower, targetYPower;
+    private double targetXPower, targetYPower, averagePower;
     private DcMotor rearLeft, rearRight, frontLeft, frontRight;
+    private boolean prevLeftBumper, prevRightBumper;
 
     @Override
     public void init() {
         driveTrainPID = new PIDControl(0,0,0);
         targetXPower = 0;
         targetYPower = 0;
+        averagePower = 0;
         rearLeft = hardwareMap.get(DcMotor.class, "backLeft");
         rearRight = hardwareMap.get(DcMotor.class, "backRight");
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         isSurprising = false;
+        eightDirectional = false;
+        prevLeftBumper = false;
+        prevRightBumper = false;
     }
 
     @Override
@@ -34,16 +38,25 @@ public class TestTeleOp extends OpMode {
         frontLeft.setPower(0);
         frontRight.setPower(0);
 
-        targetXPower = gamepad1.left_stick_x;
-        targetYPower = gamepad1.left_stick_y;
-        fourDirectionalMovement();
-        //omniDirectionalMovement();
+
+        if(!gamepad1.left_bumper && !gamepad1.right_bumper && prevLeftBumper && prevRightBumper)
+            eightDirectional = !eightDirectional;
+        telemetry.addData("Eight Directional Movement" , eightDirectional);
+
+        if(!eightDirectional)
+            fourDirectionalMovement();
+        else
+            eightDirectionalMovement();
         rotate();
+
 
         telemetry.addData("Gamepad1 Left Stick X", gamepad1.left_stick_x);
         telemetry.addData("Gamepad1 Left Stick Y", gamepad1.left_stick_y);
 
         checkForSurprise();
+
+        prevRightBumper = gamepad1.right_bumper;
+        prevLeftBumper = gamepad1.left_bumper;
     }
 
 
@@ -52,40 +65,46 @@ public class TestTeleOp extends OpMode {
      * Goes forward, backward, left, or right.
      */
     public void fourDirectionalMovement() {
-        boolean lateral;
+        targetXPower = gamepad1.left_stick_x;
+        targetYPower = -gamepad1.left_stick_y;
+
         if(Math.abs(targetXPower) > Math.abs(targetYPower)) {
             rearRight.setPower(-targetXPower);
             rearLeft.setPower(-targetXPower);
             frontRight.setPower(targetXPower);
             frontLeft.setPower(targetXPower);
-            lateral = true;
         } else {
-            frontLeft.setPower(-targetYPower);
-            frontRight.setPower(targetYPower);
-            rearLeft.setPower(-targetYPower);
-            rearRight.setPower(targetYPower);
-            lateral = false;
+            frontLeft.setPower(targetYPower);
+            frontRight.setPower(-targetYPower);
+            rearLeft.setPower(targetYPower);
+            rearRight.setPower(-targetYPower);
         }
-        telemetry.addData("Lateral", lateral);
-        telemetry.addData("frontRight Power", frontRight.getPower());
-        telemetry.addData("frontLeft Power", frontLeft.getPower());
+        //telemetry.addData("Lateral", lateral);
+        //telemetry.addData("frontRight Power", frontRight.getPower());
+        //telemetry.addData("frontLeft Power", frontLeft.getPower());
     }
 
 
     /*
-     * Moves the Robot in all 360 degrees of direction.
-     * Takes thr average of the left controller stick direction and applies it to the Robot.
+     * Moves the Robot in all eight direction.
+     * Left stick controls forward/backward movement, Right Stick Controls lateral movement
      */
     //Untested
-    public void omniDirectionalMovement() {
-        rearRight.setPower(targetXPower + targetYPower);
-        frontRight.setPower(-targetXPower + targetYPower);
-        rearLeft.setPower(-targetXPower + targetYPower);
-        frontLeft.setPower(targetXPower + targetYPower);
+    public void eightDirectionalMovement() {
+        targetYPower = -gamepad1.left_stick_y;
+        targetXPower = gamepad1.right_stick_x;
+        averagePower = (targetXPower + targetYPower)/2f;
+
+        //Set the Wheels Diagonal to each other to the same power value
+        rearLeft.setPower(averagePower);
+        frontRight.setPower(averagePower);
+
+        rearRight.setPower(-averagePower);
+        frontLeft.setPower(-averagePower);
     }
 
     public void rotate() {
-        float targetRotatePower = gamepad1.right_stick_x;
+        float targetRotatePower = gamepad1.left_stick_x;
         rearRight.setPower(targetRotatePower);
         frontRight.setPower(targetRotatePower);
         rearLeft.setPower(targetRotatePower);
@@ -97,7 +116,7 @@ public class TestTeleOp extends OpMode {
         if(gamepad1.start && gamepad1.left_stick_button && !isSurprising) {
             FtcRobotControllerActivity.surprise.start();
             isSurprising = true;
-        } else if(gamepad1.start && gamepad1.left_stick_button && isSurprising) {
+        } else if(gamepad1.back && gamepad1.left_stick_button && isSurprising) {
             FtcRobotControllerActivity.surprise.stop();
             isSurprising = false;
         }

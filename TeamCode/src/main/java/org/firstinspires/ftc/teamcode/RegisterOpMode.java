@@ -7,6 +7,6 @@ public class RegisterOpMode {
 
     @OpModeRegistrar
     public static void register(OpModeManager manager) {
-        manager.register("TestTeleOP", TestTeleOp.class);
+        manager.register("TestTeleOP", DerpTeleOp.class);
     }
 }
