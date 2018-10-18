@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
 
@@ -12,7 +13,7 @@ public class DerpTeleOp extends OpMode {
     private boolean isSurprising, eightDirectional;
     private PIDControl driveTrainPID;
     private double targetXPower, targetYPower, averagePower;
-    private DcMotor rearLeft, rearRight, frontLeft, frontRight;
+    private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private boolean prevLeftBumper, prevRightBumper;
 
     @Override
@@ -21,10 +22,23 @@ public class DerpTeleOp extends OpMode {
         targetXPower = 0;
         targetYPower = 0;
         averagePower = 0;
-        rearLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        rearRight = hardwareMap.get(DcMotor.class, "backRight");
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+
+        rearLeft = (DcMotorEx) hardwareMap.get(DcMotor.class, "backLeft");
+        rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        rearRight = (DcMotorEx) hardwareMap.get(DcMotor.class, "backRight");
+        rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        frontLeft = (DcMotorEx) hardwareMap.get(DcMotor.class, "frontLeft");
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        frontRight = (DcMotorEx) hardwareMap.get(DcMotor.class, "frontRight");
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         isSurprising = false;
         eightDirectional = false;
         prevLeftBumper = false;
