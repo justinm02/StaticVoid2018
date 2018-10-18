@@ -33,26 +33,18 @@ public class DerpTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        rearLeft.setPower(0);
-        rearRight.setPower(0);
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-
+        resetMotors();
+        sendTelemetry();
 
         if(!gamepad1.left_bumper && !gamepad1.right_bumper && prevLeftBumper && prevRightBumper)
             eightDirectional = !eightDirectional;
-        telemetry.addData("Eight Directional Movement" , eightDirectional);
 
         if(!eightDirectional)
             fourDirectionalMovement();
         else
             eightDirectionalMovement();
+
         rotate();
-
-
-        telemetry.addData("Gamepad1 Left Stick X", gamepad1.left_stick_x);
-        telemetry.addData("Gamepad1 Left Stick Y", gamepad1.left_stick_y);
-
         checkForSurprise();
 
         prevRightBumper = gamepad1.right_bumper;
@@ -65,7 +57,7 @@ public class DerpTeleOp extends OpMode {
      * Goes forward, backward, left, or right.
      */
     public void fourDirectionalMovement() {
-        targetXPower = gamepad1.left_stick_x;
+        targetXPower = gamepad1.right_stick_x;
         targetYPower = -gamepad1.left_stick_y;
 
         if(Math.abs(targetXPower) > Math.abs(targetYPower)) {
@@ -92,7 +84,7 @@ public class DerpTeleOp extends OpMode {
     //Untested
     public void eightDirectionalMovement() {
         targetYPower = -gamepad1.left_stick_y;
-        targetXPower = gamepad1.right_stick_x;
+        targetXPower = gamepad1.left_stick_x;
         averagePower = (targetXPower + targetYPower)/2f;
 
         //Set the Wheels Diagonal to each other to the same power value
@@ -104,7 +96,7 @@ public class DerpTeleOp extends OpMode {
     }
 
     public void rotate() {
-        float targetRotatePower = gamepad1.left_stick_x;
+        float targetRotatePower = gamepad1.right_stick_x;
         rearRight.setPower(targetRotatePower);
         frontRight.setPower(targetRotatePower);
         rearLeft.setPower(targetRotatePower);
@@ -120,5 +112,21 @@ public class DerpTeleOp extends OpMode {
             FtcRobotControllerActivity.surprise.stop();
             isSurprising = false;
         }
+    }
+
+    public void resetMotors() {
+        rearLeft.setPower(0);
+        rearRight.setPower(0);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+    }
+
+    public void sendTelemetry() {
+        telemetry.addData("Eight Directional Movement" , eightDirectional);
+        telemetry.addData("Gamepad1 Left Stick X", gamepad1.left_stick_x);
+        telemetry.addData("Gamepad1 Left Stick Y", gamepad1.left_stick_y);
+        telemetry.addData("Front Motors", "Left: " + frontLeft.getPower()+ " | Right: " + frontRight.getPower());
+        telemetry.addData("Rear Motors", "Left: " + rearLeft.getPower()+ " | Right: " + rearRight.getPower());
+        telemetry.update();
     }
 }
