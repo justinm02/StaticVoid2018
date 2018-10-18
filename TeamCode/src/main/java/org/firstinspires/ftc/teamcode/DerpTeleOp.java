@@ -47,7 +47,7 @@ public class DerpTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        resetMotors();
+        //resetMotors();
         sendTelemetry();
 
         if(!gamepad1.left_bumper && !gamepad1.right_bumper && prevLeftBumper && prevRightBumper)
