@@ -12,7 +12,7 @@ public class DerpTeleOp extends OpMode {
 
     private boolean isSurprising, eightDirectional;
     private PIDControl driveTrainPID;
-    private double targetXPower, targetYPower, averagePower;
+    private double targetXPower, targetYPower, averagePower, targetRotatePower;
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private boolean prevLeftBumper, prevRightBumper;
 
@@ -23,19 +23,19 @@ public class DerpTeleOp extends OpMode {
         targetYPower = 0;
         averagePower = 0;
 
-        rearLeft = (DcMotorEx) hardwareMap.get(DcMotor.class, "backLeft");
+        rearLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        rearRight = (DcMotorEx) hardwareMap.get(DcMotor.class, "backRight");
+        rearRight = hardwareMap.get(DcMotorEx.class, "backRight");
         rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontLeft = (DcMotorEx) hardwareMap.get(DcMotor.class, "frontLeft");
+        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontRight = (DcMotorEx) hardwareMap.get(DcMotor.class, "frontRight");
+        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -49,16 +49,9 @@ public class DerpTeleOp extends OpMode {
     public void loop() {
         //resetMotors();
         sendTelemetry();
+        fourDirectionalMovement();
 
-        if(!gamepad1.left_bumper && !gamepad1.right_bumper && prevLeftBumper && prevRightBumper)
-            eightDirectional = !eightDirectional;
-
-        if(!eightDirectional)
-            fourDirectionalMovement();
-        else
-            eightDirectionalMovement();
-
-        rotate();
+        //rotate();
         checkForSurprise();
 
         prevRightBumper = gamepad1.right_bumper;
@@ -71,23 +64,28 @@ public class DerpTeleOp extends OpMode {
      * Goes forward, backward, left, or right.
      */
     public void fourDirectionalMovement() {
-        targetXPower = gamepad1.right_stick_x;
+        targetXPower = gamepad1.left_stick_x;
         targetYPower = -gamepad1.left_stick_y;
 
-        if(Math.abs(targetXPower) > Math.abs(targetYPower)) {
-            rearRight.setPower(-targetXPower);
-            rearLeft.setPower(-targetXPower);
-            frontRight.setPower(targetXPower);
-            frontLeft.setPower(targetXPower);
+        if(targetXPower != 0 || targetYPower != 0) {
+            if (Math.abs(targetXPower) > Math.abs(targetYPower)) {
+                rearRight.setPower(-targetXPower);
+                rearLeft.setPower(-targetXPower);
+                frontRight.setPower(targetXPower);
+                frontLeft.setPower(targetXPower);
+            } else {
+                frontLeft.setPower(targetYPower);
+                frontRight.setPower(-targetYPower);
+                rearLeft.setPower(targetYPower);
+                rearRight.setPower(-targetYPower);
+            }
         } else {
-            frontLeft.setPower(targetYPower);
-            frontRight.setPower(-targetYPower);
-            rearLeft.setPower(targetYPower);
-            rearRight.setPower(-targetYPower);
+            targetRotatePower = gamepad1.right_stick_x;
+            rearRight.setPower(targetRotatePower);
+            frontRight.setPower(targetRotatePower);
+            rearLeft.setPower(targetRotatePower);
+            frontLeft.setPower(targetRotatePower);
         }
-        //telemetry.addData("Lateral", lateral);
-        //telemetry.addData("frontRight Power", frontRight.getPower());
-        //telemetry.addData("frontLeft Power", frontLeft.getPower());
     }
 
 
@@ -110,11 +108,7 @@ public class DerpTeleOp extends OpMode {
     }
 
     public void rotate() {
-        float targetRotatePower = gamepad1.right_stick_x;
-        rearRight.setPower(targetRotatePower);
-        frontRight.setPower(targetRotatePower);
-        rearLeft.setPower(targetRotatePower);
-        frontLeft.setPower(targetRotatePower);
+
     }
 
 
@@ -139,8 +133,8 @@ public class DerpTeleOp extends OpMode {
         telemetry.addData("Eight Directional Movement" , eightDirectional);
         telemetry.addData("Gamepad1 Left Stick X", gamepad1.left_stick_x);
         telemetry.addData("Gamepad1 Left Stick Y", gamepad1.left_stick_y);
-        telemetry.addData("Front Motors", "Left: " + frontLeft.getPower()+ " | Right: " + frontRight.getPower());
-        telemetry.addData("Rear Motors", "Left: " + rearLeft.getPower()+ " | Right: " + rearRight.getPower());
+        telemetry.addData("Front Motors", "Left: (%.2f) | Right: (%.2f)", frontLeft.getPower(), frontRight.getPower());
+        telemetry.addData("Rear Motors", "Left: (%.2f) | Right: (%.2f)", rearLeft.getPower(), rearRight.getPower());
         telemetry.update();
     }
 }
