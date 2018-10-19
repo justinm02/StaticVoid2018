@@ -50,8 +50,6 @@ public class DerpTeleOp extends OpMode {
         //resetMotors();
         sendTelemetry();
         fourDirectionalMovement();
-
-        //rotate();
         checkForSurprise();
 
         prevRightBumper = gamepad1.right_bumper;
