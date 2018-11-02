@@ -49,7 +49,15 @@ public class DerpTeleOp extends OpMode {
     public void loop() {
         //resetMotors();
         sendTelemetry();
-        fourDirectionalMovement();
+
+        if(gamepad1.right_bumper != prevRightBumper && gamepad1.left_bumper != prevLeftBumper)
+            eightDirectional = !eightDirectional;
+
+        if(!eightDirectional)
+            fourDirectionalMovement();
+        else
+            eightDirectionalMovement();
+
         checkForSurprise();
 
         prevRightBumper = gamepad1.right_bumper;
@@ -103,10 +111,6 @@ public class DerpTeleOp extends OpMode {
 
         rearRight.setPower(-averagePower);
         frontLeft.setPower(-averagePower);
-    }
-
-    public void rotate() {
-
     }
 
 
