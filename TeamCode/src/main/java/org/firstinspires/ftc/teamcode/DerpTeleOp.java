@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
 
@@ -14,7 +16,8 @@ public class DerpTeleOp extends OpMode {
     private PIDControl driveTrainPID;
     private double targetXPower, targetYPower, averagePower, targetRotatePower;
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
-    private boolean prevLeftBumper, prevRightBumper;
+    private DcMotorEx lift;
+    private GyroSensor gyroSensor;
 
     @Override
     public void init() {
@@ -29,6 +32,7 @@ public class DerpTeleOp extends OpMode {
 
         rearRight = hardwareMap.get(DcMotorEx.class, "backRight");
         rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
@@ -37,12 +41,13 @@ public class DerpTeleOp extends OpMode {
 
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         isSurprising = false;
         eightDirectional = false;
-        prevLeftBumper = false;
-        prevRightBumper = false;
+
+
     }
 
     @Override
@@ -50,18 +55,16 @@ public class DerpTeleOp extends OpMode {
         //resetMotors();
         sendTelemetry();
 
-        if(gamepad1.right_bumper != prevRightBumper && gamepad1.left_bumper != prevLeftBumper)
-            eightDirectional = !eightDirectional;
-
-        if(!eightDirectional)
-            fourDirectionalMovement();
-        else
-            eightDirectionalMovement();
-
+        fourDirectionalMovement();
         checkForSurprise();
 
-        prevRightBumper = gamepad1.right_bumper;
-        prevLeftBumper = gamepad1.left_bumper;
+
+        if(gamepad1.a) {
+            frontRight.setTargetPosition(12);
+            rearRight.setTargetPosition(12);
+            frontLeft.setTargetPosition(12);
+            rearLeft.setTargetPosition(12);
+        }
     }
 
 
@@ -75,20 +78,20 @@ public class DerpTeleOp extends OpMode {
 
         if(targetXPower != 0 || targetYPower != 0) {
             if (Math.abs(targetXPower) > Math.abs(targetYPower)) {
-                rearRight.setPower(-targetXPower);
+                rearRight.setPower(targetXPower);
                 rearLeft.setPower(-targetXPower);
-                frontRight.setPower(targetXPower);
+                frontRight.setPower(-targetXPower);
                 frontLeft.setPower(targetXPower);
             } else {
                 frontLeft.setPower(targetYPower);
-                frontRight.setPower(-targetYPower);
+                frontRight.setPower(targetYPower);
                 rearLeft.setPower(targetYPower);
-                rearRight.setPower(-targetYPower);
+                rearRight.setPower(targetYPower);
             }
         } else {
             targetRotatePower = gamepad1.right_stick_x;
-            rearRight.setPower(targetRotatePower);
-            frontRight.setPower(targetRotatePower);
+            rearRight.setPower(-targetRotatePower);
+            frontRight.setPower(-targetRotatePower);
             rearLeft.setPower(targetRotatePower);
             frontLeft.setPower(targetRotatePower);
         }
@@ -116,10 +119,10 @@ public class DerpTeleOp extends OpMode {
 
     public void checkForSurprise() {
         if(gamepad1.start && gamepad1.left_stick_button && !isSurprising) {
-            FtcRobotControllerActivity.surprise.start();
+            //FtcRobotControllerActivity.surprise.start();
             isSurprising = true;
         } else if(gamepad1.back && gamepad1.left_stick_button && isSurprising) {
-            FtcRobotControllerActivity.surprise.stop();
+            //FtcRobotControllerActivity.surprise.stop();
             isSurprising = false;
         }
     }
@@ -137,6 +140,7 @@ public class DerpTeleOp extends OpMode {
         telemetry.addData("Gamepad1 Left Stick Y", gamepad1.left_stick_y);
         telemetry.addData("Front Motors", "Left: (%.2f) | Right: (%.2f)", frontLeft.getPower(), frontRight.getPower());
         telemetry.addData("Rear Motors", "Left: (%.2f) | Right: (%.2f)", rearLeft.getPower(), rearRight.getPower());
+        telemetry.addData("Target Front Pos", "Left: (%d) | Right: (%d)", frontLeft.getTargetPosition(), frontRight.getTargetPosition());
         telemetry.update();
     }
 }
