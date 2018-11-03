@@ -14,15 +14,36 @@ public class DriveTrain {
         this.frontRight = frontRight;
     }
 
-    public void rotate() {
+    public void rotate(float power) {
+        frontLeft.setPower(-power);
+        rearLeft.setPower(-power);
+        frontRight.setPower(power);
+        rearRight.setPower(power);
+    }
+
+    public void longitudinal(double power) {
+        frontRight.setPower(-power);
+        frontLeft.setPower(-power);
+        rearRight.setPower(power);
+        rearLeft.setPower(power);
+    }
+
+    public void lateral(double power) {
+        frontLeft.setPower(power);
+        rearRight.setPower(power);
+        frontRight.setPower(-power);
+        rearLeft.setPower(-power);
+    }
+
+    public void rotateDegrees(int degrees) {
 
     }
 
-    public void longitudinal() {
+    public void longitudinalDistance(double inches) {
 
     }
 
-    public void lateral() {
+    public void lateralDistance(double inches) {
 
     }
 }

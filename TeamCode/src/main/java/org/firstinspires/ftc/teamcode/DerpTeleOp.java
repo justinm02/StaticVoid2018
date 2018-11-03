@@ -17,6 +17,7 @@ public class DerpTeleOp extends OpMode {
     private double targetXPower, targetYPower, averagePower, targetRotatePower;
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private DcMotorEx lift;
+    private DriveTrain driveTrain;
     private GyroSensor gyroSensor;
 
     @Override
@@ -26,45 +27,43 @@ public class DerpTeleOp extends OpMode {
         targetYPower = 0;
         averagePower = 0;
 
+        //Initalize each motor from the Hardware Map on the phone
         rearLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
-        rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         rearRight = hardwareMap.get(DcMotorEx.class, "backRight");
-        rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
+
+        //lift = hardwareMap.get(DcMotorEx.class, "lift");
+
+        //Set each motor to run using encoders
+        rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        //Set the motors to brake when no power is given
+        rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //Reverse the right motors
+        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
         isSurprising = false;
-        eightDirectional = false;
 
-
+        //Instantiate Drive Train class with instantiated motors
+        driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
     }
 
     @Override
     public void loop() {
-        //resetMotors();
         sendTelemetry();
 
         fourDirectionalMovement();
         checkForSurprise();
-
-
-        if(gamepad1.a) {
-            frontRight.setTargetPosition(12);
-            rearRight.setTargetPosition(12);
-            frontLeft.setTargetPosition(12);
-            rearLeft.setTargetPosition(12);
-        }
     }
 
 
@@ -78,42 +77,13 @@ public class DerpTeleOp extends OpMode {
 
         if(targetXPower != 0 || targetYPower != 0) {
             if (Math.abs(targetXPower) > Math.abs(targetYPower)) {
-                rearRight.setPower(targetXPower);
-                rearLeft.setPower(-targetXPower);
-                frontRight.setPower(-targetXPower);
-                frontLeft.setPower(targetXPower);
+                driveTrain.lateral(targetXPower);
             } else {
-                frontLeft.setPower(targetYPower);
-                frontRight.setPower(targetYPower);
-                rearLeft.setPower(targetYPower);
-                rearRight.setPower(targetYPower);
+                driveTrain.longitudinal(targetYPower);
             }
         } else {
-            targetRotatePower = gamepad1.right_stick_x;
-            rearRight.setPower(-targetRotatePower);
-            frontRight.setPower(-targetRotatePower);
-            rearLeft.setPower(targetRotatePower);
-            frontLeft.setPower(targetRotatePower);
+            driveTrain.rotate(gamepad1.right_stick_x);
         }
-    }
-
-
-    /*
-     * Moves the Robot in all eight direction.
-     * Left stick controls forward/backward movement, Right Stick Controls lateral movement
-     */
-    //Untested
-    public void eightDirectionalMovement() {
-        targetYPower = -gamepad1.left_stick_y;
-        targetXPower = gamepad1.left_stick_x;
-        averagePower = (targetXPower + targetYPower)/2f;
-
-        //Set the Wheels Diagonal to each other to the same power value
-        rearLeft.setPower(averagePower);
-        frontRight.setPower(averagePower);
-
-        rearRight.setPower(-averagePower);
-        frontLeft.setPower(-averagePower);
     }
 
 
@@ -125,13 +95,6 @@ public class DerpTeleOp extends OpMode {
             //FtcRobotControllerActivity.surprise.stop();
             isSurprising = false;
         }
-    }
-
-    public void resetMotors() {
-        rearLeft.setPower(0);
-        rearRight.setPower(0);
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
     }
 
     public void sendTelemetry() {
