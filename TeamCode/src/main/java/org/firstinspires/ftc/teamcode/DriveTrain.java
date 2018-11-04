@@ -29,10 +29,10 @@ public class DriveTrain {
     }
 
     public void lateral(double power) {
-        frontLeft.setPower(power);
-        rearRight.setPower(power);
-        frontRight.setPower(-power);
-        rearLeft.setPower(-power);
+        frontLeft.setPower(-power);
+        rearRight.setPower(-power);
+        frontRight.setPower(power);
+        rearLeft.setPower(power);
     }
 
     public void rotateDegrees(int degrees) {

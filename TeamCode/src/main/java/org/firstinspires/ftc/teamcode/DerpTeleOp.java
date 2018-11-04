@@ -75,12 +75,15 @@ public class DerpTeleOp extends OpMode {
         targetXPower = gamepad1.left_stick_x;
         targetYPower = -gamepad1.left_stick_y;
 
+        //Check if the left stick is being pressed
         if(targetXPower != 0 || targetYPower != 0) {
+            //Check which direction the right stick is being pressed more; horizontally or vertically
             if (Math.abs(targetXPower) > Math.abs(targetYPower)) {
                 driveTrain.lateral(targetXPower);
             } else {
                 driveTrain.longitudinal(targetYPower);
             }
+            //If Right Stick isn't being pressed, go on the check for rotation
         } else {
             driveTrain.rotate(gamepad1.right_stick_x);
         }
