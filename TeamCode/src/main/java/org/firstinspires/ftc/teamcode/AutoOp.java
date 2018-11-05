@@ -1,18 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "Autonomous", group = "Autonomous")
 public abstract class AutoOp extends LinearOpMode {
 
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private DcMotorEx lift;
 
-    private DriveTrain driveTrain;
+
+    protected DriveTrain driveTrain;
+    protected BuggleCam cam;
 
     //Order of Operations:
     //
@@ -43,6 +43,10 @@ public abstract class AutoOp extends LinearOpMode {
 
         //Instantiates a Drive Train with the motors set to the correct mode for autonomous
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
+
+        //Instantiates a Camera Object for use with Mineral Detection
+        cam = new BuggleCam(telemetry, hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
     }
 
     //Loop required for all Autonomous modes
