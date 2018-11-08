@@ -1,12 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-@Autonomous(name = "MarkerOp", group = "Autonomous")
-public class MarkerAutoOp extends AutoOp {
-
-
+public class CraterAutoOp extends AutoOp {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
@@ -16,15 +10,13 @@ public class MarkerAutoOp extends AutoOp {
         lowerBot();
         resetEncoders();
 
-        driveTrain.lateralDistance(4);
+        driveTrain.lateralDistance(.5);
         resetEncoders();
 
-        driveTrain.longitudinalDistance(-4);
+        driveTrain.longitudinalDistance(-.5);
         resetEncoders();
 
-        driveTrain.lateralDistance(-4);
-
-        //Marker Method()
+        driveTrain.lateralDistance(-.5);
 
         //While the Gold Position is undetermined, keep updating the camera
         cam.activateTFOD();
@@ -37,23 +29,15 @@ public class MarkerAutoOp extends AutoOp {
             case CENTER:
                 driveTrain.longitudinalDistance(-12);
                 resetEncoders();
-                driveTrain.longitudinalDistance(12);
-                resetEncoders();
-                driveTrain.lateralDistance(12);
-                resetEncoders();
                 break;
             case LEFT:
                 driveTrain.lateralDistance(-12);
                 resetEncoders();
                 driveTrain.longitudinalDistance(-12);
                 resetEncoders();
-                driveTrain.longitudinalDistance(12);
-                resetEncoders();
-                driveTrain.lateralDistance(24);
-                resetEncoders();
                 break;
             case RIGHT:
-                driveTrain.lateralDistance(-12);
+                driveTrain.lateralDistance(12);
                 resetEncoders();
                 driveTrain.longitudinalDistance(-12);
                 resetEncoders();
@@ -61,7 +45,9 @@ public class MarkerAutoOp extends AutoOp {
         }
 
         //Crater Method()
+        driveTrain.longitudinalDistance(-20);
 
-        while(opModeIsActive()) {}
+        
     }
+
 }

@@ -49,10 +49,10 @@ public class BuggleCam {
                 if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                     if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                         telemetry.addData("Gold Mineral Position", "Left");
-                        goldPosition = GOLD_POSITION.LEFT;
+                        goldPosition = GOLD_POSITION.RIGHT;
                     } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
                         telemetry.addData("Gold Mineral Position", "Right");
-                        goldPosition = GOLD_POSITION.RIGHT;
+                        goldPosition = GOLD_POSITION.LEFT;
                     } else {
                         telemetry.addData("Gold Mineral Position", "Center");
                         goldPosition = GOLD_POSITION.CENTER;
