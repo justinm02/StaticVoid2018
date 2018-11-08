@@ -12,12 +12,13 @@ import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity
 @TeleOp(name = "TeleOp", group = "TeleOp")
 public class DerpTeleOp extends OpMode {
 
-    private boolean isSurprising, eightDirectional;
+    private boolean isSurprising, eightDirectional, intaked;
     private PIDControl driveTrainPID;
     private double targetXPower, targetYPower, averagePower, targetRotatePower;
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
-    private DcMotorEx lift;
+    private DcMotorEx lift, intakeLift, intakeSpool, intake;
     private DriveTrain driveTrain;
+    private Intake intakeMotors;
     private GyroSensor gyroSensor;
 
     @Override
@@ -33,7 +34,10 @@ public class DerpTeleOp extends OpMode {
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
 
-        //lift = hardwareMap.get(DcMotorEx.class, "lift");
+        lift = hardwareMap.get(DcMotorEx.class, "lift");
+        intakeLift = hardwareMap.get(DcMotorEx.class, "intakeLift");
+        intakeSpool = hardwareMap.get(DcMotorEx.class, "intakeSpool");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
 
         //Set each motor to run using encoders
         rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -41,11 +45,18 @@ public class DerpTeleOp extends OpMode {
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeSpool.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         //Set the motors to brake when no power is given
         rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Reverse the right motors
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -53,14 +64,19 @@ public class DerpTeleOp extends OpMode {
 
 
         isSurprising = false;
+        intaked = false;
 
         //Instantiate Drive Train class with instantiated motors
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
+        intakeMotors = new Intake(lift, intake, intakeSpool, intakeLift);
     }
 
     @Override
     public void loop() {
         sendTelemetry();
+
+        controlIntake();
+        controlLift();
 
         fourDirectionalMovement();
         checkForSurprise();
@@ -98,6 +114,36 @@ public class DerpTeleOp extends OpMode {
             //FtcRobotControllerActivity.surprise.stop();
             isSurprising = false;
         }
+    }
+
+    public void controlIntake() {
+        if(gamepad2.a) {
+            if (gamepad2.left_bumper)
+                intakeMotors.outtake(.3);
+            else if(gamepad2.right_bumper)
+                intakeMotors.intake(.3);
+        } else {
+            if(gamepad2.left_bumper)
+                intakeMotors.outtake(.6);
+            else if (gamepad2.right_bumper)
+                intakeMotors.intake(.6);
+        }
+        if(!gamepad2.left_bumper && !gamepad2.right_bumper)
+            intakeMotors.intake(0);
+
+        intakeMotors.moveSlide(gamepad2.right_stick_y/2);
+
+        if(gamepad2.right_stick_x == 0)
+            intakeMotors.moveIntake(0);
+        else
+            intakeMotors.moveIntake(gamepad2.right_stick_x/6);
+    }
+
+    public void controlLift() {
+        if(gamepad2.left_stick_y >= 0)
+            intakeMotors.lift(gamepad2.left_stick_y/4);
+        else if (gamepad2.left_stick_y < 0)
+            intakeMotors.lift(gamepad2.left_stick_y/8);
     }
 
     public void sendTelemetry() {

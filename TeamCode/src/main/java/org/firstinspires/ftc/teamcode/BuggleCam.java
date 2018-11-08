@@ -14,9 +14,19 @@ public class BuggleCam {
     private TFObjectDetector tfod;
     private Telemetry telemetry;
 
+    private GOLD_POSITION goldPosition;
+
+    public enum GOLD_POSITION {
+        LEFT,
+        CENTER,
+        RIGHT,
+        NULL
+    }
+
     public BuggleCam(Telemetry telemetry,  int tfodMonitorViewId) {
         this.telemetry = telemetry;
         init(tfodMonitorViewId);
+        goldPosition = GOLD_POSITION.NULL;
     }
 
     public void update() {
@@ -39,15 +49,30 @@ public class BuggleCam {
                 if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                     if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                         telemetry.addData("Gold Mineral Position", "Left");
+                        goldPosition = GOLD_POSITION.LEFT;
                     } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
                         telemetry.addData("Gold Mineral Position", "Right");
+                        goldPosition = GOLD_POSITION.RIGHT;
                     } else {
                         telemetry.addData("Gold Mineral Position", "Center");
+                        goldPosition = GOLD_POSITION.CENTER;
                     }
                 }
             }
             telemetry.update();
         }
+    }
+
+    public GOLD_POSITION getGoldPosition() {
+        return goldPosition;
+    }
+
+    public void activateTFOD() {
+        tfod.activate();
+    }
+
+    public void stopTFOD() {
+        tfod.shutdown();
     }
 
     public void init(int tfodMonitorViewId) {

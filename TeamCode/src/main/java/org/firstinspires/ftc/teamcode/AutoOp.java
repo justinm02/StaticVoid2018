@@ -12,6 +12,7 @@ public abstract class AutoOp extends LinearOpMode {
 
 
     protected DriveTrain driveTrain;
+    protected Intake intake;
     protected BuggleCam cam;
 
     //Order of Operations:
@@ -24,10 +25,12 @@ public abstract class AutoOp extends LinearOpMode {
     public void initialize() {
 
         //Instantiating the Motors
-        rearLeft = hardwareMap.get(DcMotorEx.class, "rearLeft");
-        rearRight = hardwareMap.get(DcMotorEx.class, "rearRight");
+        rearLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
+        rearRight = hardwareMap.get(DcMotorEx.class, "backRight");
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
+
+        lift = hardwareMap.get(DcMotorEx.class, "lift");
 
         //Set the motors to travel based on a position
         rearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -35,18 +38,22 @@ public abstract class AutoOp extends LinearOpMode {
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         //Reverse the Right Motors
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //lift = hardwareMap.get(DcMotorEx.class, "lift");
 
         //Instantiates a Drive Train with the motors set to the correct mode for autonomous
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
+        intake = new Intake(lift, null, null, null);
 
         //Instantiates a Camera Object for use with Mineral Detection
         cam = new BuggleCam(telemetry, hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+
+        resetEncoders();
     }
 
     //Loop required for all Autonomous modes
@@ -55,12 +62,12 @@ public abstract class AutoOp extends LinearOpMode {
 
 
     //Lowers the lift to detach from the lander
-    public void lowerLift() {
-
+    protected void lowerBot() {
+        intake.liftPosition(-10);
     }
 
     //Sets the current position of the robot to 0
-    public void resetEncoders() {
+    protected void resetEncoders() {
 
         //Set the encoder position back to 0
         rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -68,12 +75,15 @@ public abstract class AutoOp extends LinearOpMode {
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //Tell the motors to go back to position based travel (Might be unnecessary based on type of motor used)
         rearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
 
