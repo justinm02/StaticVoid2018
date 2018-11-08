@@ -14,13 +14,10 @@ public class MarkerAutoOp extends AutoOp {
 
         //Descend Bot from Lander
         lowerBot();
-        resetEncoders();
 
         driveTrain.lateralDistance(4);
-        resetEncoders();
 
         driveTrain.longitudinalDistance(-4);
-        resetEncoders();
 
         driveTrain.lateralDistance(-4);
 
@@ -36,32 +33,25 @@ public class MarkerAutoOp extends AutoOp {
         switch(cam.getGoldPosition()) {
             case CENTER:
                 driveTrain.longitudinalDistance(-12);
-                resetEncoders();
                 driveTrain.longitudinalDistance(12);
-                resetEncoders();
                 driveTrain.lateralDistance(12);
-                resetEncoders();
                 break;
             case LEFT:
                 driveTrain.lateralDistance(-12);
-                resetEncoders();
                 driveTrain.longitudinalDistance(-12);
-                resetEncoders();
                 driveTrain.longitudinalDistance(12);
-                resetEncoders();
                 driveTrain.lateralDistance(24);
-                resetEncoders();
                 break;
             case RIGHT:
                 driveTrain.lateralDistance(-12);
-                resetEncoders();
                 driveTrain.longitudinalDistance(-12);
-                resetEncoders();
+                driveTrain.longitudinalDistance(12);
                 break;
         }
 
+        driveTrain.lateralDistance(32);
+        driveTrain.rotateDegrees(45);
+        driveTrain.lateralDistance(14);
         //Crater Method()
-
-        while(opModeIsActive()) {}
     }
 }

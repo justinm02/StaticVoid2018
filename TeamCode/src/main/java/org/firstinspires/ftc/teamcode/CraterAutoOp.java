@@ -10,13 +10,13 @@ public class CraterAutoOp extends AutoOp {
         lowerBot();
         resetEncoders();
 
-        driveTrain.lateralDistance(.5);
+        driveTrain.lateralDistance(4);
         resetEncoders();
 
-        driveTrain.longitudinalDistance(-.5);
+        driveTrain.longitudinalDistance(-4);
         resetEncoders();
 
-        driveTrain.lateralDistance(-.5);
+        driveTrain.lateralDistance(-4);
 
         //While the Gold Position is undetermined, keep updating the camera
         cam.activateTFOD();
@@ -28,26 +28,21 @@ public class CraterAutoOp extends AutoOp {
         switch(cam.getGoldPosition()) {
             case CENTER:
                 driveTrain.longitudinalDistance(-12);
-                resetEncoders();
                 break;
             case LEFT:
                 driveTrain.lateralDistance(-12);
-                resetEncoders();
                 driveTrain.longitudinalDistance(-12);
-                resetEncoders();
                 break;
             case RIGHT:
                 driveTrain.lateralDistance(12);
-                resetEncoders();
                 driveTrain.longitudinalDistance(-12);
-                resetEncoders();
                 break;
         }
 
         //Crater Method()
         driveTrain.longitudinalDistance(-20);
 
-        
+
     }
 
 }
