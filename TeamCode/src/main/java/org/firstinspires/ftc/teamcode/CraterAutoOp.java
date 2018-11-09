@@ -8,7 +8,6 @@ public class CraterAutoOp extends AutoOp {
 
         //Descend Bot from Lander
         lowerBot();
-        resetEncoders();
 
         driveTrain.lateralDistance(4);
         resetEncoders();

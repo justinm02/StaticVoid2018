@@ -12,7 +12,7 @@ public class DriveTrain {
     private static final double GEAR_TO_MOTOR_RATIO = 1;
     private static final double WHEEL_DIAMETER = 4;
     private static final double COUNTS_PER_INCH = (COUNTS_PER_REVOLUTION * GEAR_TO_MOTOR_RATIO) / (WHEEL_DIAMETER * 3.14159);
-    private static final double INCHES_PER_DEGREE = (16.125/180);
+    private static final double INCHES_PER_DEGREE = (13.35177/180);
     private static final double COUNTS_PER_DEGREE = COUNTS_PER_INCH * INCHES_PER_DEGREE;
 
     public DriveTrain(DcMotorEx rearLeft, DcMotorEx rearRight, DcMotorEx frontLeft, DcMotorEx frontRight) {

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 @TeleOp(name = "TeleOp", group = "TeleOp")
@@ -58,6 +59,9 @@ public class DerpTeleOp extends OpMode {
 
         intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //Set the maximum velocity of each motor
+
+
         //Reverse the right motors
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -95,13 +99,13 @@ public class DerpTeleOp extends OpMode {
         if(targetXPower != 0 || targetYPower != 0) {
             //Check which direction the right stick is being pressed more; horizontally or vertically
             if (Math.abs(targetXPower) > Math.abs(targetYPower)) {
-                driveTrain.lateral(targetXPower);
+                driveTrain.lateral(targetXPower * 0.60f);
             } else {
-                driveTrain.longitudinal(targetYPower);
+                driveTrain.longitudinal(targetYPower * 0.60f);
             }
             //If Right Stick isn't being pressed, go on the check for rotation
         } else {
-            driveTrain.rotate(gamepad1.right_stick_x);
+            driveTrain.rotate(gamepad1.right_stick_x * 0.60f);
         }
     }
 
@@ -117,6 +121,7 @@ public class DerpTeleOp extends OpMode {
     }
 
     public void controlIntake() {
+        telemetry.addData("A Button Pressed", gamepad2.a);
         if(gamepad2.a) {
             if (gamepad2.left_bumper)
                 intakeMotors.outtake(.3);
