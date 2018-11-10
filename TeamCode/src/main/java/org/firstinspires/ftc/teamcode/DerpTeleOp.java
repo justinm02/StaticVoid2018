@@ -13,21 +13,17 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @TeleOp(name = "TeleOp", group = "TeleOp")
 public class DerpTeleOp extends OpMode {
 
-    private boolean isSurprising, eightDirectional, intaked;
-    private PIDControl driveTrainPID;
-    private double targetXPower, targetYPower, averagePower, targetRotatePower;
+    private boolean isSurprising;
+    private double targetXPower, targetYPower;
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private DcMotorEx lift, intakeLift, intakeSpool, intake;
     private DriveTrain driveTrain;
     private Intake intakeMotors;
-    private GyroSensor gyroSensor;
 
     @Override
     public void init() {
-        driveTrainPID = new PIDControl(0,0,0);
         targetXPower = 0;
         targetYPower = 0;
-        averagePower = 0;
 
         //Initalize each motor from the Hardware Map on the phone
         rearLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -40,6 +36,7 @@ public class DerpTeleOp extends OpMode {
         intakeSpool = hardwareMap.get(DcMotorEx.class, "intakeSpool");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
 
+
         //Set each motor to run using encoders
         rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -51,15 +48,15 @@ public class DerpTeleOp extends OpMode {
         intakeSpool.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
         //Set the motors to brake when no power is given
         rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        //Set the maximum velocity of each motor
 
 
         //Reverse the right motors
@@ -68,7 +65,7 @@ public class DerpTeleOp extends OpMode {
 
 
         isSurprising = false;
-        intaked = false;
+
 
         //Instantiate Drive Train class with instantiated motors
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
@@ -86,9 +83,8 @@ public class DerpTeleOp extends OpMode {
         checkForSurprise();
     }
 
-
     /*
-     * Moves the Robot in only the four cardinal directions, depending on which controller axis is being pushed the furthest.
+     * Moves the Robot in the four cardinal directions depending on which axis is being pushed furthest on the right stick
      * Goes forward, backward, left, or right.
      */
     public void fourDirectionalMovement() {
@@ -98,17 +94,15 @@ public class DerpTeleOp extends OpMode {
         //Check if the left stick is being pressed
         if(targetXPower != 0 || targetYPower != 0) {
             //Check which direction the right stick is being pressed more; horizontally or vertically
-            if (Math.abs(targetXPower) > Math.abs(targetYPower)) {
-                driveTrain.lateral(targetXPower * 0.60f);
-            } else {
-                driveTrain.longitudinal(targetYPower * 0.60f);
-            }
+            if (Math.abs(targetXPower) > Math.abs(targetYPower))
+                driveTrain.lateral(targetXPower * 0.50f);
+            else
+                driveTrain.longitudinal(targetYPower * 0.50f);
             //If Right Stick isn't being pressed, go on the check for rotation
         } else {
-            driveTrain.rotate(gamepad1.right_stick_x * 0.60f);
+            driveTrain.rotate(gamepad1.right_stick_x * 0.40f);
         }
     }
-
 
     public void checkForSurprise() {
         if(gamepad1.start && gamepad1.left_stick_button && !isSurprising) {
@@ -121,7 +115,6 @@ public class DerpTeleOp extends OpMode {
     }
 
     public void controlIntake() {
-        telemetry.addData("A Button Pressed", gamepad2.a);
         if(gamepad2.a) {
             if (gamepad2.left_bumper)
                 intakeMotors.outtake(.3);
@@ -144,20 +137,21 @@ public class DerpTeleOp extends OpMode {
             intakeMotors.moveIntake(gamepad2.right_stick_x/6);
     }
 
+    //Up on left stick to raise lift, down on left stick to retract lift, scales with force on stick
     public void controlLift() {
-        if(gamepad2.left_stick_y >= 0)
-            intakeMotors.lift(gamepad2.left_stick_y/4);
-        else if (gamepad2.left_stick_y < 0)
-            intakeMotors.lift(gamepad2.left_stick_y/8);
+        if(-gamepad2.left_stick_y <= 0)
+            intakeMotors.lift(-gamepad2.left_stick_y * 0.125);
+        else if (-gamepad2.left_stick_y > 0)
+            intakeMotors.lift(-gamepad2.left_stick_y * 0.05);
     }
 
     public void sendTelemetry() {
-        telemetry.addData("Eight Directional Movement" , eightDirectional);
         telemetry.addData("Gamepad1 Left Stick X", gamepad1.left_stick_x);
         telemetry.addData("Gamepad1 Left Stick Y", gamepad1.left_stick_y);
         telemetry.addData("Front Motors", "Left: (%.2f) | Right: (%.2f)", frontLeft.getPower(), frontRight.getPower());
         telemetry.addData("Rear Motors", "Left: (%.2f) | Right: (%.2f)", rearLeft.getPower(), rearRight.getPower());
         telemetry.addData("Target Front Pos", "Left: (%d) | Right: (%d)", frontLeft.getTargetPosition(), frontRight.getTargetPosition());
+        telemetry.addData("A Button: ", gamepad2.a);
         telemetry.update();
     }
 }

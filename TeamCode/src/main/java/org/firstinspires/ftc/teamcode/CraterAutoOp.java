@@ -1,47 +1,30 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+@Autonomous(name = "CraterOp", group = "Autonomous")
 public class CraterAutoOp extends AutoOp {
+
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
         waitForStart();
 
-        //Descend Bot from Lander
+        //Descend robot from Lander, move off the hook
         lowerBot();
 
-        driveTrain.lateralDistance(4);
-        resetEncoders();
+        //Locates the gold mineral from one of the three given locations
+        findGold();
 
-        driveTrain.longitudinalDistance(-4);
-        resetEncoders();
-
-        driveTrain.lateralDistance(-4);
-
-        //While the Gold Position is undetermined, keep updating the camera
-        cam.activateTFOD();
-        while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL)
-            cam.update();
-        cam.stopTFOD();
-
-        //Move bot based on where the Gold Mineral is
+        //Move bot based on where the Gold Mineral is, knocks it, and continues into friendly team's crater
         switch(cam.getGoldPosition()) {
-            case CENTER:
-                driveTrain.longitudinalDistance(-12);
-                break;
             case LEFT:
-                driveTrain.lateralDistance(-12);
-                driveTrain.longitudinalDistance(-12);
+                driveTrain.lateralDistance(-16);
                 break;
             case RIGHT:
-                driveTrain.lateralDistance(12);
-                driveTrain.longitudinalDistance(-12);
+                driveTrain.lateralDistance(16);
                 break;
         }
-
-        //Crater Method()
-        driveTrain.longitudinalDistance(-20);
-
-
+        driveTrain.longitudinalDistance(18);
     }
-
 }

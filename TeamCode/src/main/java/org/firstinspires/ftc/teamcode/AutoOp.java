@@ -44,7 +44,6 @@ public abstract class AutoOp extends LinearOpMode {
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
         //Instantiates a Drive Train with the motors set to the correct mode for autonomous
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
         intake = new Intake(lift, null, null, null);
@@ -52,22 +51,6 @@ public abstract class AutoOp extends LinearOpMode {
         //Instantiates a Camera Object for use with Mineral Detection
         cam = new BuggleCam(telemetry, hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-
-        resetEncoders();
-    }
-
-    //Loop required for all Autonomous modes
-    @Override
-    public abstract void runOpMode() throws InterruptedException;
-
-
-    //Lowers the lift to detach from the lander
-    protected void lowerBot() {
-        intake.liftPosition(-10);
-    }
-
-    //Sets the current position of the robot to 0
-    protected void resetEncoders() {
 
         //Set the encoder position back to 0
         rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -86,6 +69,34 @@ public abstract class AutoOp extends LinearOpMode {
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    //Loop required for all Autonomous modes
+    @Override
+    public abstract void runOpMode() throws InterruptedException;
 
+    //Descend robot from Lander, move off the hook
+    protected void lowerBot() {
+        //intake.liftPosition(-0.2);//1.130588671
+        driveTrain.lateralDistance(2);
+        driveTrain.longitudinalDistance(-6);
+        driveTrain.lateralDistance(-2);
+        driveTrain.rotateDegrees(170);
 
+    }
+
+    //Locates the gold mineral from one of the three given locations
+    protected void findGold(){
+        //While the Gold Position is undetermined, keep updating the camera
+        cam.activateTFOD();
+
+        int camTries = 0;
+        while(cam.getGoldPosition() == null) {
+            cam.update();
+            camTries++;
+            if(camTries % 4 == 1 && camTries <= 81)
+                driveTrain.rotateDegrees(1, 0.1);
+        }
+        cam.stopTFOD();
+
+        driveTrain.rotateDegrees((camTries - 1) / 4f);
+    }
 }

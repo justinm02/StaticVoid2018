@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-public class Intake {
+public class Intake{
 
     private DcMotorEx lift, noodles, slide, intakeLift;
+
+    private static final double COUNTS_PER_REVOLUTION = 1680;
 
     public Intake (DcMotorEx lift, DcMotorEx noodles, DcMotorEx slide, DcMotorEx intakeLift) {
         this.lift = lift;
@@ -17,9 +19,10 @@ public class Intake {
         lift.setPower(power);
     }
 
-    public void liftPosition(int position) {
-        lift.setTargetPosition(position);
+    public void liftPosition(double revolutions) {
+        lift.setTargetPosition((int) (revolutions * COUNTS_PER_REVOLUTION));
         lift.setPower(.1);
+        while(lift.isBusy()) {}
     }
 
     public void outtake(double power) {
