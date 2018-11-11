@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "CraterOp", group = "Autonomous")
+//@Autonomous(name = "CraterOp", group = "Autonomous")
 public class CraterAutoOp extends AutoOp {
 
     @Override

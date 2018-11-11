@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import static java.lang.Thread.sleep;
 
 public class Intake{
 
@@ -15,14 +18,22 @@ public class Intake{
         this.intakeLift = intakeLift;
     }
 
-    public void lift(double power) {
+    public double lift(double power) {
         lift.setPower(power);
+        return lift.getCurrentPosition();
     }
 
     public void liftPosition(double revolutions) {
+
         lift.setTargetPosition((int) (revolutions * COUNTS_PER_REVOLUTION));
         lift.setPower(.1);
         while(lift.isBusy()) {}
+        lift.setPower(0);
+        /*
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        sleep(3000);
+        */
+
     }
 
     public void outtake(double power) {

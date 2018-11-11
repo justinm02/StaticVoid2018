@@ -1,19 +1,28 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.Environment;
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.io.File;
 
 public abstract class AutoOp extends LinearOpMode {
 
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private DcMotorEx lift;
-
+    private ElapsedTime runtime;
 
     protected DriveTrain driveTrain;
     protected Intake intake;
     protected BuggleCam cam;
+
+    private File surprise = new File("/sdcard/FIRST/blocks/sounds/Africa by Toto.mp3");
+
+    private final double LC = 1680/(Math.PI*3.65625);
 
     //Order of Operations:
     //
@@ -23,6 +32,7 @@ public abstract class AutoOp extends LinearOpMode {
     //4) Lean on Crater
 
     public void initialize() {
+        runtime = new ElapsedTime();
 
         //Instantiating the Motors
         rearLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -73,13 +83,27 @@ public abstract class AutoOp extends LinearOpMode {
     @Override
     public abstract void runOpMode() throws InterruptedException;
 
+    public void initInit() {
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     //Descend robot from Lander, move off the hook
     protected void lowerBot() {
-        //intake.liftPosition(-0.2);//1.130588671
-        driveTrain.lateralDistance(2);
-        driveTrain.longitudinalDistance(-6);
-        driveTrain.lateralDistance(-2);
-        driveTrain.rotateDegrees(170);
+        //intake.liftPosition(0.005);//1.130588671
+
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        runtime.reset();
+        lift.setTargetPosition(2318);
+        lift.setPower(.5);
+        while(lift.isBusy() && runtime.seconds() < 2) {}
+
+        lift.setPower(0);
+
+        driveTrain.lateralDistance(3.25, 0.2);
+        driveTrain.longitudinalDistance(-8, 0.2);
+        driveTrain.lateralDistance(-3.25, 0.2);
+        //driveTrain.rotateDegrees(270);
 
     }
 
@@ -92,11 +116,15 @@ public abstract class AutoOp extends LinearOpMode {
         while(cam.getGoldPosition() == null) {
             cam.update();
             camTries++;
-            if(camTries % 4 == 1 && camTries <= 81)
-                driveTrain.rotateDegrees(1, 0.1);
+            //if(camTries % 4 == 1 && camTries <= 81)
+              //driveTrain.rotateDegrees(1, 0.1);
         }
         cam.stopTFOD();
 
-        driveTrain.rotateDegrees((camTries - 1) / 4f);
+        //driveTrain.rotateDegrees((camTries - 1) / 4f);
+    }
+
+    protected void playSurprise() {
+        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, surprise);
     }
 }

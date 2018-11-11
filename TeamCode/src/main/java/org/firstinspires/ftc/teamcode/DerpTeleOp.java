@@ -74,13 +74,14 @@ public class DerpTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        sendTelemetry();
 
         controlIntake();
         controlLift();
 
         fourDirectionalMovement();
         checkForSurprise();
+        sendTelemetry();
+
     }
 
     /*
@@ -140,9 +141,9 @@ public class DerpTeleOp extends OpMode {
     //Up on left stick to raise lift, down on left stick to retract lift, scales with force on stick
     public void controlLift() {
         if(-gamepad2.left_stick_y <= 0)
-            intakeMotors.lift(-gamepad2.left_stick_y * 0.125);
+            telemetry.addData("Lift Position",intakeMotors.lift(-gamepad2.left_stick_y * 0.20));
         else if (-gamepad2.left_stick_y > 0)
-            intakeMotors.lift(-gamepad2.left_stick_y * 0.05);
+            telemetry.addData("Lift Position", intakeMotors.lift(-gamepad2.left_stick_y * 0.3));
     }
 
     public void sendTelemetry() {

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "MarkerOp", group = "Autonomous")
+//@Autonomous(name = "MarkerOp", group = "Autonomous")
 public class MarkerAutoOp extends AutoOp {
 
     @Override
@@ -20,10 +20,10 @@ public class MarkerAutoOp extends AutoOp {
         //Move bot based on where the Gold Mineral is, knocks it, and moves to above the rightmost mineral
         switch(cam.getGoldPosition()) {
             case LEFT:
-                driveTrain.lateralDistance(-16);
+                driveTrain.lateralDistance(16);
                 driveTrain.longitudinalDistance(12);
                 driveTrain.longitudinalDistance(-12);
-                driveTrain.lateralDistance(32);
+                driveTrain.lateralDistance(-32);
                 break;
             case CENTER:
                 driveTrain.longitudinalDistance(12);
@@ -31,7 +31,7 @@ public class MarkerAutoOp extends AutoOp {
                 driveTrain.lateralDistance(16);
                 break;
             case RIGHT:
-                driveTrain.lateralDistance(16);
+                driveTrain.lateralDistance(-16);
                 driveTrain.longitudinalDistance(12);
                 driveTrain.longitudinalDistance(12);
                 break;
