@@ -9,7 +9,7 @@ public class DriveTrain {
     private DcMotorEx[] motors;
 
     private static final double COUNTS_PER_REVOLUTION = 537.6;
-    private static final double GEAR_TO_MOTOR_RATIO = 1.0;
+    private static final double GEAR_TO_MOTOR_RATIO = 1/1.18;
     private static final double WHEEL_DIAMETER = 4.0;
     private static final double COUNTS_PER_INCH = (COUNTS_PER_REVOLUTION * GEAR_TO_MOTOR_RATIO) / (WHEEL_DIAMETER * Math.PI);
     private static final double INCHES_PER_DEGREE = (13.35177/90);
@@ -29,6 +29,13 @@ public class DriveTrain {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+    }
+
+    public void combinedDirections(double xPower, double yPower) {
+        frontRight.setPower(yPower - xPower);
+        frontLeft.setPower(yPower + xPower);
+        rearRight.setPower(yPower - xPower);
+        rearLeft.setPower(yPower + xPower);
     }
 
 
@@ -55,40 +62,6 @@ public class DriveTrain {
         }
 
         while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) {
-        }
-
-        for (DcMotorEx motor : motors) {
-            motor.setPower(0);
-        }
-
-        resetEncoders();
-    }
-
-
-    //For lateral movement, positive distance moves right
-    public void lateral(double power) {
-        frontLeft.setPower(power);
-        rearRight.setPower(power);
-        frontRight.setPower(-power);
-        rearLeft.setPower(-power);
-    }
-
-    public void lateralDistance(double inches) {
-        lateralDistance(inches, 0.3);
-    }
-
-    public void lateralDistance(double inches, double power) {
-        frontLeft.setTargetPosition((int) (inches * COUNTS_PER_INCH));
-        frontRight.setTargetPosition(-(int) (inches * COUNTS_PER_INCH));
-        rearLeft.setTargetPosition(-(int) (inches * COUNTS_PER_INCH));
-        rearRight.setTargetPosition((int) (inches * COUNTS_PER_INCH));
-
-        for (DcMotorEx motor : motors) {
-            motor.setPower(power);
-        }
-
-        while (frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) {
-
         }
 
         for (DcMotorEx motor : motors) {

@@ -19,10 +19,8 @@ public class CraterAutoOp extends AutoOp {
         //Move bot based on where the Gold Mineral is, knocks it, and continues into friendly team's crater
         switch(cam.getGoldPosition()) {
             case LEFT:
-                driveTrain.lateralDistance(-16);
                 break;
             case RIGHT:
-                driveTrain.lateralDistance(16);
                 break;
         }
         driveTrain.longitudinalDistance(18);

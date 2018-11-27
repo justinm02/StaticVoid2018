@@ -27,8 +27,8 @@ public abstract class AutoOp extends LinearOpMode {
     //Order of Operations:
     //
     //1) Lower Robot
-    //2) Place Marker
-    //3) Knock gold square
+    //2) Knock Gold Square
+    //3) Place Marker
     //4) Lean on Crater
 
     public void initialize() {
@@ -100,9 +100,6 @@ public abstract class AutoOp extends LinearOpMode {
 
         lift.setPower(0);
 
-        driveTrain.lateralDistance(3.25, 0.2);
-        driveTrain.longitudinalDistance(-8, 0.2);
-        driveTrain.lateralDistance(-3.25, 0.2);
         //driveTrain.rotateDegrees(270);
 
     }
@@ -113,15 +110,14 @@ public abstract class AutoOp extends LinearOpMode {
         cam.activateTFOD();
 
         int camTries = 0;
-        while(cam.getGoldPosition() == null) {
+        while(cam.getGoldPosition() == null && camTries < 1000) {
             cam.update();
             camTries++;
-            //if(camTries % 4 == 1 && camTries <= 81)
-              //driveTrain.rotateDegrees(1, 0.1);
         }
         cam.stopTFOD();
 
         //driveTrain.rotateDegrees((camTries - 1) / 4f);
+
     }
 
     protected void playSurprise() {

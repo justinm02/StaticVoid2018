@@ -31,11 +31,12 @@ public class DerpTeleOp extends OpMode {
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
 
+        /*
         lift = hardwareMap.get(DcMotorEx.class, "lift");
         intakeLift = hardwareMap.get(DcMotorEx.class, "intakeLift");
         intakeSpool = hardwareMap.get(DcMotorEx.class, "intakeSpool");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
-
+        */
 
         //Set each motor to run using encoders
         rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -43,11 +44,12 @@ public class DerpTeleOp extends OpMode {
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        /*
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeSpool.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        */
 
         //Set the motors to brake when no power is given
         rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -55,13 +57,16 @@ public class DerpTeleOp extends OpMode {
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
+        /*
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        */
 
 
         //Reverse the right motors
-        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         isSurprising = false;
@@ -69,14 +74,14 @@ public class DerpTeleOp extends OpMode {
 
         //Instantiate Drive Train class with instantiated motors
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
-        intakeMotors = new Intake(lift, intake, intakeSpool, intakeLift);
+        //intakeMotors = new Intake(lift, intake, intakeSpool, intakeLift);
     }
 
     @Override
     public void loop() {
 
-        controlIntake();
-        controlLift();
+        //controlIntake();
+        //controlLift();
 
         fourDirectionalMovement();
         checkForSurprise();
@@ -92,16 +97,13 @@ public class DerpTeleOp extends OpMode {
         targetXPower = gamepad1.left_stick_x;
         targetYPower = -gamepad1.left_stick_y;
 
-        //Check if the left stick is being pressed
-        if(targetXPower != 0 || targetYPower != 0) {
-            //Check which direction the right stick is being pressed more; horizontally or vertically
-            if (Math.abs(targetXPower) > Math.abs(targetYPower))
-                driveTrain.lateral(targetXPower * 0.50f);
-            else
-                driveTrain.longitudinal(targetYPower * 0.50f);
-            //If Right Stick isn't being pressed, go on the check for rotation
+        if(targetYPower < 0) {
+            driveTrain.longitudinal(targetYPower);
         } else {
-            driveTrain.rotate(gamepad1.right_stick_x * 0.40f);
+            driveTrain.combinedDirections(targetXPower, targetYPower);
+        }
+        if(targetYPower == 0 & targetYPower == 0) {
+            driveTrain.rotate(gamepad1.right_stick_x);
         }
     }
 
