@@ -24,6 +24,7 @@ public class MarkerAutoOp extends AutoOp {
                 driveTrain.longitudinalDistance(-12);
                 break;
             case CENTER:
+            case NULL:
                 driveTrain.longitudinalDistance(12);
                 driveTrain.longitudinalDistance(-12);
                 break;

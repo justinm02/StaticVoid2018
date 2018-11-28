@@ -32,10 +32,10 @@ public class DriveTrain {
     }
 
     public void combinedDirections(double xPower, double yPower) {
-        frontRight.setPower(yPower - xPower);
-        frontLeft.setPower(yPower + xPower);
-        rearRight.setPower(yPower - xPower);
-        rearLeft.setPower(yPower + xPower);
+        frontRight.setPower(yPower + xPower);
+        frontLeft.setPower(yPower - xPower);
+        rearRight.setPower(yPower + xPower);
+        rearLeft.setPower(yPower - xPower);
     }
 
 

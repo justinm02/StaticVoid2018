@@ -99,10 +99,10 @@ public class DerpTeleOp extends OpMode {
 
         if(targetYPower < 0) {
             driveTrain.longitudinal(targetYPower);
-        } else {
-            driveTrain.combinedDirections(targetXPower, targetYPower);
+        } else if(targetYPower >= 0) {
+            driveTrain.combinedDirections(targetXPower * 0.5f, targetYPower);
         }
-        if(targetYPower == 0 & targetYPower == 0) {
+        if(targetYPower == 0 && targetXPower == 0) {
             driveTrain.rotate(gamepad1.right_stick_x);
         }
     }

@@ -22,6 +22,9 @@ public class CraterAutoOp extends AutoOp {
                 break;
             case RIGHT:
                 break;
+            case CENTER:
+            case NULL:
+                break;
         }
         driveTrain.longitudinalDistance(18);
     }

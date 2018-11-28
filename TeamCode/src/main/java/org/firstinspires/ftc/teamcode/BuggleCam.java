@@ -20,12 +20,13 @@ public class BuggleCam {
         LEFT,
         CENTER,
         RIGHT,
+        NULL
     }
 
     public BuggleCam(Telemetry telemetry,  int tfodMonitorViewId) {
         this.telemetry = telemetry;
         init(tfodMonitorViewId);
-        goldPosition = null;
+        goldPosition = GOLD_POSITION.NULL;
     }
 
     public void update() {
