@@ -14,6 +14,8 @@ public class BuggleCam {
     private TFObjectDetector tfod;
     private Telemetry telemetry;
 
+    private int foundMinerals;
+
     private GOLD_POSITION goldPosition;
 
     public enum GOLD_POSITION {
@@ -27,17 +29,19 @@ public class BuggleCam {
         this.telemetry = telemetry;
         init(tfodMonitorViewId);
         goldPosition = GOLD_POSITION.NULL;
+        foundMinerals = 0;
     }
 
     public void update() {
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         if (updatedRecognitions != null) {
             telemetry.addData("# Object Detected", updatedRecognitions.size());
-            if (updatedRecognitions.size() == 3) {
+            if (updatedRecognitions.size() >= 1) {
                 int goldMineralX = -1;
                 int silverMineral1X = -1;
                 int silverMineral2X = -1;
                 for (Recognition recognition : updatedRecognitions) {
+                    telemetry.addData("Mineral Position", recognition.getLeft());
                     if (recognition.getLabel().equals("Gold Mineral")) {
                         goldMineralX = (int) recognition.getLeft();
                     } else if (silverMineral1X == -1) {
@@ -61,6 +65,59 @@ public class BuggleCam {
             }
             telemetry.update();
         }
+    }
+
+    public void betterUpdate(Telemetry telemetry) {
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+        if(updatedRecognitions != null) {
+            if(updatedRecognitions.size() >= 1) {
+                int goldMineralX = -1;
+                int silverMineral1X = -1;
+                int silverMineral2X = -1;
+                int recognitionNum = 0;
+                for(Recognition recognition : updatedRecognitions) {
+                    if(recognition.getLabel().equals("Gold Mineral"))
+                        goldMineralX = (int) (recognition.getLeft() + recognition.getRight()) / 2;
+                    else if (silverMineral1X == -1)
+                        silverMineral1X = (int) (recognition.getRight() + recognition.getLeft()) / 2;
+                    else
+                        silverMineral2X = (int) (recognition.getRight() + recognition.getLeft()) / 2;
+                    telemetry.addData("Recognition" + ++recognitionNum, recognition.getLabel());
+                }
+                if(goldMineralX != -1) {
+                    //Test closest value 0, 600, and 1200
+                    //Max X value is 1200
+                    if(Math.abs(goldMineralX) < Math.abs(goldMineralX - 600) && Math.abs(goldMineralX) < Math.abs(goldMineralX - 1200)){
+                        goldPosition = GOLD_POSITION.LEFT;
+                    } else if(Math.abs(goldMineralX) > Math.abs(goldMineralX - 600) && Math.abs(goldMineralX - 1200) > Math.abs(goldMineralX - 600)) {
+                        goldPosition = GOLD_POSITION.CENTER;
+                    } else {
+                        goldPosition = GOLD_POSITION.RIGHT;
+                    }
+                    telemetry.addData("Gold Position", goldPosition);
+                } else if(silverMineral1X != -1 && silverMineral2X != -1) {
+                    if(silverMineral2X < silverMineral1X) {
+                        int swap = silverMineral1X;
+                        silverMineral1X = silverMineral2X;
+                        silverMineral2X = swap;
+                    }
+
+                    //If Silver1 is on the left
+                    if(Math.abs(silverMineral1X) < Math.abs(silverMineral1X - 600) && Math.abs(silverMineral1X) < Math.abs(silverMineral1X - 1200)){
+                        //If Silver2 is in the center
+                        if(Math.abs(silverMineral2X) > Math.abs(silverMineral2X - 600) && Math.abs(silverMineral2X - 1200) > Math.abs(silverMineral2X - 600)) {
+                            goldPosition = GOLD_POSITION.RIGHT;
+                        } else {
+                            goldPosition = GOLD_POSITION.CENTER;
+                        }
+                    //Else if Silver 1 is in the middle, Silver 2 has to be on the right
+                    } else if(Math.abs(silverMineral1X) > Math.abs(silverMineral1X - 600) && Math.abs(silverMineral1X - 1200) > Math.abs(silverMineral1X - 600)) {
+                        goldPosition = GOLD_POSITION.LEFT;
+                    }
+                }
+            }
+        }
+        telemetry.update();
     }
 
     public GOLD_POSITION getGoldPosition() {

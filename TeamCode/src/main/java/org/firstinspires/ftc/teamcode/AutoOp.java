@@ -109,12 +109,13 @@ public abstract class AutoOp extends LinearOpMode {
         //While the Gold Position is undetermined, keep updating the camera
         cam.activateTFOD();
 
-        int camTries = 0;
-        while(cam.getGoldPosition() == null && camTries < 1000) {
-            cam.update();
-            camTries++;
+        //while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
+        while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
+            cam.betterUpdate(telemetry);
+            telemetry.update();
         }
         cam.stopTFOD();
+
 
         //driveTrain.rotateDegrees((camTries - 1) / 4f);
 
