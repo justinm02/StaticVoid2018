@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class DriveTrain {
 
@@ -10,7 +11,7 @@ public class DriveTrain {
 
     private static final double COUNTS_PER_REVOLUTION = 537.6;
     private static final double GEAR_TO_MOTOR_RATIO = 1/1.18;
-    private static final double WHEEL_DIAMETER = 4.0;
+    private static final double WHEEL_DIAMETER = 3.5;
     private static final double COUNTS_PER_INCH = (COUNTS_PER_REVOLUTION * GEAR_TO_MOTOR_RATIO) / (WHEEL_DIAMETER * Math.PI);
     private static final double INCHES_PER_DEGREE = (13.35177/90);
     private static final double COUNTS_PER_DEGREE = COUNTS_PER_INCH * INCHES_PER_DEGREE;
@@ -23,8 +24,13 @@ public class DriveTrain {
         motors = new DcMotorEx[] {this.rearLeft, this.rearRight, this.frontLeft, this.frontRight};
     }
 
+    public void progressiveOp() {
+        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
     //Sets position of robot back to zero
-    private void resetEncoders() {
+    public void resetEncoders() {
         for (DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -48,7 +54,7 @@ public class DriveTrain {
     }
 
     public void longitudinalDistance(double inches) {
-        longitudinalDistance(inches, 0.3);
+        longitudinalDistance(inches, 0.2);
     }
 
     public void longitudinalDistance(double inches, double power) {
