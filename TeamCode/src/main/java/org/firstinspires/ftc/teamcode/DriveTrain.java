@@ -1,19 +1,27 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 public class DriveTrain {
 
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private DcMotorEx[] motors;
+    private Telemetry telemetry;
+    private BNO055IMU imu;
 
     private static final double COUNTS_PER_REVOLUTION = 537.6;
     private static final double GEAR_TO_MOTOR_RATIO = 1/1.18;
-    private static final double WHEEL_DIAMETER = 3.5;
-    private static final double COUNTS_PER_INCH = (COUNTS_PER_REVOLUTION * GEAR_TO_MOTOR_RATIO) / (WHEEL_DIAMETER * Math.PI);
-    private static final double INCHES_PER_DEGREE = (13.35177/90);
+    private static final double WHEEL_DIAMETER = 4;
+    private static final double COUNTS_PER_INCH = (360/(WHEEL_DIAMETER * Math.PI)) * 1.01;
+
+    private static final double INCHES_PER_DEGREE = (4.8125/90) * Math.PI;
     private static final double COUNTS_PER_DEGREE = COUNTS_PER_INCH * INCHES_PER_DEGREE;
 
     public DriveTrain(DcMotorEx rearLeft, DcMotorEx rearRight, DcMotorEx frontLeft, DcMotorEx frontRight) {
@@ -29,12 +37,26 @@ public class DriveTrain {
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
+    public void setTelemetry(Telemetry telemetry) {
+        this.telemetry = telemetry;
+    }
+
+    public void setIMU(BNO055IMU imu) {
+        this.imu = imu;
+    }
+
     //Sets position of robot back to zero
     public void resetEncoders() {
         for (DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        }
+
+
+        for (DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+
     }
 
     public void combinedDirections(double xPower, double yPower) {
@@ -68,12 +90,18 @@ public class DriveTrain {
         }
 
         while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) {
+            if(telemetry != null) {
+                telemetry.addData("Front Right Encoder", frontRight.getCurrentPosition());
+                telemetry.addData("Front Left Encoder", frontLeft.getCurrentPosition());
+                telemetry.addData("Rear Right Encoder", rearRight.getCurrentPosition());
+                telemetry.addData("Rear Left Encoder", rearLeft.getCurrentPosition());
+                telemetry.update();
+            }
         }
 
         for (DcMotorEx motor : motors) {
             motor.setPower(0);
         }
-
         resetEncoders();
     }
 
@@ -91,17 +119,72 @@ public class DriveTrain {
     }
 
     public void rotateDegrees(double degrees, double power) {
-        frontLeft.setTargetPosition(-(int) (degrees * COUNTS_PER_DEGREE));
-        rearLeft.setTargetPosition(-(int) (degrees * COUNTS_PER_DEGREE));
-        frontRight.setTargetPosition((int) (degrees * COUNTS_PER_DEGREE));
-        rearRight.setTargetPosition((int) (degrees * COUNTS_PER_DEGREE));
+        int desiredAngle = (int) imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - (int) degrees;
+
+        /*frontLeft.setTargetPosition((int) (degrees * COUNTS_PER_DEGREE));
+        rearLeft.setTargetPosition((int) (degrees * COUNTS_PER_DEGREE));
+        frontRight.setTargetPosition(-(int) (degrees * COUNTS_PER_DEGREE));
+        rearRight.setTargetPosition(-(int) (degrees * COUNTS_PER_DEGREE));
 
         for(DcMotorEx motor : motors) {
             motor.setPower(power);
         }
 
-        while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) { }
+        while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) {
+            *//*if(telemetry != null) {
+                telemetry.addData("Front Right Encoder", frontRight.getCurrentPosition());
+                telemetry.addData("Front Left Encoder", frontLeft.getCurrentPosition());
+                telemetry.addData("Rear Right Encoder", rearRight.getCurrentPosition());
+                telemetry.addData("Rear Left Encoder", rearLeft.getCurrentPosition());
+            }
+            telemetry.update();*//**//*
+         *//*
+            telemetry.addData("Current Angle", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+            telemetry.addData("Desired Angle", desiredAngle);
+            telemetry.update();
+        }*/
 
+        for(DcMotorEx motor : motors) {
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        while(desiredAngle != (int) imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) {
+            int currentAngle = (int) imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            telemetry.addData("Current Angle", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+            telemetry.addData("Desired Angle", desiredAngle);
+            telemetry.update();
+            if(Math.abs(desiredAngle - currentAngle) <= 10) {
+                if(desiredAngle < currentAngle) {
+                    frontLeft.setPower(power * .1);
+                    rearLeft.setPower(power * .1);
+                    frontRight.setPower(-power * .1);
+                    rearRight.setPower(-power * .1);
+                } else {
+                    frontLeft.setPower(-power * .1);
+                    rearLeft.setPower(-power * .1);
+                    frontRight.setPower(power * .1);
+                    rearRight.setPower(power * .1);
+                }
+            } else {
+                if(desiredAngle < currentAngle) {
+                    frontLeft.setPower(power * .3);
+                    rearLeft.setPower(power * .3);
+                    frontRight.setPower(-power * .3);
+                    rearRight.setPower(-power * .3);
+                } else {
+                    frontLeft.setPower(-power * .3);
+                    rearLeft.setPower(-power * .3);
+                    frontRight.setPower(power * .3);
+                    rearRight.setPower(power * .3);
+                }
+            }
+        }
+
+
+
+        for (DcMotorEx motor : motors) {
+            motor.setPower(0);
+        }
         resetEncoders();
     }
 }

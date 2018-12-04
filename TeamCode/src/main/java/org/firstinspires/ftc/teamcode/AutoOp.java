@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.os.Environment;
 import com.qualcomm.ftccommon.SoundPlayer;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -15,12 +16,15 @@ public abstract class AutoOp extends LinearOpMode {
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private DcMotorEx lift;
     private ElapsedTime runtime;
+    private BNO055IMU imu;
 
     protected DriveTrain driveTrain;
     protected Intake intake;
     protected BuggleCam cam;
 
     private File surprise = new File("/sdcard/FIRST/blocks/sounds/Africa by Toto.mp3");
+
+    boolean rotatedLeft = false, rotatedRight = false;
 
     private final double LC = 1680/(Math.PI*3.65625);
 
@@ -54,8 +58,18 @@ public abstract class AutoOp extends LinearOpMode {
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+
         //Instantiates a Drive Train with the motors set to the correct mode for autonomous
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
+        driveTrain.setTelemetry(this.telemetry);
+        driveTrain.setIMU(imu);
         intake = new Intake(lift, null, null, null);
 
         //Instantiates a Camera Object for use with Mineral Detection
@@ -105,14 +119,25 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     //Locates the gold mineral from one of the three given locations
-    protected void findGold(){
+    protected void prospect(){
         //While the Gold Position is undetermined, keep updating the camera
         cam.activateTFOD();
 
+        double time = runtime.milliseconds();
         //while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
-        while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
+
+        while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL && runtime.milliseconds() < time + 12000) {
             cam.betterUpdate(telemetry);
             telemetry.update();
+            if(runtime.milliseconds() < time + 4000 && !rotatedLeft) {
+                driveTrain.rotateDegrees(-5);
+                rotatedLeft = true;
+            }
+            if(runtime.milliseconds() < time + 8000 & !rotatedRight) {
+                driveTrain.rotateDegrees(10);
+                rotatedRight = true;
+            }
+
         }
         cam.stopTFOD();
 

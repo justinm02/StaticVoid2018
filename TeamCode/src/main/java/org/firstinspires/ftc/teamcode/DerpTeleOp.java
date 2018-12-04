@@ -31,8 +31,9 @@ public class DerpTeleOp extends OpMode {
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
 
-        /*
+
         lift = hardwareMap.get(DcMotorEx.class, "lift");
+        /*
         intakeLift = hardwareMap.get(DcMotorEx.class, "intakeLift");
         intakeSpool = hardwareMap.get(DcMotorEx.class, "intakeSpool");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
@@ -44,8 +45,10 @@ public class DerpTeleOp extends OpMode {
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        /*
+
+
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        /*
         intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeSpool.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -58,15 +61,16 @@ public class DerpTeleOp extends OpMode {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        /*
+
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        /*
         intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         */
 
 
         //Reverse the right motors
-        rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         isSurprising = false;
@@ -74,6 +78,7 @@ public class DerpTeleOp extends OpMode {
 
         //Instantiate Drive Train class with instantiated motors
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
+        intakeMotors = new Intake(lift, null, null, null);
         //intakeMotors = new Intake(lift, intake, intakeSpool, intakeLift);
     }
 
@@ -81,7 +86,7 @@ public class DerpTeleOp extends OpMode {
     public void loop() {
 
         //controlIntake();
-        //controlLift();
+        controlLift();
 
         fourDirectionalMovement();
         checkForSurprise();
