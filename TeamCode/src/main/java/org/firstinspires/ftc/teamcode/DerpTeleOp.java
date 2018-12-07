@@ -5,9 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.GyroSensor;
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Robot.DriveTrain;
+import org.firstinspires.ftc.teamcode.Robot.Intake;
 
 
 @TeleOp(name = "TeleOp", group = "TeleOp")
@@ -33,6 +32,7 @@ public class DerpTeleOp extends OpMode {
 
 
         lift = hardwareMap.get(DcMotorEx.class, "lift");
+        intake = hardwareMap.get(DcMotorEx.class, "noodles");
         /*
         intakeLift = hardwareMap.get(DcMotorEx.class, "intakeLift");
         intakeSpool = hardwareMap.get(DcMotorEx.class, "intakeSpool");
@@ -78,14 +78,14 @@ public class DerpTeleOp extends OpMode {
 
         //Instantiate Drive Train class with instantiated motors
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
-        intakeMotors = new Intake(lift, null, null, null);
+        intakeMotors = new Intake(lift, intake, null, hardwareMap.get(DcMotorEx.class, "intakeLift"));
         //intakeMotors = new Intake(lift, intake, intakeSpool, intakeLift);
     }
 
     @Override
     public void loop() {
 
-        //controlIntake();
+        controlIntake();
         controlLift();
 
         fourDirectionalMovement();
@@ -99,16 +99,18 @@ public class DerpTeleOp extends OpMode {
      * Goes forward, backward, left, or right.
      */
     public void fourDirectionalMovement() {
-        targetXPower = gamepad1.left_stick_x;
+        targetXPower = -gamepad1.left_stick_x;
         targetYPower = -gamepad1.left_stick_y;
+
+        if(gamepad1.right_trigger != 0 || gamepad1.right_bumper){
+            targetYPower /= 2;
+            targetXPower /= 2;
+        }
 
         if(targetYPower < 0) {
             driveTrain.longitudinal(targetYPower);
         } else if(targetYPower >= 0) {
             driveTrain.combinedDirections(targetXPower * 0.5f, targetYPower);
-        }
-        if(targetYPower == 0 && targetXPower == 0) {
-            driveTrain.rotate(gamepad1.right_stick_x);
         }
     }
 
@@ -137,10 +139,10 @@ public class DerpTeleOp extends OpMode {
         if(!gamepad2.left_bumper && !gamepad2.right_bumper)
             intakeMotors.intake(0);
 
-        intakeMotors.moveSlide(gamepad2.right_stick_y/2);
+        /*intakeMotors.moveSlide(gamepad2.right_stick_y/2);*/
 
         if(gamepad2.right_stick_x == 0)
-            intakeMotors.moveIntake(0);
+            intakeMotors.moveIntake(.01);
         else
             intakeMotors.moveIntake(gamepad2.right_stick_x/6);
     }

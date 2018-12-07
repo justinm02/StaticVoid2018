@@ -1,15 +1,15 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.teamcode.Autonomous.AutoOp;
 
-@Autonomous(name = "MarkerCenter", group = "Autonomous")
+//@Autonomous(name = "MarkerCenter", group = "Autonomous")
 public class MarkerAutoCenter extends AutoOp {
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         initialize();
-        initInit();
         while(!isStarted()) {
             intake.lift(-.075);
         }

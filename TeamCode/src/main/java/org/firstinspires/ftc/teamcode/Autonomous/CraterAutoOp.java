@@ -1,10 +1,13 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
-//@Autonomous(name = "CraterOp", group = "Autonomous")
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.teamcode.Autonomous.AutoOp;
+
+@Autonomous(name = "CraterOp", group = "Autonomous")
 public class CraterAutoOp extends AutoOp {
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         initialize();
         waitForStart();
 
@@ -20,17 +23,29 @@ public class CraterAutoOp extends AutoOp {
                 driveTrain.longitudinalDistance(-12);
                 driveTrain.rotateDegrees(-45);
                 driveTrain.longitudinalDistance(-24);
+                driveTrain.longitudinalDistance(12);
+                driveTrain.rotatePreciseDegrees(135);
+                driveTrain.longitudinalDistance(36);
                 break;
             case RIGHT:
                 driveTrain.longitudinalDistance(-12);
                 driveTrain.rotateDegrees(45);
                 driveTrain.longitudinalDistance(-24);
+                driveTrain.longitudinalDistance(12);
+                driveTrain.rotatePreciseDegrees(45);
+                driveTrain.longitudinalDistance(48);
                 break;
             case CENTER:
             case NULL:
                 driveTrain.longitudinalDistance(-36);
+                driveTrain.longitudinalDistance(12);
+                driveTrain.rotatePreciseDegrees(90);
+                driveTrain.rotatePreciseDegrees(48);
                 break;
         }
-        driveTrain.longitudinalDistance(18);
+        driveTrain.rotatePreciseDegrees(-45);
+        driveTrain.longitudinalDistance(48);
+        dispenseMarker();
+        driveTrain.longitudinalDistance(-72);
     }
 }

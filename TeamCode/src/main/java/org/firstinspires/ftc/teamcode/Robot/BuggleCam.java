@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Robot;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -32,42 +32,10 @@ public class BuggleCam {
         foundMinerals = 0;
     }
 
-    public void update() {
-        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-        if (updatedRecognitions != null) {
-            telemetry.addData("# Object Detected", updatedRecognitions.size());
-            if (updatedRecognitions.size() >= 1) {
-                int goldMineralX = -1;
-                int silverMineral1X = -1;
-                int silverMineral2X = -1;
-                for (Recognition recognition : updatedRecognitions) {
-                    telemetry.addData("Mineral Position", recognition.getLeft());
-                    if (recognition.getLabel().equals("Gold Mineral")) {
-                        goldMineralX = (int) recognition.getLeft();
-                    } else if (silverMineral1X == -1) {
-                        silverMineral1X = (int) recognition.getLeft();
-                    } else {
-                        silverMineral2X = (int) recognition.getLeft();
-                    }
-                }
-                if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-                    if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                        telemetry.addData("Gold Mineral Position", "Left");
-                        goldPosition = GOLD_POSITION.RIGHT;
-                    } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                        telemetry.addData("Gold Mineral Position", "Right");
-                        goldPosition = GOLD_POSITION.LEFT;
-                    } else {
-                        telemetry.addData("Gold Mineral Position", "Center");
-                        goldPosition = GOLD_POSITION.CENTER;
-                    }
-                }
-            }
-            telemetry.update();
-        }
-    }
+
 
     public void betterUpdate(Telemetry telemetry) {
+        telemetry.addData("Status", "Prospecting");
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         if(updatedRecognitions != null) {
             if(updatedRecognitions.size() >= 1) {
