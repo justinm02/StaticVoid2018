@@ -2,13 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.teamcode.Robot.DriveTrain;
 import org.firstinspires.ftc.teamcode.Robot.Intake;
 
-
+@SuppressWarnings("Duplicate")
 @TeleOp(name = "TeleOp", group = "TeleOp")
 public class DerpTeleOp extends OpMode {
 
@@ -78,7 +76,8 @@ public class DerpTeleOp extends OpMode {
 
         //Instantiate Drive Train class with instantiated motors
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
-        intakeMotors = new Intake(lift, intake, null, hardwareMap.get(DcMotorEx.class, "intakeLift"));
+        intakeMotors = new Intake(lift, intake, hardwareMap.get(DcMotorEx.class, "slide"), hardwareMap.get(DcMotorEx.class, "intakeLift"),
+                hardwareMap.servo.get("basket"));
         //intakeMotors = new Intake(lift, intake, intakeSpool, intakeLift);
     }
 
@@ -90,6 +89,7 @@ public class DerpTeleOp extends OpMode {
 
         fourDirectionalMovement();
         checkForSurprise();
+        controlBasket();
         sendTelemetry();
 
     }
@@ -103,8 +103,8 @@ public class DerpTeleOp extends OpMode {
         targetYPower = -gamepad1.left_stick_y;
 
         if(gamepad1.right_trigger != 0 || gamepad1.right_bumper){
-            targetYPower /= 2;
-            targetXPower /= 2;
+            targetYPower *= .4;
+            targetXPower *= .35;
         }
 
         if(targetYPower < 0) {
@@ -139,20 +139,31 @@ public class DerpTeleOp extends OpMode {
         if(!gamepad2.left_bumper && !gamepad2.right_bumper)
             intakeMotors.intake(0);
 
-        /*intakeMotors.moveSlide(gamepad2.right_stick_y/2);*/
-
-        if(gamepad2.right_stick_x == 0)
-            intakeMotors.moveIntake(.01);
-        else
-            intakeMotors.moveIntake(gamepad2.right_stick_x/6);
+        intakeMotors.moveSlide(-gamepad2.right_stick_y * .2);
+        if(gamepad2.dpad_up)
+            intakeMotors.moveIntake(.2);
+        else if(gamepad2.dpad_down)
+            intakeMotors.moveIntake(-.2);
+        else {
+            intakeMotors.moveIntake(0);
+        }
     }
 
     //Up on left stick to raise lift, down on left stick to retract lift, scales with force on stick
     public void controlLift() {
-        if(-gamepad2.left_stick_y <= 0)
-            telemetry.addData("Lift Position",intakeMotors.lift(-gamepad2.left_stick_y * 0.20));
-        else if (-gamepad2.left_stick_y > 0)
-            telemetry.addData("Lift Position", intakeMotors.lift(-gamepad2.left_stick_y * 0.3));
+        if(gamepad2.left_stick_y <= 0)
+            telemetry.addData("Lift Position",intakeMotors.lift(gamepad2.left_stick_y * 0.20));
+        else if (gamepad2.left_stick_y > 0)
+            telemetry.addData("Lift Position", intakeMotors.lift(gamepad2.left_stick_y * 0.3));
+    }
+
+    public void controlBasket() {
+        if(gamepad2.left_trigger != 0)
+            intakeMotors.controlBasket(1, -gamepad2.right_stick_y);
+        else if(gamepad2.right_trigger != 0)
+            intakeMotors.controlBasket(0, -gamepad2.right_stick_y);
+        else
+            intakeMotors.controlBasket(-gamepad2.right_stick_y);
     }
 
     public void sendTelemetry() {

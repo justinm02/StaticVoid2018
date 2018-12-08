@@ -9,6 +9,11 @@ public class MarkerAutoOp extends AutoOp {
     @Override
     public void runOpMode() {
         initialize();
+        while(!isStarted()) {
+            intake.lift(0);
+            telemetry.addData("Started", isStarted());
+            telemetry.addData("Is Active", opModeIsActive());
+        }
         waitForStart();
 
         //Descend robot from Lander, move off the hook
@@ -21,30 +26,36 @@ public class MarkerAutoOp extends AutoOp {
         intake.lockIntake();
         switch(cam.getGoldPosition()) {
             case LEFT:
-                driveTrain.longitudinalDistance(-12);
-                driveTrain.rotatePreciseDegrees(-45);
-                driveTrain.longitudinalDistance(-24);
-                driveTrain.rotatePreciseDegrees(90);
-                driveTrain.longitudinalDistance(24);
+                longitudinalDistance(-12);
+                rotatePreciseDegrees(-45);
+                longitudinalDistance(-24);
+                rotatePreciseDegrees(90);
+                longitudinalDistance(-24);
+                dispenseMarker();
+                longitudinalDistance(48);
                 break;
             case RIGHT:
-                driveTrain.longitudinalDistance(-12, 0.5f);
-                driveTrain.rotatePreciseDegrees(45, 0.5f);
-                driveTrain.longitudinalDistance(-24, 0.5f);
-                driveTrain.longitudinalDistance(24, 0.5f);
-                driveTrain.rotatePreciseDegrees(45);
-                driveTrain.longitudinalDistance(48, 0.5f);
-                driveTrain.rotateDegrees(-45);
-                driveTrain.longitudinalDistance(12, 0.5f);
+                longitudinalDistance(-12);
+                rotatePreciseDegrees(45);
+                longitudinalDistance(-24);
+                rotatePreciseDegrees(-90);
+                longitudinalDistance(-18);
+                dispenseMarker();
+                longitudinalDistance(18);
+                rotatePreciseDegrees(135);
+                longitudinalDistance(48);
+                rotateDegrees(-45);
+                longitudinalDistance(12);
                 break;
             case CENTER:
             case NULL:
-                driveTrain.longitudinalDistance(-36);
-                driveTrain.longitudinalDistance(18);
-                driveTrain.rotatePreciseDegrees(90);
-                driveTrain.longitudinalDistance(36);
-                driveTrain.rotatePreciseDegrees(-45);
-                driveTrain.longitudinalDistance(24);
+                longitudinalDistance(-36);
+                dispenseMarker();
+                longitudinalDistance(18);
+                rotatePreciseDegrees(90);
+                longitudinalDistance(36);
+                rotatePreciseDegrees(-45);
+                longitudinalDistance(24);
                 break;
         }
 

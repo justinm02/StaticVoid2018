@@ -20,7 +20,7 @@ public class MarkerAutoCenter extends AutoOp {
         lowerBot();
 
         //Hits center mineral
-        driveTrain.longitudinalDistance(-18, 0.3);
+        longitudinalDistance(-18, 0.3);
 
     }
 }

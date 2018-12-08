@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -10,19 +12,25 @@ import static java.lang.Thread.sleep;
 public class Intake{
 
     private DcMotorEx lift, noodles, slide, intakeLift;
+    private Servo basket;
     private Telemetry telemetry;
     public ElapsedTime runtime;
 
     private static final double COUNTS_PER_REVOLUTION = 1680;
 
-    public Intake (DcMotorEx lift, DcMotorEx noodles, DcMotorEx slide, DcMotorEx intakeLift) {
+    public Intake (DcMotorEx lift, DcMotorEx noodles, DcMotorEx slide, DcMotorEx intakeLift, Servo basket) {
         this.lift = lift;
         this.noodles = noodles;
         this.slide = slide;
         this.intakeLift = intakeLift;
+        this.basket = basket;
         runtime = new ElapsedTime();
-        if(intakeLift != null)
+        if(intakeLift != null) {
+            intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        if(basket != null)
+            basket.setDirection(Servo.Direction.FORWARD);
     }
 
     public void setTelemetry(Telemetry telemetry) {
@@ -42,9 +50,9 @@ public class Intake{
     public void liftPosition(double revolutions) {
 
         lift.setTargetPosition((int) (revolutions * COUNTS_PER_REVOLUTION));
-        lift.setPower(.4);
+        lift.setPower(.45);
         runtime.reset();
-        while(lift.isBusy() && runtime.seconds() < 4.5) {
+        while(lift.isBusy() && runtime.seconds() < 5) {
             telemetry.addData("Status", "Lifting");
             telemetry.addData("Desired Position", revolutions * COUNTS_PER_REVOLUTION);
             telemetry.addData("Current Position", lift.getCurrentPosition());
@@ -74,4 +82,14 @@ public class Intake{
     public void moveIntake(double power) {
         intakeLift.setPower(power);
     }
+
+    public void controlBasket(float servo, float yPower) {
+        basket.setPosition(servo);
+        slide.setPower(yPower);
+    }
+
+    public void controlBasket(float yPower) {
+        slide.setPower(yPower);
+    }
+
 }

@@ -10,26 +10,37 @@ public class SafeCraterOp extends AutoOp {
 
         initialize();
 
+        while(!isStarted()) {
+            intake.lift(0);
+            telemetry.addData("Started", isStarted());
+            telemetry.addData("Is Active", opModeIsActive());
+        }
+
         waitForStart();
 
         lowerBot();
 
         prospect();
 
+        intake.lockIntake();
         switch(cam.getGoldPosition()) {
             case RIGHT:
-                driveTrain.longitudinalDistance(-12);
-                driveTrain.rotatePreciseDegrees(45);
-                driveTrain.longitudinalDistance(-24);
+                longitudinalDistance(-12);
+                rotatePreciseDegrees(-90);
+                longitudinalDistance(18);
+                rotatePreciseDegrees(-90);
+                longitudinalDistance(12);
                 break;
             case LEFT:
-                driveTrain.longitudinalDistance(-12);
-                driveTrain.rotatePreciseDegrees(-45);
-                driveTrain.longitudinalDistance(-24);
+                longitudinalDistance(-12);
+                rotatePreciseDegrees(90);
+                longitudinalDistance(18);
+                rotatePreciseDegrees(90);
+                longitudinalDistance(12);
                 break;
             case CENTER:
             case NULL:
-                driveTrain.longitudinalDistance(-36);
+                longitudinalDistance(-30);
                 break;
         }
 

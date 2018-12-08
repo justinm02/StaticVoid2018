@@ -83,19 +83,6 @@ public class DriveTrain {
             motor.setPower(power);
         }
         while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) {
-            /*if(desiredHeading != currentAngle()) {
-                if(desiredHeading < currentAngle()) {
-                    frontLeft.setPower(power + .1);
-                    rearLeft.setPower(power + .1);
-                } else if(desiredHeading > currentAngle()){
-                    frontRight.setPower(power + .1);
-                    rearRight.setPower(power + .1);
-                }
-            } else {
-                for (DcMotorEx motor : motors) {
-                    motor.setPower(power);
-                }
-            }*/
             telemetry.addData("Status", "Moving");
             telemetry.addData("Desired Heading", desiredHeading);
             telemetry.addData("Current Heading", currentAngle());
@@ -122,9 +109,9 @@ public class DriveTrain {
 
     public void rotatePreciseDegrees(double degrees, float power) {
         desiredHeading -= degrees;
-        if(desiredHeading < -180)
+        if(desiredHeading <= -180)
             desiredHeading += 180;
-        else if(desiredHeading > 180)
+        else if(desiredHeading >= 180)
             desiredHeading -= 180;
 
         for(DcMotorEx motor : motors) {
@@ -132,15 +119,15 @@ public class DriveTrain {
         }
 
         while((int) desiredHeading != (int) currentAngle()) {
-            telemetry.addData("Status", "Rotating (Precise)");
+            telemetry.addData("Status", "Rotating (Precise) " + degrees + " Degrees");
             telemetry.addData("Current Angle", currentAngle());
             telemetry.addData("Desired Angle", desiredHeading);
             telemetry.update();
             if(Math.abs(desiredHeading - currentAngle()) <= 10) {
                 if(desiredHeading < currentAngle()) {
-                    rotate(power * .1f);
+                    rotate(power * .15f);
                 } else {
-                    rotate(-power * .1f);
+                    rotate(-power * .15f);
                 }
             } else {
                 if(desiredHeading < currentAngle()) {
@@ -172,7 +159,7 @@ public class DriveTrain {
         }
 
         while((int) desiredHeading != (int) currentAngle()) {
-            telemetry.addData("Status", "Rotating (Coarse)");
+            telemetry.addData("Status", "Rotating (Coarse) " + degrees + " Degrees");
             telemetry.addData("Current Angle", currentAngle());
             telemetry.addData("Desired Angle", desiredHeading);
             telemetry.update();

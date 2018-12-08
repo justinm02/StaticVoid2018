@@ -9,6 +9,11 @@ public class CraterAutoOp extends AutoOp {
     @Override
     public void runOpMode() {
         initialize();
+        while(!isStarted()) {
+            intake.lift(0);
+            telemetry.addData("Started", isStarted());
+            telemetry.addData("Is Active", opModeIsActive());
+        }
         waitForStart();
 
         //Descend robot from Lander, move off the hook
@@ -20,32 +25,32 @@ public class CraterAutoOp extends AutoOp {
         //Move bot based on where the Gold Mineral is, knocks it, and continues into friendly team's crater
         switch(cam.getGoldPosition()) {
             case LEFT:
-                driveTrain.longitudinalDistance(-12);
-                driveTrain.rotateDegrees(-45);
-                driveTrain.longitudinalDistance(-24);
-                driveTrain.longitudinalDistance(12);
-                driveTrain.rotatePreciseDegrees(135);
-                driveTrain.longitudinalDistance(36);
+                longitudinalDistance(-8);
+                rotateDegrees(-45);
+                longitudinalDistance(-24);
+                longitudinalDistance(12);
+                rotatePreciseDegrees(-45);
+                longitudinalDistance(-36);
                 break;
             case RIGHT:
-                driveTrain.longitudinalDistance(-12);
-                driveTrain.rotateDegrees(45);
-                driveTrain.longitudinalDistance(-24);
-                driveTrain.longitudinalDistance(12);
-                driveTrain.rotatePreciseDegrees(45);
-                driveTrain.longitudinalDistance(48);
+                longitudinalDistance(-12);
+                rotateDegrees(45);
+                longitudinalDistance(-24);
+                longitudinalDistance(12);
+                rotatePreciseDegrees(-135);
+                longitudinalDistance(-48);
                 break;
             case CENTER:
             case NULL:
-                driveTrain.longitudinalDistance(-36);
-                driveTrain.longitudinalDistance(12);
-                driveTrain.rotatePreciseDegrees(90);
-                driveTrain.rotatePreciseDegrees(48);
+                longitudinalDistance(-36);
+                longitudinalDistance(12);
+                rotatePreciseDegrees(90);
+                rotatePreciseDegrees(48);
                 break;
         }
-        driveTrain.rotatePreciseDegrees(-45);
-        driveTrain.longitudinalDistance(48);
+        rotatePreciseDegrees(-45);
+        longitudinalDistance(-48);
         dispenseMarker();
-        driveTrain.longitudinalDistance(-72);
+        longitudinalDistance(72);
     }
 }

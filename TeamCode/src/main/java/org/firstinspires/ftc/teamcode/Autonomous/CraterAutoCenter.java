@@ -20,7 +20,7 @@ public class CraterAutoCenter extends AutoOp {
         lowerBot();
 
         //Hits center mineral, moves into friendly team's crater
-        driveTrain.longitudinalDistance(-26, 0.3);
+        longitudinalDistance(-26, 0.3);
 
     }
 }

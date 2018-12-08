@@ -31,7 +31,7 @@ public class ProgressiveOp extends AutoOp {
 
         //prospect();
 
-        driveTrain.longitudinalDistance(-100);
+        longitudinalDistance(-100);
         //lowerBot();
 
         /*ElapsedTime runtime = new ElapsedTime();

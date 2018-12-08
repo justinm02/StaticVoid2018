@@ -5,21 +5,33 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.sun.tools.javac.tree.DCTree;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.Robot.BuggleCam;
 import org.firstinspires.ftc.teamcode.Robot.DriveTrain;
 import org.firstinspires.ftc.teamcode.Robot.Intake;
 
 import java.io.File;
 
+@SuppressWarnings("Duplicates")
 public abstract class AutoOp extends LinearOpMode {
 
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private DcMotorEx lift;
     private ElapsedTime runtime;
     private BNO055IMU imu;
+    private DcMotorEx[] motors;
 
-    protected DriveTrain driveTrain;
+    private double desiredHeading;
+
+    private static final double WHEEL_DIAMETER = 4;
+    private static final double COUNTS_PER_INCH = (360/(WHEEL_DIAMETER * Math.PI)) * 1.01;
+
     protected Intake intake;
     protected BuggleCam cam;
 
@@ -40,14 +52,20 @@ public abstract class AutoOp extends LinearOpMode {
         runtime = new ElapsedTime();
 
         //Instantiating the Motors
-        driveTrain = new DriveTrain(
-                hardwareMap.get(DcMotorEx.class, "backLeft"), hardwareMap.get(DcMotorEx.class, "backRight"),
-                hardwareMap.get(DcMotorEx.class, "frontLeft"), hardwareMap.get(DcMotorEx.class, "frontRight"));
-        intake = new Intake(hardwareMap.get(DcMotorEx.class, "lift"), null, null,
-                hardwareMap.get(DcMotorEx.class, "intakeLift"));
+        rearLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
+        rearRight = hardwareMap.get(DcMotorEx.class, "backRight");
+        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
+        motors = new DcMotorEx[] {this.rearLeft, this.rearRight, this.frontLeft, this.frontRight};
+
+        intake = new Intake(hardwareMap.get(DcMotorEx.class, "lift"), hardwareMap.get(DcMotorEx.class, "noodles"),
+                hardwareMap.get(DcMotorEx.class, "slide"),
+                hardwareMap.get(DcMotorEx.class, "intakeLift"), hardwareMap.servo.get("basket"));
         intake.setTelemetry(this.telemetry);
+
         //Reverse the Right Motors
-        driveTrain.reverseMotors();
+        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -57,16 +75,12 @@ public abstract class AutoOp extends LinearOpMode {
         imu.initialize(parameters);
 
 
-        //Instantiates a Drive Train with the motors set to the correct mode for autonomous
-        driveTrain.setTelemetry(this.telemetry);
-        driveTrain.setIMU(imu);
-
         //Instantiates a Camera Object for use with Mineral Detection
         cam = new BuggleCam(telemetry, hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
 
         //Set the encoder position back to 0
-        driveTrain.resetEncoders();
+        resetEncoders();
         intake.resetEncoders();
         intake.lockIntake();
     }
@@ -80,7 +94,7 @@ public abstract class AutoOp extends LinearOpMode {
         intake.resetEncoders();
         runtime.reset();
         intake.liftPosition(-3.3);
-        while(runtime.seconds() < 4 && opModeIsActive()) {}
+        //while(runtime.seconds() < 4 && opModeIsActive()) {}
         intake.resetEncoders();
         intake.lift(0);
     }
@@ -99,7 +113,7 @@ public abstract class AutoOp extends LinearOpMode {
         cam.activateTFOD();
 
         runtime.reset();
-        driveTrain.resetHeading();
+        resetHeading();
         rotatedLeft = false;
         rotatedRight = false;
 
@@ -107,25 +121,159 @@ public abstract class AutoOp extends LinearOpMode {
             cam.betterUpdate(telemetry);
             telemetry.update();
             if(runtime.seconds() > 3 && !rotatedLeft) {
-                driveTrain.rotateDegrees(-10);
+                rotateDegrees(-10);
                 rotatedLeft = true;
             }
-            if(runtime.seconds() > 6 & !rotatedRight && cam.getGoldPosition() != BuggleCam.GOLD_POSITION.NULL) {
-                driveTrain.rotateDegrees(20);
+            if(runtime.seconds() > 6 & !rotatedRight && cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
+                rotateDegrees(20);
                 rotatedRight = true;
             }
 
         }
+        if(rotatedLeft && !rotatedRight)
+            rotateDegrees(10);
+        else if(rotatedLeft && rotatedRight)
+            rotateDegrees(-10);
         cam.stopTFOD();
 
     }
 
     protected void dispenseMarker() {
         runtime.reset();
-        while(runtime.seconds() < 3) {}
+        while(runtime.milliseconds() < 500 && opModeIsActive()) {
+            intake.moveIntake(-.1);
+        }
+        runtime.reset();
+        while(runtime.seconds() < 2)
+            intake.outtake(.6);
     }
 
     protected void playSurprise() {
         SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, surprise);
     }
+
+    public void resetEncoders() {
+        for (DcMotorEx motor : motors) {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        for (DcMotorEx motor : motors) {
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+    }
+
+    public void resetHeading() {
+        desiredHeading = currentAngle();
+    }
+
+    private double currentAngle() {
+        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+    }
+
+    public void rotate(float power) {
+        frontLeft.setPower(power);
+        rearLeft.setPower(power);
+        frontRight.setPower(-power);
+        rearRight.setPower(-power);
+    }
+
+    public void rotatePreciseDegrees(double degrees) {
+        rotatePreciseDegrees(degrees, 0.4f);
+    }
+
+    public void rotatePreciseDegrees(double degrees, float power) {
+        desiredHeading -= degrees;
+        if(desiredHeading <= -180)
+            desiredHeading += 180;
+        else if(desiredHeading >= 180)
+            desiredHeading -= 180;
+
+        for(DcMotorEx motor : motors) {
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        while((int) desiredHeading != (int) currentAngle() && opModeIsActive()) {
+            telemetry.addData("Status", "Rotating (Precise) " + degrees + " Degrees");
+            telemetry.addData("Current Angle", currentAngle());
+            telemetry.addData("Desired Angle", desiredHeading);
+            telemetry.update();
+            if(Math.abs(desiredHeading - currentAngle()) <= 10) {
+                if(desiredHeading < currentAngle()) {
+                    rotate(power * .15f);
+                } else {
+                    rotate(-power * .15f);
+                }
+            } else {
+                if(desiredHeading < currentAngle()) {
+                    rotate(power * .3f);
+                } else {
+                    rotate(-power * .3f);
+                }
+            }
+        }
+
+        rotate(0);
+
+        resetEncoders();
+    }
+
+    public void rotateDegrees(double degrees) {
+        rotateDegrees(degrees, 0.4f);
+    }
+
+    public void rotateDegrees(double degrees, float power) {
+        desiredHeading -= degrees;
+        if(desiredHeading < -180)
+            desiredHeading += 180;
+        else if(desiredHeading > 180)
+            desiredHeading += 180;
+
+        for(DcMotorEx motor : motors) {
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        while((int) desiredHeading != (int) currentAngle() && opModeIsActive()) {
+            telemetry.addData("Status", "Rotating (Coarse) " + degrees + " Degrees");
+            telemetry.addData("Current Angle", currentAngle());
+            telemetry.addData("Desired Angle", desiredHeading);
+            telemetry.update();
+            if(Math.abs(desiredHeading - currentAngle()) <= 3) {
+                break;
+            } else {
+                if(desiredHeading < currentAngle()) {
+                    rotate(power * .3f);
+                } else {
+                    rotate(-power * .3f);
+                }
+            }
+        }
+
+        rotate(0);
+
+        resetEncoders();
+    }
+
+    public void longitudinalDistance(double inches) {
+        longitudinalDistance(inches, 0.2);
+    }
+
+    public void longitudinalDistance(double inches, double power) {
+        frontLeft.setTargetPosition((int) (inches * COUNTS_PER_INCH));
+        frontRight.setTargetPosition((int) (inches * COUNTS_PER_INCH));
+        rearLeft.setTargetPosition((int) (inches * COUNTS_PER_INCH));
+        rearRight.setTargetPosition((int) (inches * COUNTS_PER_INCH));
+        for (DcMotorEx motor : motors) {
+            motor.setPower(power);
+        }
+        while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy() && opModeIsActive()) {
+            telemetry.addData("Status", "Moving");
+            telemetry.addData("Desired Heading", desiredHeading);
+            telemetry.addData("Current Heading", currentAngle());
+            telemetry.update();
+        }
+        for (DcMotorEx motor : motors) {
+            motor.setPower(0);
+        }
+        resetEncoders();
+    }
+
 }
