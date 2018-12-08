@@ -37,11 +37,11 @@ public class MarkerAutoOp extends AutoOp {
             case RIGHT:
                 longitudinalDistance(-12);
                 rotatePreciseDegrees(45);
-                longitudinalDistance(-24);
+                longitudinalDistance(-36);
                 rotatePreciseDegrees(-90);
                 longitudinalDistance(-18);
                 dispenseMarker();
-                longitudinalDistance(18);
+                longitudinalDistance(24);
                 rotatePreciseDegrees(135);
                 longitudinalDistance(48);
                 rotateDegrees(-45);

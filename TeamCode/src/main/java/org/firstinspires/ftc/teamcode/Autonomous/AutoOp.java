@@ -140,12 +140,17 @@ public abstract class AutoOp extends LinearOpMode {
 
     protected void dispenseMarker() {
         runtime.reset();
-        while(runtime.milliseconds() < 500 && opModeIsActive()) {
+        while(runtime.seconds() < 1 && opModeIsActive())
             intake.moveIntake(-.1);
-        }
+        intake.moveIntake(0);
         runtime.reset();
-        while(runtime.seconds() < 2)
+        while(runtime.seconds() < 2 && opModeIsActive())
             intake.outtake(.6);
+        intake.outtake(0);
+        runtime.reset();
+        while(runtime.seconds() < 1.5)
+            intake.moveIntake(.2);
+        intake.moveIntake(0);
     }
 
     protected void playSurprise() {
