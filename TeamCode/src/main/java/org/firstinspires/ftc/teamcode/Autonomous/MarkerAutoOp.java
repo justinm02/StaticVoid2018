@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "MarkerOp", group = "Autonomous")
 public class MarkerAutoOp extends AutoOp {
@@ -9,12 +10,13 @@ public class MarkerAutoOp extends AutoOp {
     @Override
     public void runOpMode() {
         initialize();
-        while(!isStarted()) {
-            intake.lift(0);
-            telemetry.addData("Started", isStarted());
-            telemetry.addData("Is Active", opModeIsActive());
-        }
+
         waitForStart();
+
+        /*while(opModeIsActive()) {
+            telemetry.addData("Limit Switch", limitSwitch.getState());
+            telemetry.update();
+        }*/
 
         //Descend robot from Lander, move off the hook
         lowerBot();
@@ -22,6 +24,12 @@ public class MarkerAutoOp extends AutoOp {
         //Locates the gold mineral from one of the three given locations
         prospect();
 
+        /*cam.activateTFOD();
+        while(opModeIsActive()) {
+            cam.betterUpdate(telemetry);
+            telemetry.update();
+        }
+*/
         //Move bot based on where the Gold Mineral is, knocks it, and moves to above the rightmost mineral
         intake.lockIntake();
         switch(cam.getGoldPosition()) {
@@ -32,29 +40,28 @@ public class MarkerAutoOp extends AutoOp {
                 rotatePreciseDegrees(90);
                 longitudinalDistance(-24);
                 dispenseMarker();
-                longitudinalDistance(48);
+                longitudinalDistance(48, 0.5f);
                 break;
             case RIGHT:
                 longitudinalDistance(-12);
                 rotatePreciseDegrees(45);
-                longitudinalDistance(-36);
-                rotatePreciseDegrees(-90);
-                longitudinalDistance(-18);
-                dispenseMarker();
+                longitudinalDistance(-24);
                 longitudinalDistance(24);
-                rotatePreciseDegrees(135);
-                longitudinalDistance(48);
-                rotateDegrees(-45);
-                longitudinalDistance(12);
+                rotatePreciseDegrees(45);
+                longitudinalDistance(60);
+                rotatePreciseDegrees(-45);
+                longitudinalDistance(-48);
+                dispenseMarker();
+                longitudinalDistance(72, 0.5f);
                 break;
             case CENTER:
             case NULL:
-                longitudinalDistance(-36);
+                longitudinalDistance(-52);
                 dispenseMarker();
-                longitudinalDistance(18);
+                resetPosition();
                 rotatePreciseDegrees(90);
-                longitudinalDistance(36);
-                rotatePreciseDegrees(-45);
+                longitudinalDistance(42);
+                rotateDegrees(-45);
                 longitudinalDistance(24);
                 break;
         }

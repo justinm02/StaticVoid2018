@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoControllerEx;
+import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -13,12 +10,13 @@ public class Intake{
 
     private DcMotorEx lift, noodles, slide, intakeLift;
     private Servo basket;
+    private CRServo intake;
     private Telemetry telemetry;
     public ElapsedTime runtime;
 
     private static final double COUNTS_PER_REVOLUTION = 1680;
 
-    public Intake (DcMotorEx lift, DcMotorEx noodles, DcMotorEx slide, DcMotorEx intakeLift, Servo basket) {
+    public Intake (DcMotorEx lift, DcMotorEx noodles, DcMotorEx slide, DcMotorEx intakeLift, Servo basket, CRServo intake) {
         this.lift = lift;
         this.noodles = noodles;
         this.slide = slide;
@@ -31,6 +29,9 @@ public class Intake{
         }
         if(basket != null)
             basket.setDirection(Servo.Direction.FORWARD);
+        this.intake = intake;
+        if(slide != null)
+            slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setTelemetry(Telemetry telemetry) {
@@ -38,6 +39,7 @@ public class Intake{
     }
 
     public double lift(double power) {
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setPower(power);
         return lift.getCurrentPosition();
     }
@@ -68,11 +70,11 @@ public class Intake{
     }
 
     public void outtake(double power) {
-        noodles.setPower(-power);
+        intake.setPower(-power);
     }
 
     public void intake(double power) {
-        noodles.setPower(power);
+        intake.setPower(power);
     }
 
     public void moveSlide(double power) {

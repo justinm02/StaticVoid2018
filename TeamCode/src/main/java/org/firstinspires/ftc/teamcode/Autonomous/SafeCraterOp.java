@@ -10,12 +10,6 @@ public class SafeCraterOp extends AutoOp {
 
         initialize();
 
-        while(!isStarted()) {
-            intake.lift(0);
-            telemetry.addData("Started", isStarted());
-            telemetry.addData("Is Active", opModeIsActive());
-        }
-
         waitForStart();
 
         lowerBot();
@@ -43,7 +37,9 @@ public class SafeCraterOp extends AutoOp {
                 longitudinalDistance(-30);
                 break;
         }
-
+        runtime.reset();
+        while(runtime.seconds() < 1)
+            intake.moveIntake(-.1);
     }
 
 }
