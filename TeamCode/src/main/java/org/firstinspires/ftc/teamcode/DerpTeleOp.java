@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Robot.Intake;
 @TeleOp(name = "TeleOp", group = "TeleOp")
 public class DerpTeleOp extends OpMode {
 
-    private boolean isSurprising;
+    private boolean isSurprising, aDepressed;
     private double targetXPower, targetYPower;
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private DcMotorEx lift, intakeLift, intakeSpool, intake;
@@ -78,7 +78,7 @@ public class DerpTeleOp extends OpMode {
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
         intakeMotors = new Intake(lift, intake, hardwareMap.get(DcMotorEx.class, "slide"),
                 hardwareMap.get(DcMotorEx.class, "intakeLift"), hardwareMap.servo.get("basket"),
-                hardwareMap.get(CRServo.class, "intake"));
+                hardwareMap.get(CRServo.class, "intake"), hardwareMap.servo.get("trapdoor"));
         //intakeMotors = new Intake(lift, intake, intakeSpool, intakeLift);
     }
 
@@ -122,24 +122,15 @@ public class DerpTeleOp extends OpMode {
     }
 
     public void controlIntake() {
-        if(gamepad2.a) {
-            if (gamepad2.left_bumper)
-                intakeMotors.outtake(.5);
-            else if(gamepad2.right_bumper)
-                intakeMotors.intake(.5);
-        } else {
-            if(gamepad2.left_bumper)
-                intakeMotors.outtake(1);
-            else if (gamepad2.right_bumper)
-                intakeMotors.intake(1);
-        }
+        if(gamepad2.left_bumper)
+            intakeMotors.outtake(1);
+        else if (gamepad2.right_bumper)
+            intakeMotors.intake(1);
         if(!gamepad2.left_bumper && !gamepad2.right_bumper)
             intakeMotors.intake(0);
 
-        if(gamepad2.a)
-            intakeMotors.moveSlide(-gamepad2.right_stick_y * .4);
-        else
-            intakeMotors.moveSlide(-gamepad2.right_stick_y * .2);
+        if(!gamepad2.a && aDepressed)
+            intakeMotors.toggleTrapDoor();
         if(gamepad2.dpad_up && gamepad2.a)
             intakeMotors.moveIntake(.45);
         else if(gamepad2.dpad_up)
@@ -149,6 +140,8 @@ public class DerpTeleOp extends OpMode {
         else {
             intakeMotors.moveIntake(0);
         }
+
+        aDepressed = gamepad2.a;
     }
 
     //Up on left stick to raise lift, down on left stick to retract lift, scales with force on stick

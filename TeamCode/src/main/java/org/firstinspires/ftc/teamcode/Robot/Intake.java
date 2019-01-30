@@ -9,19 +9,20 @@ import static java.lang.Thread.sleep;
 public class Intake{
 
     private DcMotorEx lift, noodles, slide, intakeLift;
-    private Servo basket;
+    private Servo basket, trapdoor;
     private CRServo intake;
     private Telemetry telemetry;
     public ElapsedTime runtime;
 
     private static final double COUNTS_PER_REVOLUTION = 1680;
 
-    public Intake (DcMotorEx lift, DcMotorEx noodles, DcMotorEx slide, DcMotorEx intakeLift, Servo basket, CRServo intake) {
+    public Intake (DcMotorEx lift, DcMotorEx noodles, DcMotorEx slide, DcMotorEx intakeLift, Servo basket, CRServo intake, Servo trapdoor) {
         this.lift = lift;
         this.noodles = noodles;
         this.slide = slide;
         this.intakeLift = intakeLift;
         this.basket = basket;
+        this.trapdoor = trapdoor;
         runtime = new ElapsedTime();
         if(intakeLift != null) {
             intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -93,6 +94,10 @@ public class Intake{
 
     public void controlBasket(float yPower) {
         //slide.setPower(yPower);
+    }
+
+    public void toggleTrapDoor() {
+        trapdoor.setPosition(1 - trapdoor.getPosition());
     }
 
 }

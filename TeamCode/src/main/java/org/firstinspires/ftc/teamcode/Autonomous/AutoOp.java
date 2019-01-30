@@ -61,7 +61,7 @@ public abstract class AutoOp extends LinearOpMode {
         intake = new Intake(hardwareMap.get(DcMotorEx.class, "lift"), hardwareMap.get(DcMotorEx.class, "noodles"),
                 hardwareMap.get(DcMotorEx.class, "slide"),
                 hardwareMap.get(DcMotorEx.class, "intakeLift"), hardwareMap.servo.get("basket"),
-                hardwareMap.get(CRServo.class, "intake"));
+                hardwareMap.get(CRServo.class, "intake"), hardwareMap.servo.get("trapdoor"));
         intake.setTelemetry(this.telemetry);
 
         intake.controlBasket(1f, 0);
