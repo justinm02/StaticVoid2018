@@ -77,8 +77,9 @@ public class Intake{
         intake.setPower(power);
     }
 
-    public void moveSlide(double power) {
+    public double moveSlide(double power) {
         slide.setPower(power);
+        return slide.getPower();
     }
 
     public void moveIntake(double power) {
@@ -87,11 +88,11 @@ public class Intake{
 
     public void controlBasket(float servo, float yPower) {
         basket.setPosition(servo);
-        slide.setPower(yPower);
+        //slide.setPower(yPower);
     }
 
     public void controlBasket(float yPower) {
-        slide.setPower(yPower);
+        //slide.setPower(yPower);
     }
 
 }

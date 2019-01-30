@@ -10,8 +10,6 @@ public class ProgressiveOp extends AutoOp {
 
     @Override
     public void runOpMode() {
-        /*cam = new BuggleCam(telemetry, hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));*/
         /*
         driveTrain = new DriveTrain(
                 hardwareMap.get(DcMotorEx.class, "backLeft"),
@@ -29,6 +27,8 @@ public class ProgressiveOp extends AutoOp {
 
         initialize();
         waitForStart();
+        resetHeading();
+        park();
 
         //prospect();
 
@@ -36,14 +36,13 @@ public class ProgressiveOp extends AutoOp {
             telemetry.addData("Position", cam.getGoldPosition());
             telemetry.update();
         }*/
-        /*cam.activateTFOD();
-        while (opModeIsActive()){
-            cam.betterUpdate(telemetry);
-            telemetry.update();
+        /*longitudinalDistance(24);
+        while(opModeIsActive()) {
+            rotate((float) .2);
         }*/
 
         //longitudinalDistance(-100);
-        lowerBot();
+        //lowerBot();
 
         /*ElapsedTime runtime = new ElapsedTime();
         double time = runtime.milliseconds();

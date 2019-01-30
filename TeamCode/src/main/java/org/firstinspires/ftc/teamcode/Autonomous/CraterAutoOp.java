@@ -22,11 +22,11 @@ public class CraterAutoOp extends AutoOp {
         switch(cam.getGoldPosition()) {
             case LEFT:
                 longitudinalDistance(-8);
-                rotateDegrees(-45);
+                rotateDegrees(-35);
                 longitudinalDistance(-24);
                 longitudinalDistance(12);
-                rotatePreciseDegrees(-45);
-                longitudinalDistance(-36);
+                rotatePreciseDegrees(-55);
+                longitudinalDistance(-54);
                 break;
             case RIGHT:
                 longitudinalDistance(-12);
@@ -34,19 +34,21 @@ public class CraterAutoOp extends AutoOp {
                 longitudinalDistance(-24);
                 longitudinalDistance(12);
                 rotatePreciseDegrees(-135);
-                longitudinalDistance(-42);
+                longitudinalDistance(-54);
                 break;
             case CENTER:
             case NULL:
                 longitudinalDistance(-36);
                 resetPosition();
                 rotatePreciseDegrees(-90);
-                longitudinalDistance(-42);
+                longitudinalDistance(-54);
                 break;
         }
-        rotatePreciseDegrees(-45);
-        longitudinalDistance(-48);
+        rotatePreciseDegrees(-40);
+        longitudinalDistance(-32);
         dispenseMarker();
-        longitudinalDistance(72);
+        rotateDegrees(-10);
+        longitudinalDistance(56, 0.5f);
+        park();
     }
 }

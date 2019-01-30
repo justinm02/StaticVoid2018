@@ -101,9 +101,9 @@ public class DerpTeleOp extends OpMode {
         targetXPower = -gamepad1.left_stick_x;
         targetYPower = -gamepad1.left_stick_y;
 
-        if(gamepad1.right_trigger != 0 || gamepad1.right_bumper){
+        if(!gamepad1.right_bumper){
             targetYPower *= .3;
-            targetXPower *= .25;
+            targetXPower *= .5;
         }
 
         if(Math.abs(targetXPower) > Math.abs(targetYPower)) {
@@ -136,9 +136,14 @@ public class DerpTeleOp extends OpMode {
         if(!gamepad2.left_bumper && !gamepad2.right_bumper)
             intakeMotors.intake(0);
 
-        intakeMotors.moveSlide(-gamepad2.right_stick_y * .2);
-        if(gamepad2.dpad_up)
-            intakeMotors.moveIntake(.4);
+        if(gamepad2.a)
+            intakeMotors.moveSlide(-gamepad2.right_stick_y * .4);
+        else
+            intakeMotors.moveSlide(-gamepad2.right_stick_y * .2);
+        if(gamepad2.dpad_up && gamepad2.a)
+            intakeMotors.moveIntake(.45);
+        else if(gamepad2.dpad_up)
+            intakeMotors.moveIntake(.3);
         else if(gamepad2.dpad_down)
             intakeMotors.moveIntake(-.4);
         else {

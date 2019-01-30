@@ -55,13 +55,15 @@ public class BuggleCam {
                         silverMineral2X = (int) (recognition.getRight() + recognition.getLeft()) / 2;
                     telemetry.addData("Recognition" + ++recognitionNum, recognition.getLabel());
                     telemetry.addData("Recognition Position", (recognition.getLeft() + recognition.getRight()) / 2);
+                    System.out.println("RECOGNITION " + recognitionNum + ": " + recognition.getLabel()
+                     + "\nPosition: " + (int) ((recognition.getRight() + recognition.getLeft()) / 2));
                 }
                 if(goldMineralX != -1) {
                     //Test closest value 0, 600, and 1200
                     //Max X value is 220
-                    if(Math.abs(goldMineralX) < Math.abs(goldMineralX - 100) && Math.abs(goldMineralX) < Math.abs(goldMineralX - 220)){
+                    if(Math.abs(goldMineralX) < Math.abs(goldMineralX - 600) && Math.abs(goldMineralX) < Math.abs(goldMineralX - 1200)){
                         goldPosition = GOLD_POSITION.LEFT;
-                    } else if(Math.abs(goldMineralX) > Math.abs(goldMineralX - 100) && Math.abs(goldMineralX - 220) > Math.abs(goldMineralX - 100)) {
+                    } else if(Math.abs(goldMineralX) > Math.abs(goldMineralX - 200) && Math.abs(goldMineralX - 1200) > Math.abs(goldMineralX - 600)) {
                         goldPosition = GOLD_POSITION.CENTER;
                     } else {
                         goldPosition = GOLD_POSITION.RIGHT;
@@ -75,9 +77,9 @@ public class BuggleCam {
                     }
 
                     //If Silver1 is on the left
-                    if(Math.abs(silverMineral1X) < Math.abs(silverMineral1X - 100) && Math.abs(silverMineral1X) < Math.abs(silverMineral1X - 220)){
+                    if(Math.abs(silverMineral1X) < Math.abs(silverMineral1X - 600) && Math.abs(silverMineral1X) < Math.abs(silverMineral1X - 1200)){
                         //If Silver2 is in the center
-                        if(Math.abs(silverMineral2X) > Math.abs(silverMineral2X - 100) && Math.abs(silverMineral2X - 220) > Math.abs(silverMineral2X - 100)) {
+                        if(Math.abs(silverMineral2X) > Math.abs(silverMineral2X - 600) && Math.abs(silverMineral2X - 1200) > Math.abs(silverMineral2X - 600)) {
                             goldPosition = GOLD_POSITION.RIGHT;
                         } else {
                             goldPosition = GOLD_POSITION.CENTER;

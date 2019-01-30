@@ -36,23 +36,27 @@ public class MarkerAutoOp extends AutoOp {
             case LEFT:
                 longitudinalDistance(-12);
                 rotatePreciseDegrees(-45);
-                longitudinalDistance(-24);
+                longitudinalDistance(-36);
                 rotatePreciseDegrees(90);
                 longitudinalDistance(-24);
                 dispenseMarker();
-                longitudinalDistance(48, 0.5f);
+                rotateDegrees(5);
+                longitudinalDistance(60, 0.6f);
+                park();
                 break;
             case RIGHT:
                 longitudinalDistance(-12);
                 rotatePreciseDegrees(45);
                 longitudinalDistance(-24);
-                longitudinalDistance(24);
+                longitudinalDistance(18);
                 rotatePreciseDegrees(45);
                 longitudinalDistance(60);
-                rotatePreciseDegrees(-45);
-                longitudinalDistance(-48);
+                rotatePreciseDegrees(-50);
+                longitudinalDistance(-54);
+                rotateDegrees(10);
                 dispenseMarker();
-                longitudinalDistance(72, 0.5f);
+                longitudinalDistance(48, 0.6f);
+                park();
                 break;
             case CENTER:
             case NULL:
@@ -61,12 +65,10 @@ public class MarkerAutoOp extends AutoOp {
                 resetPosition();
                 rotatePreciseDegrees(90);
                 longitudinalDistance(42);
-                rotateDegrees(-45);
+                rotateDegrees(-40);
                 longitudinalDistance(24);
+                park();
                 break;
         }
-
-        //Moves robot into opposing team's crater
-        //driveTrain.rotateDegrees(45);
     }
 }
