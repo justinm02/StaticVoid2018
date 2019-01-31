@@ -64,7 +64,7 @@ public abstract class AutoOp extends LinearOpMode {
                 hardwareMap.get(CRServo.class, "intake"), hardwareMap.servo.get("trapdoor"));
         intake.setTelemetry(this.telemetry);
 
-        intake.controlBasket(1f, 0);
+        intake.controlBasket(1f);
 
         //Reverse the Right Motors
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -106,13 +106,14 @@ public abstract class AutoOp extends LinearOpMode {
         intake.lift(0);*/
         lowerBot(-.7);
     }
-
+    String justin = "gay";
     protected void lowerBot(double power) {
         intake.lift(power);
         runtime.reset();
         while(runtime.seconds() < 5 && opModeIsActive() && limitSwitch.getState()) {
             telemetry.addData("Status", "Lowering");
             telemetry.addData("Limit Switch", limitSwitch.getState());
+            telemetry.addData("Runtime", runtime.seconds());
             telemetry.update();
         }
         intake.lift(0);
@@ -150,17 +151,17 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     protected void dispenseMarker() {
-        intake.controlBasket(0, 0);
+        intake.controlBasket(0);
         runtime.reset();
         while(runtime.seconds() < 2 && opModeIsActive()) {
             telemetry.addData("Status", "Depositing Marker");
             telemetry.update();
         }
-        intake.controlBasket(1, 0);
+        intake.controlBasket(1);
     }
 
     protected void dispenseMarker(int servoPosition) {
-        intake.controlBasket(servoPosition, 0);
+        intake.controlBasket(servoPosition);
     }
 
     protected void playSurprise() {

@@ -141,6 +141,8 @@ public class DerpTeleOp extends OpMode {
             intakeMotors.moveIntake(0);
         }
 
+        intakeMotors.moveSlide(gamepad2.right_stick_y * .5f);
+
         aDepressed = gamepad2.a;
     }
 
@@ -154,11 +156,9 @@ public class DerpTeleOp extends OpMode {
 
     public void controlBasket() {
         if(gamepad2.dpad_left)
-            intakeMotors.controlBasket(1, gamepad2.right_stick_y * .5f);
+            intakeMotors.controlBasket(1);
         else if(gamepad2.dpad_right)
-            intakeMotors.controlBasket(0, gamepad2.right_stick_y * .5f);
-        else
-            intakeMotors.controlBasket(gamepad2.right_stick_y * .5f);
+            intakeMotors.controlBasket(0);
     }
 
     public void sendTelemetry() {

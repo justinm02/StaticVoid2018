@@ -87,12 +87,8 @@ public class Intake{
         intakeLift.setPower(power);
     }
 
-    public void controlBasket(float servo, float yPower) {
+    public void controlBasket(float servo) {
         basket.setPosition(servo);
-        //slide.setPower(yPower);
-    }
-
-    public void controlBasket(float yPower) {
         //slide.setPower(yPower);
     }
 
