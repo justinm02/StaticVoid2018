@@ -40,7 +40,7 @@ public class MarkerAutoOp extends AutoOp {
                 rotatePreciseDegrees(90);
                 longitudinalDistance(-24);
                 dispenseMarker();
-                rotateDegrees(5);
+                rotatePreciseDegrees(3);
                 longitudinalDistance(60, 0.6f);
                 park();
                 break;
@@ -53,8 +53,8 @@ public class MarkerAutoOp extends AutoOp {
                 longitudinalDistance(60);
                 rotatePreciseDegrees(-50);
                 longitudinalDistance(-54);
-                rotateDegrees(10);
                 dispenseMarker();
+                rotatePreciseDegrees(3);
                 longitudinalDistance(48, 0.6f);
                 park();
                 break;

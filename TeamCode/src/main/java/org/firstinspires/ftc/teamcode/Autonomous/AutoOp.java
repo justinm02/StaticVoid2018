@@ -98,19 +98,13 @@ public abstract class AutoOp extends LinearOpMode {
 
     //Descend robot from Lander, move off the hook
     protected void lowerBot() {
-        /*intake.resetEncoders();
-        runtime.reset();
-        intake.liftPosition(-3.3);
-        //while(runtime.seconds() < 4 && opModeIsActive()) {}
-        intake.resetEncoders();
-        intake.lift(0);*/
-        lowerBot(-.7);
+        lowerBot(-.3);
     }
-    String justin = "gay";
+
     protected void lowerBot(double power) {
         intake.lift(power);
         runtime.reset();
-        while(runtime.seconds() < 5 && opModeIsActive() && limitSwitch.getState()) {
+        while(runtime.seconds() < 3 && opModeIsActive() && limitSwitch.getState()) {
             telemetry.addData("Status", "Lowering");
             telemetry.addData("Limit Switch", limitSwitch.getState());
             telemetry.addData("Runtime", runtime.seconds());
@@ -153,7 +147,7 @@ public abstract class AutoOp extends LinearOpMode {
     protected void dispenseMarker() {
         intake.controlBasket(0);
         runtime.reset();
-        while(runtime.seconds() < 2 && opModeIsActive()) {
+        while(runtime.seconds() < 1 && opModeIsActive()) {
             telemetry.addData("Status", "Depositing Marker");
             telemetry.update();
         }
@@ -205,11 +199,12 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     public void park() {
-        rotatePreciseDegrees(-180);
+        //rotatePreciseDegrees(-170);
         runtime.reset();
         while(opModeIsActive() && runtime.seconds() < 1.5) {
-            intake.moveIntake(-.4);
+            intake.lift(.3);
         }
+        intake.lift(0);
     }
 
     public void rotate(float power) {
@@ -226,9 +221,9 @@ public abstract class AutoOp extends LinearOpMode {
     public void rotatePreciseDegrees(double degrees, float power) {
         desiredHeading -= degrees;
         if(desiredHeading <= -180)
-            desiredHeading += 180;
+            desiredHeading += 360;
         else if(desiredHeading >= 180)
-            desiredHeading -= 180;
+            desiredHeading -= 360;
 
         for(DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -272,9 +267,9 @@ public abstract class AutoOp extends LinearOpMode {
     public void rotateDegrees(double degrees, float power) {
         desiredHeading -= degrees;
         if(desiredHeading < -180)
-            desiredHeading += 180;
+            desiredHeading += 360;
         else if(desiredHeading > 180)
-            desiredHeading += 180;
+            desiredHeading += 360;
 
         for(DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

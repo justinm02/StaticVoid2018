@@ -106,17 +106,17 @@ public class DerpTeleOp extends OpMode {
             targetXPower *= .5;
         }
 
-        if(Math.abs(targetXPower) > Math.abs(targetYPower)) {
-            driveTrain.rotate((float) -targetXPower * .5f);
+        if(Math.abs(gamepad1.left_stick_x) > Math.abs(gamepad1.left_stick_y)) {
+            driveTrain.rotate((float) -targetXPower * .75f);
         } else {
             if (targetYPower < 0) {
                 driveTrain.longitudinal(targetYPower);
             } else if (targetYPower > 0) {
-                driveTrain.combinedDirections(targetXPower * 0.5f, targetYPower);
+                driveTrain.combinedDirections(targetXPower * 0.75f, targetYPower);
             } else if (targetYPower == 0) {
-                driveTrain.rotate((float) (targetXPower * .5f));
+                driveTrain.rotate((float) (targetXPower * .75f));
             } else if (targetXPower == 0 && targetYPower == 0) {
-                driveTrain.rotate(-gamepad1.right_stick_x * .5f);
+                driveTrain.rotate(-gamepad1.right_stick_x * .75f);
             }
         }
     }
@@ -134,14 +134,14 @@ public class DerpTeleOp extends OpMode {
         if(gamepad2.dpad_up && gamepad2.a)
             intakeMotors.moveIntake(.45);
         else if(gamepad2.dpad_up)
-            intakeMotors.moveIntake(.3);
+            intakeMotors.moveIntake(.7);
         else if(gamepad2.dpad_down)
-            intakeMotors.moveIntake(-.4);
+            intakeMotors.moveIntake(-.45);
         else {
             intakeMotors.moveIntake(0);
         }
 
-        intakeMotors.moveSlide(gamepad2.right_stick_y * .5f);
+        intakeMotors.moveSlide(gamepad2.right_stick_y);
 
         aDepressed = gamepad2.a;
     }

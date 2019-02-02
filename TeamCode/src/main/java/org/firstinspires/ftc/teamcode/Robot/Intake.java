@@ -89,7 +89,6 @@ public class Intake{
 
     public void controlBasket(float servo) {
         basket.setPosition(servo);
-        //slide.setPower(yPower);
     }
 
     public void toggleTrapDoor() {

@@ -110,9 +110,9 @@ public class DriveTrain {
     public void rotatePreciseDegrees(double degrees, float power) {
         desiredHeading -= degrees;
         if(desiredHeading <= -180)
-            desiredHeading += 180;
+            desiredHeading += 360;
         else if(desiredHeading >= 180)
-            desiredHeading -= 180;
+            desiredHeading -= 360;
 
         for(DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -149,10 +149,10 @@ public class DriveTrain {
 
     public void rotateDegrees(double degrees, float power) {
         desiredHeading -= degrees;
-        if(desiredHeading < -180)
+        if(desiredHeading <= -360)
             desiredHeading += 180;
-        else if(desiredHeading > 180)
-            desiredHeading += 180;
+        else if(desiredHeading >= 180)
+            desiredHeading += 360;
 
         for(DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
