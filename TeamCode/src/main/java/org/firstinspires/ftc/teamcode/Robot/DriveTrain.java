@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -16,16 +17,18 @@ public class DriveTrain {
     private Telemetry telemetry;
     private BNO055IMU imu;
     private double desiredHeading;
+    private boolean direction;
 
     private static final double WHEEL_DIAMETER = 4;
-    private static final double COUNTS_PER_INCH = (360/(WHEEL_DIAMETER * Math.PI)) * 1.01;
+    private static final double COUNTS_PER_INCH = (360 / (WHEEL_DIAMETER * Math.PI)) * 1.01;
 
     public DriveTrain(DcMotorEx rearLeft, DcMotorEx rearRight, DcMotorEx frontLeft, DcMotorEx frontRight) {
         this.rearLeft = rearLeft;
         this.rearRight = rearRight;
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
-        motors = new DcMotorEx[] {this.rearLeft, this.rearRight, this.frontLeft, this.frontRight};
+        motors = new DcMotorEx[]{this.rearLeft, this.rearRight, this.frontLeft, this.frontRight};
+        direction = false;
     }
 
     public void reverseMotors() {
@@ -59,6 +62,72 @@ public class DriveTrain {
         rearLeft.setPower(yPower - xPower);
     }
 
+    //This code is ONLY for Mecanum DriveTrain
+
+
+    //For some reason, when going up and to the left, frontRight and BackLeft are negative
+    public void omniDirectionalMovement(double xPower, double yPower) {
+        double magnitude = getMagnitude(xPower, yPower);
+        if(yPower > 0 && xPower > 0) {
+            frontRight.setPower(magnitude);
+            rearLeft.setPower(magnitude);
+
+            frontLeft.setPower(yPower - xPower);
+            rearRight.setPower(yPower - xPower);
+        } else if(yPower > 0 && xPower < 0) {
+            frontLeft.setPower(magnitude);
+            rearRight.setPower(magnitude);
+
+            frontRight.setPower(yPower - xPower);
+            rearLeft.setPower(yPower - xPower);
+        } else if(yPower < 0 && xPower > 0) {
+            frontLeft.setPower(-magnitude);
+            rearRight.setPower(-magnitude);
+
+            frontRight.setPower(yPower + xPower);
+            rearLeft.setPower(yPower + xPower);
+        } else if(yPower < 0 && xPower < 0) {
+            frontRight.setPower(-magnitude);
+            rearLeft.setPower(-magnitude);
+
+            frontLeft.setPower(yPower + xPower);
+            rearRight.setPower(yPower + xPower);
+        } else if(xPower == 0) {
+            frontLeft.setPower(yPower);
+            frontRight.setPower(yPower);
+            rearLeft.setPower(yPower);
+            rearRight.setPower(yPower);
+        } else if(yPower == 0) {
+            frontRight.setPower(xPower);
+            rearLeft.setPower(xPower);
+
+            frontLeft.setPower(-xPower);
+            rearRight.setPower(-xPower);
+        }
+
+    }
+
+    public void newOmni(double xPower, double yPower, double rotatePower, boolean precision) {
+        double x = Math.hypot(xPower, yPower);
+        double stickAngle = Math.atan2(direction ? -xPower : yPower, direction ? xPower : -xPower); // desired robot angle from the angle of stick
+        double powerAngle = stickAngle - (Math.PI / 4); // conversion for correct power values
+        double rightX = rotatePower; // right stick x axis controls turning POSSIBLE SOURCE OF ERROR
+        final double leftFrontPower = Range.clip(x * Math.cos(powerAngle) - rightX, -1.0, 1.0);
+        final double leftRearPower = Range.clip(x * Math.sin(powerAngle) - rightX, -1.0, 1.0);
+        final double rightFrontPower = Range.clip(x * Math.sin(powerAngle) + rightX, -1.0, 1.0);
+        final double rightRearPower = Range.clip(x * Math.cos(powerAngle) + rightX, -1.0, 1.0);
+
+        frontLeft.setPower(leftFrontPower * (precision ? 0.2 : .7));
+        rearLeft.setPower(leftRearPower * (precision ? 0.2 : .7));
+        frontRight.setPower(rightFrontPower * (precision ? 0.2 : .7));
+        rearRight.setPower(rightRearPower * (precision ? 0.2 : .7));
+    }
+
+    public double getMagnitude(double a, double b) {
+        return Math.sqrt((a * a) + (b * b));
+    }
+
+
     public void resetHeading() {
         desiredHeading = currentAngle();
     }
@@ -82,7 +151,7 @@ public class DriveTrain {
         for (DcMotorEx motor : motors) {
             motor.setPower(power);
         }
-        while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) {
+        while (frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) {
             telemetry.addData("Status", "Moving");
             telemetry.addData("Desired Heading", desiredHeading);
             telemetry.addData("Current Heading", currentAngle());
@@ -109,28 +178,28 @@ public class DriveTrain {
 
     public void rotatePreciseDegrees(double degrees, float power) {
         desiredHeading -= degrees;
-        if(desiredHeading <= -180)
+        if (desiredHeading <= -180)
             desiredHeading += 360;
-        else if(desiredHeading >= 180)
+        else if (desiredHeading >= 180)
             desiredHeading -= 360;
 
-        for(DcMotorEx motor : motors) {
+        for (DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        while((int) desiredHeading != (int) currentAngle()) {
+        while ((int) desiredHeading != (int) currentAngle()) {
             telemetry.addData("Status", "Rotating (Precise) " + degrees + " Degrees");
             telemetry.addData("Current Angle", currentAngle());
             telemetry.addData("Desired Angle", desiredHeading);
             telemetry.update();
-            if(Math.abs(desiredHeading - currentAngle()) <= 10) {
-                if(desiredHeading < currentAngle()) {
+            if (Math.abs(desiredHeading - currentAngle()) <= 10) {
+                if (desiredHeading < currentAngle()) {
                     rotate(power * .15f);
                 } else {
                     rotate(-power * .15f);
                 }
             } else {
-                if(desiredHeading < currentAngle()) {
+                if (desiredHeading < currentAngle()) {
                     rotate(power * .3f);
                 } else {
                     rotate(-power * .3f);
@@ -149,24 +218,24 @@ public class DriveTrain {
 
     public void rotateDegrees(double degrees, float power) {
         desiredHeading -= degrees;
-        if(desiredHeading <= -360)
+        if (desiredHeading <= -360)
             desiredHeading += 180;
-        else if(desiredHeading >= 180)
+        else if (desiredHeading >= 180)
             desiredHeading += 360;
 
-        for(DcMotorEx motor : motors) {
+        for (DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        while((int) desiredHeading != (int) currentAngle()) {
+        while ((int) desiredHeading != (int) currentAngle()) {
             telemetry.addData("Status", "Rotating (Coarse) " + degrees + " Degrees");
             telemetry.addData("Current Angle", currentAngle());
             telemetry.addData("Desired Angle", desiredHeading);
             telemetry.update();
-            if(Math.abs(desiredHeading - currentAngle()) <= 3) {
+            if (Math.abs(desiredHeading - currentAngle()) <= 3) {
                 break;
             } else {
-                if(desiredHeading < currentAngle()) {
+                if (desiredHeading < currentAngle()) {
                     rotate(power * .3f);
                 } else {
                     rotate(-power * .3f);

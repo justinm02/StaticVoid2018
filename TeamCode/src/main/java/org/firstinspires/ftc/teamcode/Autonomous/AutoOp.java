@@ -29,8 +29,9 @@ public abstract class AutoOp extends LinearOpMode {
 
     private double desiredHeading;
 
-    private static final double WHEEL_DIAMETER = 4;
-    private static final double COUNTS_PER_INCH = (360/(WHEEL_DIAMETER * Math.PI)) * 1.01;
+    private static final double WHEEL_DIAMETER = 4, WHEEL_TICKS_PER_REV = 560, LIFT_TICKS_PER_REV = 2240, LIFT_DIAMETER = 2.165, LIFT_RATIO = 1;
+    private static final double COUNTS_PER_INCH = (WHEEL_TICKS_PER_REV/(WHEEL_DIAMETER * Math.PI));
+    private static final double LIFT_COUNTS_PER_INCH = (LIFT_TICKS_PER_REV/(Math.PI * LIFT_DIAMETER * LIFT_RATIO));
 
     protected Intake intake;
     protected BuggleCam cam;
@@ -38,8 +39,6 @@ public abstract class AutoOp extends LinearOpMode {
     private File surprise = new File("/sdcard/FIRST/blocks/sounds/Africa by Toto.mp3");
 
     boolean rotatedLeft = false, rotatedRight = false;
-
-    private final double LC = 1680/(Math.PI*3.65625);
 
     //Order of Operations:
     //
@@ -102,15 +101,7 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     protected void lowerBot(double power) {
-        intake.lift(power);
-        runtime.reset();
-        while(runtime.seconds() < 3 && opModeIsActive() && limitSwitch.getState()) {
-            telemetry.addData("Status", "Lowering");
-            telemetry.addData("Limit Switch", limitSwitch.getState());
-            telemetry.addData("Runtime", runtime.seconds());
-            telemetry.update();
-        }
-        intake.lift(0);
+        intake.liftPosition(13 * LIFT_COUNTS_PER_INCH);
     }
 
     //Locates the gold mineral from one of the three given locations
@@ -182,7 +173,7 @@ public abstract class AutoOp extends LinearOpMode {
     public void resetPosition() {
         for(DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motor.setPower(.2);
+            motor.setPower(-.2);
         }
         while((int) distanceSensor.getDistance(DistanceUnit.CM) > 50 && opModeIsActive()) {
             telemetry.addData("Status", "Resetting Position");
@@ -190,7 +181,7 @@ public abstract class AutoOp extends LinearOpMode {
             telemetry.update();
             if((int) distanceSensor.getDistance(DistanceUnit.CM) < 80)
                 for(DcMotorEx motor : motors)
-                    motor.setPower(.1);
+                    motor.setPower(-.1);
         }
         for(DcMotorEx motor : motors) {
             motor.setPower(0);
@@ -215,7 +206,7 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     public void rotatePreciseDegrees(double degrees) {
-        rotatePreciseDegrees(degrees, 0.4f);
+        rotatePreciseDegrees(degrees, 0.5f);
     }
 
     public void rotatePreciseDegrees(double degrees, float power) {
@@ -261,7 +252,7 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     public void rotateDegrees(double degrees) {
-        rotateDegrees(degrees, 0.4f);
+        rotateDegrees(degrees, 0.5f);
     }
 
     public void rotateDegrees(double degrees, float power) {
@@ -297,7 +288,7 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     public void longitudinalDistance(double inches) {
-        longitudinalDistance(inches, 0.2);
+        longitudinalDistance(inches, .7);
     }
 
     public void longitudinalDistance(double inches, double power) {

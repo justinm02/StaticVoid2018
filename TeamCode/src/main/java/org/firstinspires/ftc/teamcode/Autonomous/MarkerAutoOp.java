@@ -34,39 +34,39 @@ public class MarkerAutoOp extends AutoOp {
         intake.lockIntake();
         switch(cam.getGoldPosition()) {
             case LEFT:
-                longitudinalDistance(-12);
+                longitudinalDistance(12);
                 rotatePreciseDegrees(-45);
-                longitudinalDistance(-36);
+                longitudinalDistance(36);
                 rotatePreciseDegrees(90);
-                longitudinalDistance(-24);
+                longitudinalDistance(24);
                 dispenseMarker();
                 rotatePreciseDegrees(3);
-                longitudinalDistance(60, 0.6f);
+                longitudinalDistance(-60, 0.6f);
                 park();
                 break;
             case RIGHT:
-                longitudinalDistance(-12);
+                longitudinalDistance(12);
                 rotatePreciseDegrees(45);
-                longitudinalDistance(-24);
-                longitudinalDistance(18);
+                longitudinalDistance(24);
+                longitudinalDistance(-18);
                 rotatePreciseDegrees(45);
-                longitudinalDistance(60);
+                longitudinalDistance(-60);
                 rotatePreciseDegrees(-50);
-                longitudinalDistance(-54);
+                longitudinalDistance(54);
                 dispenseMarker();
                 rotatePreciseDegrees(3);
-                longitudinalDistance(48, 0.6f);
+                longitudinalDistance(-48, 0.6f);
                 park();
                 break;
             case CENTER:
             case NULL:
-                longitudinalDistance(-52);
+                longitudinalDistance(52);
                 dispenseMarker();
                 resetPosition();
                 rotatePreciseDegrees(90);
-                longitudinalDistance(42);
+                longitudinalDistance(-42);
                 rotateDegrees(-40);
-                longitudinalDistance(24);
+                longitudinalDistance(-24);
                 park();
                 break;
         }

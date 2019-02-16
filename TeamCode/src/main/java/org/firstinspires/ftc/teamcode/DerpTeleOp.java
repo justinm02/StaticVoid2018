@@ -87,10 +87,22 @@ public class DerpTeleOp extends OpMode {
 
         controlIntake();
         controlLift();
-        fourDirectionalMovement();
+        //fourDirectionalMovement();
+        //mecanumTrain();
+        driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
         controlBasket();
         sendTelemetry();
+    }
 
+    public void mecanumTrain() {
+        if(gamepad1.right_stick_x != 0) {
+            driveTrain.rotate(gamepad1.right_stick_x);
+        } else {
+            if(gamepad1.right_bumper)
+                driveTrain.omniDirectionalMovement(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            else
+                driveTrain.omniDirectionalMovement(gamepad1.left_stick_x * .5, gamepad1.left_stick_y * .5);
+        }
     }
 
     /*
@@ -115,8 +127,6 @@ public class DerpTeleOp extends OpMode {
                 driveTrain.combinedDirections(targetXPower * 0.75f, targetYPower);
             } else if (targetYPower == 0) {
                 driveTrain.rotate((float) (targetXPower * .75f));
-            } else if (targetXPower == 0 && targetYPower == 0) {
-                driveTrain.rotate(-gamepad1.right_stick_x * .75f);
             }
         }
     }

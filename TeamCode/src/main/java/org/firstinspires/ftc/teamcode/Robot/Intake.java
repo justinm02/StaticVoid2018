@@ -50,14 +50,14 @@ public class Intake{
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void liftPosition(double revolutions) {
-
-        lift.setTargetPosition((int) (revolutions * COUNTS_PER_REVOLUTION));
-        lift.setPower(.45);
+    public void liftPosition(double ticks) {
+        resetEncoders();
+        lift.setTargetPosition((int) (ticks));
+        lift.setPower(1);
         runtime.reset();
         while(lift.isBusy() && runtime.seconds() < 5) {
             telemetry.addData("Status", "Lifting");
-            telemetry.addData("Desired Position", revolutions * COUNTS_PER_REVOLUTION);
+            telemetry.addData("Desired Position", ticks);
             telemetry.addData("Current Position", lift.getCurrentPosition());
             telemetry.update();
         }
