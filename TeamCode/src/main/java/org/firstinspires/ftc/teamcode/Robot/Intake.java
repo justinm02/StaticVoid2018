@@ -8,7 +8,7 @@ import static java.lang.Thread.sleep;
 
 public class Intake{
 
-    private DcMotorEx lift, noodles, slide, intakeLift;
+    private DcMotorEx lift, slide, intakeLift;
     private Servo basket, trapdoor;
     private CRServo intake;
     private Telemetry telemetry;
@@ -16,9 +16,8 @@ public class Intake{
 
     private static final double COUNTS_PER_REVOLUTION = 1680;
 
-    public Intake (DcMotorEx lift, DcMotorEx noodles, DcMotorEx slide, DcMotorEx intakeLift, Servo basket, CRServo intake, Servo trapdoor) {
+    public Intake (DcMotorEx lift, DcMotorEx slide, DcMotorEx intakeLift, Servo basket, CRServo intake, Servo trapdoor) {
         this.lift = lift;
-        this.noodles = noodles;
         this.slide = slide;
         this.intakeLift = intakeLift;
         this.basket = basket;

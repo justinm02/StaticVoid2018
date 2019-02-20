@@ -57,7 +57,7 @@ public abstract class AutoOp extends LinearOpMode {
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         motors = new DcMotorEx[] {this.rearLeft, this.rearRight, this.frontLeft, this.frontRight};
 
-        intake = new Intake(hardwareMap.get(DcMotorEx.class, "lift"), hardwareMap.get(DcMotorEx.class, "noodles"),
+        intake = new Intake(hardwareMap.get(DcMotorEx.class, "lift"),
                 hardwareMap.get(DcMotorEx.class, "slide"),
                 hardwareMap.get(DcMotorEx.class, "intakeLift"), hardwareMap.servo.get("basket"),
                 hardwareMap.get(CRServo.class, "intake"), hardwareMap.servo.get("trapdoor"));

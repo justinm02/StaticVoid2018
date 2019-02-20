@@ -76,7 +76,7 @@ public class DerpTeleOp extends OpMode {
 
         //Instantiate Drive Train class with instantiated motors
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
-        intakeMotors = new Intake(lift, intake, hardwareMap.get(DcMotorEx.class, "slide"),
+        intakeMotors = new Intake(lift, hardwareMap.get(DcMotorEx.class, "slide"),
                 hardwareMap.get(DcMotorEx.class, "intakeLift"), hardwareMap.servo.get("basket"),
                 hardwareMap.get(CRServo.class, "intake"), hardwareMap.servo.get("trapdoor"));
         //intakeMotors = new Intake(lift, intake, intakeSpool, intakeLift);
