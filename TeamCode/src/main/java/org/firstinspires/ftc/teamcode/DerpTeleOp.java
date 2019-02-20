@@ -19,6 +19,7 @@ public class DerpTeleOp extends OpMode {
 
     @Override
     public void init() {
+        //Hdy this is Jusgin
         targetXPower = 0;
         targetYPower = 0;
 
