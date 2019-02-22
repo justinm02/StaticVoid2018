@@ -17,7 +17,6 @@ public class DriveTrain {
     private Telemetry telemetry;
     private BNO055IMU imu;
     private double desiredHeading;
-    private boolean direction;
 
     private static final double WHEEL_DIAMETER = 4;
     private static final double COUNTS_PER_INCH = (360 / (WHEEL_DIAMETER * Math.PI)) * 1.01;
@@ -28,7 +27,6 @@ public class DriveTrain {
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
         motors = new DcMotorEx[]{this.rearLeft, this.rearRight, this.frontLeft, this.frontRight};
-        direction = false;
     }
 
     public void reverseMotors() {
@@ -107,9 +105,9 @@ public class DriveTrain {
 
     }
 
-    public void newOmni(double xPower, double yPower, double rotatePower, boolean precision) {
+    public void newOmni(double xPower, double yPower /* Takes the exact value of the stick */, double rotatePower, boolean precision) {
         double x = Math.hypot(xPower, yPower);
-        double stickAngle = Math.atan2(direction ? -xPower : yPower, direction ? xPower : -xPower); // desired robot angle from the angle of stick
+        double stickAngle = Math.atan2(-yPower, xPower); // desired robot angle from the angle of stick
         double powerAngle = stickAngle - (Math.PI / 4); // conversion for correct power values
         double rightX = rotatePower; // right stick x axis controls turning POSSIBLE SOURCE OF ERROR
         final double leftFrontPower = Range.clip(x * Math.cos(powerAngle) - rightX, -1.0, 1.0);
@@ -245,6 +243,8 @@ public class DriveTrain {
 
         rotate(0);
 
+
+        frontRight.setVelocity(4);
         resetEncoders();
     }
 
@@ -253,15 +253,3 @@ public class DriveTrain {
     }
 
 }
-
-/*
- * For our next iteration:
- * Do lots of tests to assure that the inches parameter input into these methods is the distance it will actually move.
- * In other words, compensate with the math in the new versions of the mothods above. Param 2 inches should move 2 inches.
- *
- * Have a forward and backward moving option along with rotation so you're not limited to moving in cardinal directions
- *
- * Write an auto for extending lift, waiting 10ish seconds, and then slowly retracting for raising the bot without manual
- *
- * Fail-safe on the lift??
- */
