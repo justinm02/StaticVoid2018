@@ -205,6 +205,10 @@ public class Intake{
     }
 
     public void moveIntake(double power) {
+        if (power > 0)
+            controlBasket(0);
+        else if (power < 0)
+            controlBasket(1);
         intakeLift.setPower(.5 * power);
     }
 

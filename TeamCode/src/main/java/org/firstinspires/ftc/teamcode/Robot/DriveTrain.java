@@ -110,10 +110,10 @@ public class DriveTrain {
         double stickAngle = Math.atan2(-yPower, xPower); // desired robot angle from the angle of stick
         double powerAngle = stickAngle - (Math.PI / 4); // conversion for correct power values
         double rightX = rotatePower; // right stick x axis controls turning POSSIBLE SOURCE OF ERROR
-        final double leftFrontPower = Range.clip(x * Math.cos(powerAngle) - rightX, -1.0, 1.0);
-        final double leftRearPower = Range.clip(x * Math.sin(powerAngle) - rightX, -1.0, 1.0);
-        final double rightFrontPower = Range.clip(x * Math.sin(powerAngle) + rightX, -1.0, 1.0);
-        final double rightRearPower = Range.clip(x * Math.cos(powerAngle) + rightX, -1.0, 1.0);
+        final double leftFrontPower = Range.clip(x * Math.cos(powerAngle) + rightX, -1.0, 1.0);
+        final double leftRearPower = Range.clip(x * Math.sin(powerAngle) + rightX, -1.0, 1.0);
+        final double rightFrontPower = Range.clip(x * Math.sin(powerAngle) - rightX, -1.0, 1.0);
+        final double rightRearPower = Range.clip(x * Math.cos(powerAngle) - rightX, -1.0, 1.0);
 
         frontLeft.setPower(leftFrontPower * (precision ? 0.2 : .7));
         rearLeft.setPower(leftRearPower * (precision ? 0.2 : .7));

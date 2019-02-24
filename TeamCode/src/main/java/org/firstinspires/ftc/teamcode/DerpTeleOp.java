@@ -150,15 +150,7 @@ public class DerpTeleOp extends OpMode {
 
         if(!gamepad2.a && aDepressed)
             intakeMotors.toggleTrapDoor();
-        if(gamepad2.dpad_up && gamepad2.a)
-            intakeMotors.moveIntake(.45);
-        else if(gamepad2.dpad_up)
-            intakeMotors.moveIntake(.7);
-        else if(gamepad2.dpad_down)
-            intakeMotors.moveIntake(-.45);
-        else {
-            intakeMotors.moveIntake(0);
-        }
+        intakeMotors.moveIntake(gamepad2.right_stick_y);
 
         if(gamepad2.x || gamepad2.b) {
             telemetry.addData("Slide Position", intakeMotors.moveSlide(gamepad2.x));
@@ -172,8 +164,10 @@ public class DerpTeleOp extends OpMode {
                 intakeMotors.intakeBasket(false);
                 intakeMotors.controlBasket(0);
             }
-        } else
-            telemetry.addData("Slide Power", intakeMotors.moveSlide(gamepad2.right_stick_y));
+        } else if (gamepad2.dpad_up)
+            telemetry.addData("Slide Power", intakeMotors.moveSlide(.5));
+        else if (gamepad2.dpad_down)
+            telemetry.addData("Slide Power", intakeMotors.moveSlide(-.5));
 
         /*if(gamepad2.right_trigger != 0 || gamepad2.left_trigger != 0) {
             /*if (intakeMotors.getIntakePosition() == Intake.IntakePosition.DOWN)
@@ -191,7 +185,7 @@ public class DerpTeleOp extends OpMode {
             intakeMotors.intakeBasket(0);*/
 
         if (!gamepad2.y)
-            intakeMotors.intakeBasket(gamepad2.right_stick_x); //manual control
+            intakeMotors.intakeBasket(-gamepad2.left_stick_y); //manual control
         else
             intakeMotors.intakeBasket(-.1625);
 
@@ -208,10 +202,10 @@ public class DerpTeleOp extends OpMode {
 
     //Up on left stick to raise lift, down on left stick to retract lift, scales with force on stick
     public void controlLift() {
-        if(gamepad2.left_stick_y <= 0)
-            telemetry.addData("Lift Position",intakeMotors.lift(-gamepad1.left_stick_y));
-        else if (gamepad2.left_stick_y > 0)
-            telemetry.addData("Lift Position", intakeMotors.lift(-gamepad1.left_stick_y));
+        if(gamepad2.right_stick_y <= 0)
+            telemetry.addData("Lift Position",intakeMotors.lift(-gamepad1.right_stick_y));
+        else if (gamepad2.right_stick_y > 0)
+            telemetry.addData("Lift Position", intakeMotors.lift(-gamepad1.right_stick_y));
     }
 
     public void controlBasket() {
