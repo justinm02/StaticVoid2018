@@ -21,7 +21,6 @@ public abstract class AutoOp extends LinearOpMode {
 
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
     private DcMotorEx lift;
-    protected DigitalChannel limitSwitch;
     protected ElapsedTime runtime;
     private BNO055IMU imu;
     protected DistanceSensor distanceSensor;
@@ -63,9 +62,9 @@ public abstract class AutoOp extends LinearOpMode {
                 hardwareMap.get(DcMotorEx.class, "depositor"),
                 hardwareMap.servo.get("basket"),
                 hardwareMap.get(CRServo.class, "intake"), hardwareMap.servo.get("trapdoor"));
-        intake.setTelemetry(this.telemetry);
+        //intake.setTelemetry(this.telemetry);
 
-        intake.controlBasket(1f);
+        //intake.controlBasket(1f);
 
         //Reverse the Right Motors
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -79,9 +78,6 @@ public abstract class AutoOp extends LinearOpMode {
         imu.initialize(parameters);
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
-
-        limitSwitch = hardwareMap.get(DigitalChannel.class, "limitSwitch");
-        limitSwitch.setMode(DigitalChannel.Mode.INPUT);
 
         //Instantiates a Camera Object for use with Mineral Detection
         cam = new BuggleCam(telemetry, hardwareMap.appContext.getResources().getIdentifier(
@@ -103,7 +99,7 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     protected void lowerBot(double power) {
-        intake.liftPosition(13 * LIFT_COUNTS_PER_INCH);
+        intake.liftPosition(55413 * LIFT_COUNTS_PER_INCH);
     }
 
     //Locates the gold mineral from one of the three given locations
@@ -118,8 +114,8 @@ public abstract class AutoOp extends LinearOpMode {
 
         while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL && runtime.seconds() < 8 && opModeIsActive()) {
         //while(opModeIsActive()) {
-            cam.betterUpdate(telemetry);
-            telemetry.update();
+            //cam.betterUpdate(telemetry);
+            //telemetry.update();
             if(runtime.seconds() > 3 && !rotatedRight) {
                 rotateDegrees(10);
                 rotatedRight = true;
@@ -141,8 +137,8 @@ public abstract class AutoOp extends LinearOpMode {
         intake.controlBasket(0);
         runtime.reset();
         while(runtime.seconds() < 1 && opModeIsActive()) {
-            telemetry.addData("Status", "Depositing Marker");
-            telemetry.update();
+            //telemetry.addData("Status", "Depositing Marker");
+            //telemetry.update();
         }
         intake.controlBasket(1);
     }
@@ -178,9 +174,9 @@ public abstract class AutoOp extends LinearOpMode {
             motor.setPower(-.2);
         }
         while((int) distanceSensor.getDistance(DistanceUnit.CM) > 50 && opModeIsActive()) {
-            telemetry.addData("Status", "Resetting Position");
-            telemetry.addData("Distance", (int) distanceSensor.getDistance(DistanceUnit.CM));
-            telemetry.update();
+            //telemetry.addData("Status", "Resetting Position");
+            //telemetry.addData("Distance", (int) distanceSensor.getDistance(DistanceUnit.CM));
+            //telemetry.update();
             if((int) distanceSensor.getDistance(DistanceUnit.CM) < 80)
                 for(DcMotorEx motor : motors)
                     motor.setPower(-.1);
@@ -223,10 +219,10 @@ public abstract class AutoOp extends LinearOpMode {
         }
 
         while(Math.abs((int) desiredHeading - (int) currentAngle()) > 3 && opModeIsActive()) {
-            telemetry.addData("Status", "Rotating (Precise) " + degrees + " Degrees");
+            /*telemetry.addData("Status", "Rotating (Precise) " + degrees + " Degrees");
             telemetry.addData("Current Angle", currentAngle());
-            telemetry.addData("Desired Angle", desiredHeading);
-            telemetry.update();
+            telemetry.addData("Desired Angle", desiredHeading);*/
+            //telemetry.update();
             if(Math.abs(desiredHeading - currentAngle()) <= 10) {
                 if(desiredHeading < currentAngle()) {
                     rotate(power * .2f);
@@ -269,10 +265,10 @@ public abstract class AutoOp extends LinearOpMode {
         }
 
         while((int) desiredHeading != (int) currentAngle() && opModeIsActive()) {
-            telemetry.addData("Status", "Rotating (Coarse) " + degrees + " Degrees");
+            /*telemetry.addData("Status", "Rotating (Coarse) " + degrees + " Degrees");
             telemetry.addData("Current Angle", currentAngle());
-            telemetry.addData("Desired Angle", desiredHeading);
-            telemetry.update();
+            telemetry.addData("Desired Angle", desiredHeading);*/
+            //telemetry.update();
             if(Math.abs(desiredHeading - currentAngle()) <= 3) {
                 break;
             } else {
@@ -303,10 +299,10 @@ public abstract class AutoOp extends LinearOpMode {
         }
         while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy() && opModeIsActive()) {
         //&& (!(distanceSensor.getDistance(DistanceUnit.CM) < 5) && !(colorSensor.getDistance(DistanceUnit.CM) < 5))) {
-            telemetry.addData("Status", "Moving");
+            /*telemetry.addData("Status", "Moving");
             telemetry.addData("Desired Heading", desiredHeading);
-            telemetry.addData("Current Heading", currentAngle());
-            telemetry.update();
+            telemetry.addData("Current Heading", currentAngle());*/
+            //telemetry.update();
         }
         for (DcMotorEx motor : motors) {
             motor.setPower(0);

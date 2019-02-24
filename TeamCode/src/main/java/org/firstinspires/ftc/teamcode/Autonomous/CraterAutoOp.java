@@ -15,6 +15,7 @@ public class CraterAutoOp extends AutoOp {
         //Descend robot from Lander, move off the hook
         lowerBot();
 
+        rotateDegrees(90); //turn towards minerals
         //Locates the gold mineral from one of the three given locations
         prospect();
 
