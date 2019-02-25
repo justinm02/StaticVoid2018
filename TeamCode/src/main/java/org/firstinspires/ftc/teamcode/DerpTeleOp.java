@@ -157,7 +157,7 @@ public class DerpTeleOp extends OpMode {
             telemetry.addData("Slide Power", intakeMotors.moveSlide(.5));
 
         if (!gamepad2.y)
-            intakeMotors.intakeBasket(-gamepad2.left_stick_y); //manual control
+            intakeMotors.intakeBasket(gamepad2.left_stick_y); //manual control
         else
             intakeMotors.intakeBasket(-.1625);
 

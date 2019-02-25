@@ -80,7 +80,7 @@ public abstract class AutoOp extends LinearOpMode {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         //Instantiates a Camera Object for use with Mineral Detection
-        cam = new BuggleCam(telemetry, hardwareMap.appContext.getResources().getIdentifier(
+        cam = new BuggleCam(this.telemetry, hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
 
         //Set the encoder position back to 0
