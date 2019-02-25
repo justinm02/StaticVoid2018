@@ -70,6 +70,8 @@ public class Intake{
         return slidePosition;
     }
 
+    public int getSlideEncoderPosition() { return slide.getCurrentPosition(); }
+
     public int getDepositorPosition() { return depositor.getCurrentPosition(); }
 
     public void setSlidePosition(SlidePosition position) {
@@ -148,6 +150,8 @@ public class Intake{
             depositor.setPower(.15);
         }
 
+        depositor.setPower(0);
+
         /*switch(intakePosition) {
             case UP:
                 depositor.setTargetPosition(baseDepositorPosition);
@@ -188,10 +192,12 @@ public class Intake{
         slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         if (full)
-            slide.setTargetPosition(baseSlidePosition - 2400);
+            slide.setTargetPosition(baseSlidePosition + 5366);
         else
-            slide.setTargetPosition(baseSlidePosition - 1440);
+            slide.setTargetPosition(baseSlidePosition + 4100);
         slide.setPower(.5);
+
+        slide.setPower(0);
 
         return true; //method finished
     }
@@ -204,14 +210,17 @@ public class Intake{
     }
 
     public void moveIntake(double power) {
-        if (power > 0)
-            controlBasket(0);
-        else if (power < 0)
-            controlBasket(1);
-        intakeLift.setPower(.5 * power);
+        if (power < 0)
+            controlBasket(0.1);
+        if (power < 0)
+            intakeLift.setPower(.3);
+        else if (power > 0)
+            intakeLift.setPower(-.1);
+        else
+            intakeLift.setPower(0);
     }
 
-    public void controlBasket(float servo) {
+    public void controlBasket(double servo) {
         basket.setPosition(servo);
     }
 

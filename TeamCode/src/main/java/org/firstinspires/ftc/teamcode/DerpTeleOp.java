@@ -88,10 +88,14 @@ public class DerpTeleOp extends OpMode {
                 hardwareMap.get(CRServo.class, "intake"),
                 hardwareMap.servo.get("trapdoor"));
 
+        telemetry.addData("Slide position", intakeMotors.getSlideEncoderPosition());
+
     }
 
     @Override
     public void loop() {
+        telemetry.addData("Slide position", intakeMotors.getSlideEncoderPosition());
+        telemetry.update();
         controlIntake();
         controlLift();
         mecanumTrain();
@@ -152,14 +156,16 @@ public class DerpTeleOp extends OpMode {
                 intakeMotors.controlBasket(0);
             }
         } else if (gamepad2.dpad_up)
-            telemetry.addData("Slide Power", intakeMotors.moveSlide(-.5));
-        else if (gamepad2.dpad_down)
             telemetry.addData("Slide Power", intakeMotors.moveSlide(.5));
+        else if (gamepad2.dpad_down)
+            telemetry.addData("Slide Power", intakeMotors.moveSlide(-.5));
+        else
+            telemetry.addData("Slide Power", intakeMotors.moveSlide(0));
 
         if (!gamepad2.y)
             intakeMotors.intakeBasket(gamepad2.left_stick_y); //manual control
         else
-            intakeMotors.intakeBasket(-.1625);
+            intakeMotors.intakeBasket(.1625);
 
         telemetry.addData("Intake Position", intakeMotors.getIntakePosition());
 
@@ -178,6 +184,8 @@ public class DerpTeleOp extends OpMode {
             intakeMotors.lift(1);
         else if(gamepad1.dpad_down)
             intakeMotors.lift(-1);
+        else
+            intakeMotors.lift(0);
     }
 
     public void controlBasket() {
