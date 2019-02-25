@@ -33,8 +33,10 @@ public class Intake{
             intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-        if(basket != null)
+        if(basket != null) {
             basket.setDirection(Servo.Direction.FORWARD);
+            basket.setPosition(1);
+        }
         this.intake = intake;
         if(slide != null) {
             slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -43,7 +45,6 @@ public class Intake{
         intakePosition = IntakePosition.UP;
         slidePosition = SlidePosition.IN;
         baseDepositorPosition = depositor.getCurrentPosition();
-        basket.setPosition(1);
     }
 
     public enum IntakePosition {
@@ -105,7 +106,7 @@ public class Intake{
 
     }
 
-    public void intakeBasket(boolean transfer) { //transfer refers to transfer of minerals to depositing bucket
+    public void intakeBasket(boolean transfer /*Refers to transfer of minerals to depositing bucker*/) {
         /*if (rightBumper) { //down
             depositor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositor.setTargetPosition(330);
@@ -191,8 +192,6 @@ public class Intake{
         else
             slide.setTargetPosition(baseSlidePosition - 1440);
         slide.setPower(.5);
-
-        while (slide.isBusy()) { }
 
         return true; //method finished
     }

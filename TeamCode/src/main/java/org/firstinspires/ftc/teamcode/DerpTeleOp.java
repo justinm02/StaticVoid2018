@@ -92,25 +92,14 @@ public class DerpTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("Depositor Position", intakeMotors.getDepositorPosition());
-        telemetry.addData("Slide Position", intakeMotors.getSlidePosition());
         controlIntake();
         controlLift();
-        //fourDirectionalMovement();
         mecanumTrain();
         controlBasket();
         sendTelemetry();
     }
 
     public void mecanumTrain() {
-        /*if(gamepad1.right_stick_x != 0) {
-            driveTrain.rotate(gamepad1.right_stick_x);
-        } else {
-            if(gamepad1.right_bumper)
-                driveTrain.omniDirectionalMovement(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            else
-                driveTrain.omniDirectionalMovement(gamepad1.left_stick_x * .5, gamepad1.left_stick_y * .5);
-        }*/
         driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
     }
 
@@ -159,30 +148,13 @@ public class DerpTeleOp extends OpMode {
             {
                 intakeMotors.intakeBasket(true);
                 timer.reset();
-                double pause = timer.time();
-                while (timer.time() - pause < 1) { }
                 intakeMotors.intakeBasket(false);
                 intakeMotors.controlBasket(0);
             }
         } else if (gamepad2.dpad_up)
-            telemetry.addData("Slide Power", intakeMotors.moveSlide(.5));
-        else if (gamepad2.dpad_down)
             telemetry.addData("Slide Power", intakeMotors.moveSlide(-.5));
-
-        /*if(gamepad2.right_trigger != 0 || gamepad2.left_trigger != 0) {
-            /*if (intakeMotors.getIntakePosition() == Intake.IntakePosition.DOWN)
-                intakeMotors.setIntakePosition(Intake.IntakePosition.HORIZONTAL);
-            else if(intakeMotors.getIntakePosition() == Intake.IntakePosition.HORIZONTAL)
-                intakeMotors.setIntakePosition(Intake.IntakePosition.UP);*
-        } else if(leftBumper && !gamepad2.left_bumper) {
-            /*if(intakeMotors.getIntakePosition() == Intake.IntakePosition.UP)
-                intakeMotors.setIntakePosition(Intake.IntakePosition.HORIZONTAL);
-            else if(intakeMotors.getIntakePosition() == Intake.IntakePosition.HORIZONTAL)
-                intakeMotors.setIntakePosition(Intake.IntakePosition.DOWN);
-            intakeMotors.intakeBasket(gamepad2.right_trigger != 0);
-        }
-        else
-            intakeMotors.intakeBasket(0);*/
+        else if (gamepad2.dpad_down)
+            telemetry.addData("Slide Power", intakeMotors.moveSlide(.5));
 
         if (!gamepad2.y)
             intakeMotors.intakeBasket(-gamepad2.left_stick_y); //manual control
@@ -202,10 +174,10 @@ public class DerpTeleOp extends OpMode {
 
     //Up on left stick to raise lift, down on left stick to retract lift, scales with force on stick
     public void controlLift() {
-        if(gamepad2.right_stick_y <= 0)
-            telemetry.addData("Lift Position",intakeMotors.lift(-gamepad1.right_stick_y));
-        else if (gamepad2.right_stick_y > 0)
-            telemetry.addData("Lift Position", intakeMotors.lift(-gamepad1.right_stick_y));
+        if(gamepad1.dpad_up)
+            intakeMotors.lift(1);
+        else if(gamepad1.dpad_down)
+            intakeMotors.lift(-1);
     }
 
     public void controlBasket() {
