@@ -97,10 +97,10 @@ public class Intake{
         lift.setPower(1);
         runtime.reset();
         while(lift.isBusy() && runtime.seconds() < 5) {
-            telemetry.addData("Status", "Lifting");
-            telemetry.addData("Desired Position", ticks);
-            telemetry.addData("Current Position", lift.getCurrentPosition());
-            telemetry.update();
+            //telemetry.addData("Status", "Lifting");
+            //telemetry.addData("Desired Position", ticks);
+            //telemetry.addData("Current Position", lift.getCurrentPosition());
+            //telemetry.update();
         }
         lift.setPower(0);
 
