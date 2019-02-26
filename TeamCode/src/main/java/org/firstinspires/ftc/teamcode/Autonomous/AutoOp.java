@@ -89,6 +89,7 @@ public abstract class AutoOp extends LinearOpMode {
         resetEncoders();
         intake.resetEncoders();
         intake.lockIntake();
+        intake.controlBasket(0);
     }
 
     //Loop required for all Autonomous modes
@@ -119,10 +120,10 @@ public abstract class AutoOp extends LinearOpMode {
             cam.betterUpdate(telemetry);
             //telemetry.update();
             if(runtime.seconds() > 3 && !rotatedRight) {
-                rotatePhoneMount(.65);
+                rotatePhoneMount(.7);
             }
             if(runtime.seconds() > 6 & !rotatedLeft && cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
-                rotatePhoneMount(.35);
+                rotatePhoneMount(.3);
             }
         }
         if(rotatedRight && !rotatedLeft)
@@ -134,13 +135,13 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     protected void dispenseMarker() {
-        intake.controlBasket(0);
+        intake.controlBasket(1);
         runtime.reset();
         while(runtime.seconds() < 1 && opModeIsActive()) {
             //telemetry.addData("Status", "Depositing Marker");
             //telemetry.update();
         }
-        intake.controlBasket(1);
+        intake.controlBasket(0);
     }
 
     protected void dispenseMarker(int servoPosition) {
@@ -191,7 +192,7 @@ public abstract class AutoOp extends LinearOpMode {
         //rotatePreciseDegrees(-170);
         runtime.reset();
         while(opModeIsActive() && runtime.seconds() < 1.5) {
-            intake.lift(.3);
+            intake.lift(-.3);
         }
         intake.lift(0);
     }
@@ -312,6 +313,37 @@ public abstract class AutoOp extends LinearOpMode {
         for (DcMotorEx motor : motors) {
             motor.setPower(0);
         }
+        resetEncoders();
+    }
+
+    public void strafe(double inches, double power, String dir) {
+        int ticks = (int) (inches * COUNTS_PER_INCH);
+        if (dir.equals("right")) {
+            frontLeft.setTargetPosition(ticks);
+            frontLeft.setPower(power);
+            rearLeft.setTargetPosition(-ticks);
+            rearLeft.setPower(-power);
+            frontRight.setTargetPosition(-ticks);
+            frontRight.setPower(-power);
+            rearRight.setTargetPosition(ticks);
+            rearRight.setPower(power);
+        }
+        else if (dir.equals("left")) {
+            frontLeft.setTargetPosition(-ticks);
+            frontLeft.setPower(-power);
+            rearLeft.setTargetPosition(ticks);
+            rearLeft.setPower(power);
+            frontRight.setTargetPosition(ticks);
+            frontRight.setPower(power);
+            rearRight.setTargetPosition(-ticks);
+            rearRight.setPower(-power);
+        }
+        while (frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) {}
+
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        rearLeft.setPower(0);
+        rearRight.setPower(0);
         resetEncoders();
     }
 

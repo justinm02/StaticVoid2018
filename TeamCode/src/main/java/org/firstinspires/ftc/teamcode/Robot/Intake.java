@@ -17,7 +17,7 @@ public class Intake{
     private IntakePosition intakePosition;
     private SlidePosition slidePosition;
 
-    private int baseDepositorPosition;
+    private int baseDepositorPosition, baseScorePosition;
     public int baseSlidePosition;
     private static final double COUNTS_PER_REVOLUTION = 1680;
 
@@ -46,6 +46,7 @@ public class Intake{
         intakePosition = IntakePosition.UP;
         slidePosition = SlidePosition.IN;
         baseDepositorPosition = intakeLift.getCurrentPosition();
+        baseScorePosition = depositor.getCurrentPosition();
     }
 
     public enum IntakePosition {
@@ -73,7 +74,7 @@ public class Intake{
 
     public int getSlideEncoderPosition() { return slide.getCurrentPosition(); }
 
-    public int getDepositorPosition() { return intakeLift.getCurrentPosition(); }
+    public int getDepositorPosition() { return depositor.getCurrentPosition(); }
 
     public void setSlidePosition(SlidePosition position) {
         this.slidePosition = position;
@@ -95,7 +96,7 @@ public class Intake{
     }
 
     public void liftPosition(double ticks) {
-        resetEncoders(); //GAY GAY GAY GAY GAY GAY GAY gAY gay
+        resetEncoders();
         lift.setTargetPosition((int) (ticks));
         lift.setPower(1);
         runtime.reset();
@@ -215,7 +216,10 @@ public class Intake{
     }
 
     public void moveDepositor(double power) {
-        depositor.setPower(power);
+        if (power > 0 && depositor.getCurrentPosition() > baseScorePosition + 432)
+            depositor.setPower(.05);
+        else
+            depositor.setPower(power);
     }
 
     public void controlBasket(double servo) {

@@ -95,7 +95,7 @@ public class DerpTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("Slide position", intakeMotors.getSlideEncoderPosition());
+        telemetry.addData("Depositor position", intakeMotors.getDepositorPosition());
         telemetry.update();
         controlIntake();
         controlLift();
@@ -146,7 +146,7 @@ public class DerpTeleOp extends OpMode {
             intakeMotors.toggleTrapDoor();
 
         if(gamepad2.dpad_up)
-            intakeMotors.moveDepositor(.2);
+            intakeMotors.moveDepositor(.3);
         else if(gamepad2.dpad_down)
             intakeMotors.moveDepositor(-.15);
         else
