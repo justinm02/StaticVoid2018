@@ -82,8 +82,8 @@ public class DerpTeleOp extends OpMode {
         intakeMotors = new Intake(
                 lift,
                 hardwareMap.get(DcMotorEx.class, "slide"),
-                hardwareMap.get(DcMotorEx.class, "intakeLift"),
                 hardwareMap.get(DcMotorEx.class, "depositor"),
+                hardwareMap.get(DcMotorEx.class, "intakeLift"),
                 hardwareMap.servo.get("basket"),
                 hardwareMap.get(CRServo.class, "intake"),
                 hardwareMap.servo.get("trapdoor"));
@@ -143,7 +143,14 @@ public class DerpTeleOp extends OpMode {
 
         if(!gamepad2.a && aDepressed)
             intakeMotors.toggleTrapDoor();
-        intakeMotors.moveIntake(gamepad2.right_stick_y);
+
+        if(gamepad2.dpad_up)
+            intakeMotors.moveDepositor(.2);
+        else if(gamepad2.dpad_down)
+            intakeMotors.moveDepositor(-.15);
+        else
+            intakeMotors.moveDepositor(0);
+
 
         if(gamepad2.x || gamepad2.b) {
             telemetry.addData("Slide Position", intakeMotors.moveSlide(gamepad2.x));
@@ -151,19 +158,15 @@ public class DerpTeleOp extends OpMode {
             if (gamepad2.b && intakeMotors.moveSlide(gamepad2.x))
             {
                 intakeMotors.intakeBasket(true);
-                timer.reset();
                 intakeMotors.intakeBasket(false);
                 intakeMotors.controlBasket(0);
             }
-        } else if (gamepad2.dpad_up)
-            telemetry.addData("Slide Power", intakeMotors.moveSlide(.5));
-        else if (gamepad2.dpad_down)
-            telemetry.addData("Slide Power", intakeMotors.moveSlide(-.5));
-        else
-            telemetry.addData("Slide Power", intakeMotors.moveSlide(0));
+        }
+
+        intakeMotors.moveSlide(-gamepad2.left_stick_y * .5);
 
         if (!gamepad2.y)
-            intakeMotors.intakeBasket(gamepad2.left_stick_y); //manual control
+            intakeMotors.intakeBasket(gamepad2.right_stick_y * .25); //manual control
         else
             intakeMotors.intakeBasket(.1625);
 

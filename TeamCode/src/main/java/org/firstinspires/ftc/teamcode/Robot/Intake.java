@@ -8,7 +8,7 @@ import static java.lang.Thread.sleep;
 
 public class Intake{
 
-    private DcMotorEx lift, slide, intakeLift, depositor;
+    private DcMotorEx lift, slide, depositor, intakeLift;
     private Servo basket, trapdoor;
     private CRServo intake;
     private Telemetry telemetry;
@@ -21,17 +21,17 @@ public class Intake{
     public int baseSlidePosition;
     private static final double COUNTS_PER_REVOLUTION = 1680;
 
-    public Intake (DcMotorEx lift, DcMotorEx slide, DcMotorEx intakeLift, DcMotorEx depositor, Servo basket, CRServo intake, Servo trapdoor) {
+    public Intake (DcMotorEx lift, DcMotorEx slide, DcMotorEx depositor, DcMotorEx intakeLift, Servo basket, CRServo intake, Servo trapdoor) {
         this.lift = lift;
         this.slide = slide;
-        this.intakeLift = intakeLift;
         this.depositor = depositor;
+        this.intakeLift = intakeLift;
         this.basket = basket;
         this.trapdoor = trapdoor;
         runtime = new ElapsedTime();
-        if(intakeLift != null) {
-            intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if(depositor != null) {
+            depositor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            depositor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         if(basket != null) {
             basket.setDirection(Servo.Direction.FORWARD);
@@ -44,7 +44,7 @@ public class Intake{
         }
         intakePosition = IntakePosition.UP;
         slidePosition = SlidePosition.IN;
-        baseDepositorPosition = depositor.getCurrentPosition();
+        baseDepositorPosition = intakeLift.getCurrentPosition();
     }
 
     public enum IntakePosition {
@@ -72,7 +72,7 @@ public class Intake{
 
     public int getSlideEncoderPosition() { return slide.getCurrentPosition(); }
 
-    public int getDepositorPosition() { return depositor.getCurrentPosition(); }
+    public int getDepositorPosition() { return intakeLift.getCurrentPosition(); }
 
     public void setSlidePosition(SlidePosition position) {
         this.slidePosition = position;
@@ -110,73 +110,73 @@ public class Intake{
 
     public void intakeBasket(boolean transfer /*Refers to transfer of minerals to depositing bucker*/) {
         /*if (rightBumper) { //down
-            depositor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            depositor.setTargetPosition(330);
+            intakeLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intakeLift.setTargetPosition(330);
 
-            depositor.setPower(.7);
-            //while (depositor.isBusy()) {
-            telemetry.addData("Motor Position", depositor.getCurrentPosition());
-            telemetry.addData("Is Busy", depositor.isBusy());
+            intakeLift.setPower(.7);
+            //while (intakeLift.isBusy()) {
+            telemetry.addData("Motor Position", intakeLift.getCurrentPosition());
+            telemetry.addData("Is Busy", intakeLift.isBusy());
             telemetry.update();
             //}
-            //depositor.setPower(0);
+            //intakeLift.setPower(0);
         }
         else if (leftBumper) { //halfway
-            depositor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            depositor.setTargetPosition(150);
+            intakeLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intakeLift.setTargetPosition(150);
 
-            depositor.setPower(.1);
-            telemetry.addData("Motor Position", depositor.getCurrentPosition());
-            telemetry.addData("Is Busy", depositor.isBusy());
+            intakeLift.setPower(.1);
+            telemetry.addData("Motor Position", intakeLift.getCurrentPosition());
+            telemetry.addData("Is Busy", intakeLift.isBusy());
             telemetry.update();
         }
         else {
-            depositor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            depositor.setPower(0);
+            intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            intakeLift.setPower(0);
         }*/
 
 
-        //depositor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        if(depositor.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
-            depositor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //intakeLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if(intakeLift.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
+            intakeLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         if (transfer) {
-            depositor.setTargetPosition(baseDepositorPosition);
-            depositor.setPower(.5);
+            intakeLift.setTargetPosition(baseDepositorPosition);
+            intakeLift.setPower(.5);
         }
 
         else {
-            depositor.setTargetPosition(baseDepositorPosition + 450);
-            depositor.setPower(.15);
+            intakeLift.setTargetPosition(baseDepositorPosition + 450);
+            intakeLift.setPower(.15);
         }
 
-        depositor.setPower(0);
+        intakeLift.setPower(0);
 
         /*switch(intakePosition) {
             case UP:
-                depositor.setTargetPosition(baseDepositorPosition);
-                depositor.setPower(.5);
+                intakeLift.setTargetPosition(baseDepositorPosition);
+                intakeLift.setPower(.5);
                 break;
             case HORIZONTAL:
-                depositor.setTargetPosition(baseDepositorPosition - 150);
-                depositor.setPower(.15);
+                intakeLift.setTargetPosition(baseDepositorPosition - 150);
+                intakeLift.setPower(.15);
                 break;
             case DOWN:
             default:
-                depositor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                depositor.setPower(0);
+                intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                intakeLift.setPower(0);
                 break;*/
     }
 
     public void intakeBasket(double power) {
-        if(depositor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
-            depositor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        depositor.setPower(.5 * power);
+        if(intakeLift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+            intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeLift.setPower(.5 * power);
     }
 
     public void lockIntake() {
-        intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeLift.setPower(0);
+        depositor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        depositor.setPower(0);
     }
 
     public void outtake(double power) {
@@ -197,9 +197,12 @@ public class Intake{
             slide.setTargetPosition(baseSlidePosition + 4100);
         slide.setPower(.5);
 
-        slide.setPower(0);
-
         return true; //method finished
+    }
+
+    public void resetSlidePosition() {
+        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public double moveSlide(double power) {
@@ -209,15 +212,8 @@ public class Intake{
         return slide.getCurrentPosition();
     }
 
-    public void moveIntake(double power) {
-        if (power < 0)
-            controlBasket(0.1);
-        if (power < 0)
-            intakeLift.setPower(.3);
-        else if (power > 0)
-            intakeLift.setPower(-.1);
-        else
-            intakeLift.setPower(0);
+    public void moveDepositor(double power) {
+        depositor.setPower(power);
     }
 
     public void controlBasket(double servo) {

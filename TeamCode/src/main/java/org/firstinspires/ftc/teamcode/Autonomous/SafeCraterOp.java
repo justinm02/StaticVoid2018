@@ -39,7 +39,7 @@ public class SafeCraterOp extends AutoOp {
         }
         runtime.reset();
         while(runtime.seconds() < 1)
-            intake.moveIntake(-.1);
+            intake.moveDepositor(-.1);
     }
 
 }
