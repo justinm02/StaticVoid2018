@@ -55,8 +55,6 @@ public class BuggleCam {
                         silverMineral2X = (int) (recognition.getRight() + recognition.getLeft()) / 2;
                     telemetry.addData("Recognition" + ++recognitionNum, recognition.getLabel());
                     telemetry.addData("Recognition Position", (recognition.getLeft() + recognition.getRight()) / 2);
-                    System.out.println("RECOGNITION " + recognitionNum + ": " + recognition.getLabel()
-                     + "\nPosition: " + (int) ((recognition.getRight() + recognition.getLeft()) / 2));
                 }
                 if(goldMineralX != -1) {
                     //Test closest value 0, 600, and 1200
@@ -91,6 +89,7 @@ public class BuggleCam {
                 }
             }
         }
+        telemetry.update();
     }
 
     public GOLD_POSITION getGoldPosition() {
@@ -116,7 +115,7 @@ public class BuggleCam {
 
         //Construct correct parameters for TensorFlow
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.7;
+        tfodParameters.minimumConfidence = 0.4;
         //Instantiate TensorFlow Object
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset("RoverRuckus.tflite", "Gold Mineral", "Silver Mineral");

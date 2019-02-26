@@ -21,7 +21,8 @@ public class MarkerAutoOp extends AutoOp {
         //Descend robot from Lander, move off the hook
         lowerBot();
 
-        rotateDegrees(90);
+        longitudinalDistance(6);
+        rotateDegrees(-90);
         //Locates the gold mineral from one of the three given locations
         prospect();
 
@@ -31,6 +32,7 @@ public class MarkerAutoOp extends AutoOp {
             telemetry.update();
         }
 */
+        rotateDegrees(90);
         //Move bot based on where the Gold Mineral is, knocks it, and moves to above the rightmost mineral
         intake.lockIntake();
         switch(cam.getGoldPosition()) {
@@ -61,7 +63,7 @@ public class MarkerAutoOp extends AutoOp {
                 break;
             case CENTER:
             case NULL:
-                longitudinalDistance(52);
+                longitudinalDistance(46);
                 dispenseMarker();
                 resetPosition();
                 rotatePreciseDegrees(90);

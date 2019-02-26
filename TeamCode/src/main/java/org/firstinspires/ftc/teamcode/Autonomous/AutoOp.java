@@ -61,8 +61,10 @@ public abstract class AutoOp extends LinearOpMode {
                 hardwareMap.get(DcMotorEx.class, "intakeLift"),
                 hardwareMap.get(DcMotorEx.class, "depositor"),
                 hardwareMap.servo.get("basket"),
-                hardwareMap.get(CRServo.class, "intake"), hardwareMap.servo.get("trapdoor"));
-        //intake.setTelemetry(this.telemetry);
+                hardwareMap.get(CRServo.class, "intake"),
+                hardwareMap.servo.get("trapdoor"),
+                hardwareMap.servo.get("phoneMount"));
+        intake.setTelemetry(this.telemetry);
 
         //intake.controlBasket(1f);
 
@@ -99,7 +101,7 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     protected void lowerBot(double power) {
-        intake.liftPosition(55413 * LIFT_COUNTS_PER_INCH);
+        intake.liftPosition(10000 * LIFT_COUNTS_PER_INCH);
     }
 
     //Locates the gold mineral from one of the three given locations
@@ -111,18 +113,16 @@ public abstract class AutoOp extends LinearOpMode {
         resetHeading();
         rotatedLeft = false;
         rotatedRight = false;
+        rotatePhoneMount(.5);
 
         while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL && runtime.seconds() < 8 && opModeIsActive()) {
-        //while(opModeIsActive()) {
-            //cam.betterUpdate(telemetry);
+            cam.betterUpdate(telemetry);
             //telemetry.update();
             if(runtime.seconds() > 3 && !rotatedRight) {
-                rotateDegrees(10);
-                rotatedRight = true;
+                rotatePhoneMount(.65);
             }
             if(runtime.seconds() > 6 & !rotatedLeft && cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
-                rotateDegrees(-20);
-                rotatedLeft = true;
+                rotatePhoneMount(.35);
             }
         }
         if(rotatedRight && !rotatedLeft)
@@ -194,6 +194,10 @@ public abstract class AutoOp extends LinearOpMode {
             intake.lift(.3);
         }
         intake.lift(0);
+    }
+
+    public void rotatePhoneMount(double position) {
+        intake.rotatePhoneMount(position);
     }
 
     public void rotate(float power) {
@@ -303,6 +307,7 @@ public abstract class AutoOp extends LinearOpMode {
             telemetry.addData("Desired Heading", desiredHeading);
             telemetry.addData("Current Heading", currentAngle());*/
             //telemetry.update();
+            intake.intakeBasket(0);
         }
         for (DcMotorEx motor : motors) {
             motor.setPower(0);

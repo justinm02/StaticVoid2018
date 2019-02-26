@@ -9,7 +9,7 @@ import static java.lang.Thread.sleep;
 public class Intake{
 
     private DcMotorEx lift, slide, depositor, intakeLift;
-    private Servo basket, trapdoor;
+    private Servo basket, trapdoor, phoneMount;
     private CRServo intake;
     private Telemetry telemetry;
     public ElapsedTime runtime;
@@ -21,13 +21,14 @@ public class Intake{
     public int baseSlidePosition;
     private static final double COUNTS_PER_REVOLUTION = 1680;
 
-    public Intake (DcMotorEx lift, DcMotorEx slide, DcMotorEx depositor, DcMotorEx intakeLift, Servo basket, CRServo intake, Servo trapdoor) {
+    public Intake (DcMotorEx lift, DcMotorEx slide, DcMotorEx depositor, DcMotorEx intakeLift, Servo basket, CRServo intake, Servo trapdoor, Servo phoneMount) {
         this.lift = lift;
         this.slide = slide;
         this.depositor = depositor;
         this.intakeLift = intakeLift;
         this.basket = basket;
         this.trapdoor = trapdoor;
+        this.phoneMount = phoneMount;
         runtime = new ElapsedTime();
         if(depositor != null) {
             depositor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -94,15 +95,15 @@ public class Intake{
     }
 
     public void liftPosition(double ticks) {
-        resetEncoders();
+        resetEncoders(); //GAY GAY GAY GAY GAY GAY GAY gAY gay
         lift.setTargetPosition((int) (ticks));
         lift.setPower(1);
         runtime.reset();
-        while(lift.isBusy() && runtime.seconds() < 5) {
-            //telemetry.addData("Status", "Lifting");
-            //telemetry.addData("Desired Position", ticks);
-            //telemetry.addData("Current Position", lift.getCurrentPosition());
-            //telemetry.update();
+        while(lift.isBusy() && runtime.seconds() < 3.5) {
+            telemetry.addData("Status", "Lifting");
+            telemetry.addData("Desired Position", ticks);
+            telemetry.addData("Current Position", lift.getCurrentPosition());
+            telemetry.update();
         }
         lift.setPower(0);
 
@@ -175,8 +176,9 @@ public class Intake{
     }
 
     public void lockIntake() {
-        depositor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        depositor.setPower(0);
+        intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeLift.setPower(0);
     }
 
     public void outtake(double power) {
@@ -222,6 +224,10 @@ public class Intake{
 
     public void toggleTrapDoor() {
         trapdoor.setPosition(1 - trapdoor.getPosition());
+    }
+
+    public void rotatePhoneMount(double position) {
+        phoneMount.setPosition(position);
     }
 
 }

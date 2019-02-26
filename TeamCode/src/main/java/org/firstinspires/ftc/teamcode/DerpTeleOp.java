@@ -86,7 +86,8 @@ public class DerpTeleOp extends OpMode {
                 hardwareMap.get(DcMotorEx.class, "intakeLift"),
                 hardwareMap.servo.get("basket"),
                 hardwareMap.get(CRServo.class, "intake"),
-                hardwareMap.servo.get("trapdoor"));
+                hardwareMap.servo.get("trapdoor"),
+                hardwareMap.servo.get("phoneMount"));
 
         telemetry.addData("Slide position", intakeMotors.getSlideEncoderPosition());
 
@@ -104,7 +105,7 @@ public class DerpTeleOp extends OpMode {
     }
 
     public void mecanumTrain() {
-        driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
+        driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
     }
 
     /*
