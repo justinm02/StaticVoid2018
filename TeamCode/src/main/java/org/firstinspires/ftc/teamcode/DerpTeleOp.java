@@ -105,7 +105,10 @@ public class DerpTeleOp extends OpMode {
     }
 
     public void mecanumTrain() {
-        driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
+        if(gamepad1.left_bumper)
+            driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
+        else
+            driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
     }
 
     /*
