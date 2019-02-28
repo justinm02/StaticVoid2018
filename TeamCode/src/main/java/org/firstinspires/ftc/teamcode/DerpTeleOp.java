@@ -5,25 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.teamcode.Robot.DriveTrain;
 import org.firstinspires.ftc.teamcode.Robot.Intake;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 @SuppressWarnings("Duplicate")
 @TeleOp(name = "TeleOp", group = "TeleOp")
 public class DerpTeleOp extends OpMode {
 
-    private boolean isSurprising, aDepressed, xDepressed, rightBumper, leftBumper;
-    private double targetXPower, targetYPower;
+    private boolean aDepressed;
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
-    private DcMotorEx lift, intakeLift, intakeSpool, intake;
     private DriveTrain driveTrain;
     private Intake intakeMotors;
-    private ElapsedTime timer;
 
     @Override
     public void init() {
-        targetXPower = 0;
-        targetYPower = 0;
-        timer = new ElapsedTime();
         //Initalize each motor from the Hardware Map on the phone
         rearLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         rearRight = hardwareMap.get(DcMotorEx.class, "backRight");
@@ -31,50 +24,27 @@ public class DerpTeleOp extends OpMode {
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
 
 
-        lift = hardwareMap.get(DcMotorEx.class, "lift");
-        /*
-        intakeLift = hardwareMap.get(DcMotorEx.class, "intakeLift");
-        intakeSpool = hardwareMap.get(DcMotorEx.class, "intakeSpool");
-        intake = hardwareMap.get(DcMotorEx.class, "intake");
-        */
+        DcMotorEx lift = hardwareMap.get(DcMotorEx.class, "lift");
 
         //Set each motor to run using encoders
         rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-        /*
-        intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeSpool.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
 
         //Set the motors to brake when no power is given
         rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        /*
-        intakeLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        */
 
 
         //Reverse the right motors
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-        isSurprising = false;
 
 
         //Instantiate Drive Train class with instantiated motors
@@ -90,17 +60,14 @@ public class DerpTeleOp extends OpMode {
                 hardwareMap.servo.get("phoneMount"));
 
         telemetry.addData("Slide position", intakeMotors.getSlideEncoderPosition());
-
     }
 
     @Override
     public void loop() {
-        telemetry.addData("Depositor position", intakeMotors.getDepositorPosition());
-        telemetry.update();
         controlIntake();
         controlLift();
         mecanumTrain();
-        controlBasket();
+        controlMarkerDepositor();
         sendTelemetry();
     }
 
@@ -109,32 +76,6 @@ public class DerpTeleOp extends OpMode {
             driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
         else
             driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
-    }
-
-    /*
-     * Moves the Robot in the four cardinal directions depending on which axis is being pushed furthest on the right stick
-     * Goes forward, backward, left, or right.
-     */
-    public void fourDirectionalMovement() {
-        targetXPower = -gamepad1.left_stick_x;
-        targetYPower = -gamepad1.left_stick_y;
-
-        if(!gamepad1.right_bumper){
-            targetYPower *= .3;
-            targetXPower *= .5;
-        }
-
-        if(Math.abs(gamepad1.left_stick_x) > Math.abs(gamepad1.left_stick_y)) {
-            driveTrain.rotate((float) -targetXPower * .75f);
-        } else {
-            if (targetYPower < 0) {
-                driveTrain.longitudinal(targetYPower);
-            } else if (targetYPower > 0) {
-                driveTrain.combinedDirections(targetXPower * 0.75f, targetYPower);
-            } else if (targetYPower == 0) {
-                driveTrain.rotate((float) (targetXPower * .75f));
-            }
-        }
     }
 
     public void controlIntake() {
@@ -147,6 +88,7 @@ public class DerpTeleOp extends OpMode {
 
         if(!gamepad2.a && aDepressed)
             intakeMotors.toggleTrapDoor();
+        aDepressed = gamepad2.a;
 
         if(gamepad2.dpad_up) {
             intakeMotors.moveDepositor(.3);
@@ -164,20 +106,9 @@ public class DerpTeleOp extends OpMode {
 
         intakeMotors.moveSlide(-gamepad2.left_stick_y * .5);
 
-        if (!gamepad2.y)
-            intakeMotors.intakeBasket(gamepad2.right_stick_y * .25); //manual control
-        else
-            intakeMotors.intakeBasket(.1625);
+        intakeMotors.intakeBasket(gamepad2.right_stick_y * .25); //manual control
 
         telemetry.addData("Intake Position", intakeMotors.getIntakePosition());
-
-        //intakeMotors.intakeBasket(); //automatic control
-
-        aDepressed = gamepad2.a;
-        xDepressed = gamepad2.x;
-        rightBumper = gamepad2.right_bumper;
-        leftBumper = gamepad2.left_bumper;
-
     }
 
     //Up on left stick to raise lift, down on left stick to retract lift, scales with force on stick
@@ -190,12 +121,11 @@ public class DerpTeleOp extends OpMode {
             intakeMotors.lift(0);
     }
 
-    public void controlBasket() {
+    public void controlMarkerDepositor() {
         if(gamepad2.dpad_left)
-            intakeMotors.controlBasket(1);
+            intakeMotors.markerDepositor(1);
         else if(gamepad2.dpad_right)
-            intakeMotors.controlBasket(0);
-        //
+            intakeMotors.markerDepositor(0);
     }
 
     public void sendTelemetry() {
@@ -206,6 +136,7 @@ public class DerpTeleOp extends OpMode {
         telemetry.addData("Target Front Pos", "Left: (%d) | Right: (%d)", frontLeft.getTargetPosition(), frontRight.getTargetPosition());
         telemetry.addData("A Button: ", gamepad2.a);
         telemetry.addData("GamePad2 Right Stick Y", -gamepad2.right_stick_y);
+        telemetry.addData("Depositor position", intakeMotors.getDepositorPosition());
         telemetry.update();
     }
 }

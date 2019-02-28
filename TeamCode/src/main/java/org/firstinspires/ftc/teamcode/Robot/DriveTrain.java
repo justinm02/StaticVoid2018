@@ -60,51 +60,6 @@ public class DriveTrain {
         rearLeft.setPower(yPower - xPower);
     }
 
-    //This code is ONLY for Mecanum DriveTrain
-
-
-    //For some reason, when going up and to the left, frontRight and BackLeft are negative
-    public void omniDirectionalMovement(double xPower, double yPower) {
-        double magnitude = getMagnitude(xPower, yPower);
-        if(yPower > 0 && xPower > 0) {
-            frontRight.setPower(magnitude);
-            rearLeft.setPower(magnitude);
-
-            frontLeft.setPower(yPower - xPower);
-            rearRight.setPower(yPower - xPower);
-        } else if(yPower > 0 && xPower < 0) {
-            frontLeft.setPower(magnitude);
-            rearRight.setPower(magnitude);
-
-            frontRight.setPower(yPower - xPower);
-            rearLeft.setPower(yPower - xPower);
-        } else if(yPower < 0 && xPower > 0) {
-            frontLeft.setPower(-magnitude);
-            rearRight.setPower(-magnitude);
-
-            frontRight.setPower(yPower + xPower);
-            rearLeft.setPower(yPower + xPower);
-        } else if(yPower < 0 && xPower < 0) {
-            frontRight.setPower(-magnitude);
-            rearLeft.setPower(-magnitude);
-
-            frontLeft.setPower(yPower + xPower);
-            rearRight.setPower(yPower + xPower);
-        } else if(xPower == 0) {
-            frontLeft.setPower(yPower);
-            frontRight.setPower(yPower);
-            rearLeft.setPower(yPower);
-            rearRight.setPower(yPower);
-        } else if(yPower == 0) {
-            frontRight.setPower(xPower);
-            rearLeft.setPower(xPower);
-
-            frontLeft.setPower(-xPower);
-            rearRight.setPower(-xPower);
-        }
-
-    }
-
     public void newOmni(double xPower, double yPower /* Takes the exact value of the stick */, double rotatePower, boolean precision) {
         double x = Math.hypot(xPower, yPower);
         double stickAngle = Math.atan2(-yPower, xPower); // desired robot angle from the angle of stick

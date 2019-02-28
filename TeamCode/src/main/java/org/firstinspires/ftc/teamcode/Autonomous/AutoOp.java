@@ -5,13 +5,11 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.sun.tools.javac.tree.DCTree;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot.BuggleCam;
-import org.firstinspires.ftc.teamcode.Robot.DriveTrain;
 import org.firstinspires.ftc.teamcode.Robot.Intake;
 
 import java.io.File;
@@ -20,7 +18,6 @@ import java.io.File;
 public abstract class AutoOp extends LinearOpMode {
 
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
-    private DcMotorEx lift;
     protected ElapsedTime runtime;
     private BNO055IMU imu;
     protected DistanceSensor distanceSensor;
@@ -38,13 +35,6 @@ public abstract class AutoOp extends LinearOpMode {
     private File surprise = new File("/sdcard/FIRST/blocks/sounds/Africa by Toto.mp3");
 
     boolean rotatedLeft = false, rotatedRight = false;
-
-    //Order of Operations:
-    //
-    //1) Lower Robot
-    //2) Knock Gold Square
-    //3) Place Marker
-    //4) Lean on Crater
 
     public void initialize() {
         runtime = new ElapsedTime();
@@ -66,7 +56,7 @@ public abstract class AutoOp extends LinearOpMode {
                 hardwareMap.servo.get("phoneMount"));
         intake.setTelemetry(this.telemetry);
 
-        //intake.controlBasket(1f);
+        //intake.markerDepositor(1f);
 
         //Reverse the Right Motors
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -89,7 +79,7 @@ public abstract class AutoOp extends LinearOpMode {
         resetEncoders();
         intake.resetEncoders();
         intake.lockIntake();
-        intake.controlBasket(0);
+        intake.markerDepositor(0);
     }
 
     //Loop required for all Autonomous modes
@@ -137,17 +127,17 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     protected void dispenseMarker() {
-        intake.controlBasket(1);
+        intake.markerDepositor(1);
         runtime.reset();
         while(runtime.seconds() < 1 && opModeIsActive()) {
             telemetry.addData("Status", "Depositing Marker");
             telemetry.update();
         }
-        intake.controlBasket(0);
+        intake.markerDepositor(0);
     }
 
     protected void dispenseMarker(int servoPosition) {
-        intake.controlBasket(servoPosition);
+        intake.markerDepositor(servoPosition);
     }
 
     protected void playSurprise() {
@@ -226,10 +216,10 @@ public abstract class AutoOp extends LinearOpMode {
         }
 
         while(Math.abs((int) desiredHeading - (int) currentAngle()) > 3 && opModeIsActive()) {
-            /*telemetry.addData("Status", "Rotating (Precise) " + degrees + " Degrees");
+            telemetry.addData("Status", "Rotating (Precise) " + degrees + " Degrees");
             telemetry.addData("Current Angle", currentAngle());
-            telemetry.addData("Desired Angle", desiredHeading);*/
-            //telemetry.update();
+            telemetry.addData("Desired Angle", desiredHeading);
+            telemetry.update();
             if(Math.abs(desiredHeading - currentAngle()) <= 10) {
                 if(desiredHeading < currentAngle()) {
                     rotate(power * .2f);
@@ -272,10 +262,10 @@ public abstract class AutoOp extends LinearOpMode {
         }
 
         while((int) desiredHeading != (int) currentAngle() && opModeIsActive()) {
-            /*telemetry.addData("Status", "Rotating (Coarse) " + degrees + " Degrees");
+            telemetry.addData("Status", "Rotating (Coarse) " + degrees + " Degrees");
             telemetry.addData("Current Angle", currentAngle());
-            telemetry.addData("Desired Angle", desiredHeading);*/
-            //telemetry.update();
+            telemetry.addData("Desired Angle", desiredHeading);
+            telemetry.update();
             if(Math.abs(desiredHeading - currentAngle()) <= 3) {
                 break;
             } else {
@@ -305,11 +295,10 @@ public abstract class AutoOp extends LinearOpMode {
             motor.setPower(power);
         }
         while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy() && opModeIsActive()) {
-        //&& (!(distanceSensor.getDistance(DistanceUnit.CM) < 5) && !(colorSensor.getDistance(DistanceUnit.CM) < 5))) {
             telemetry.addData("Status", "Moving");
             telemetry.addData("Desired Heading", desiredHeading);
             telemetry.addData("Current Heading", currentAngle());
-            //telemetry.update();
+            telemetry.update();
             intake.intakeBasket(0);
         }
         for (DcMotorEx motor : motors) {
@@ -322,30 +311,24 @@ public abstract class AutoOp extends LinearOpMode {
         int ticks = (int) (inches * COUNTS_PER_INCH);
         if (dir.equals("right")) {
             frontLeft.setTargetPosition(ticks);
-            frontLeft.setPower(power);
             rearLeft.setTargetPosition(-ticks);
-            rearLeft.setPower(-power);
             frontRight.setTargetPosition(-ticks);
-            frontRight.setPower(-power);
             rearRight.setTargetPosition(ticks);
-            rearRight.setPower(power);
         }
         else if (dir.equals("left")) {
             frontLeft.setTargetPosition(-ticks);
-            frontLeft.setPower(-power);
             rearLeft.setTargetPosition(ticks);
-            rearLeft.setPower(power);
             frontRight.setTargetPosition(ticks);
-            frontRight.setPower(power);
             rearRight.setTargetPosition(-ticks);
-            rearRight.setPower(-power);
         }
+
+        for(DcMotorEx motor : motors)
+            motor.setPower(power);
+
         while (frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy()) {}
 
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        rearLeft.setPower(0);
-        rearRight.setPower(0);
+        for(DcMotorEx motor : motors)
+            motor.setPower(0);
         resetEncoders();
     }
 

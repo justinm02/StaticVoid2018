@@ -9,24 +9,23 @@ import static java.lang.Thread.sleep;
 public class Intake{
 
     private DcMotorEx lift, slide, depositor, intakeLift;
-    private Servo basket, trapdoor, phoneMount;
+    private Servo markerDepositor, trapdoor, phoneMount;
     private CRServo intake;
     private Telemetry telemetry;
-    public ElapsedTime runtime;
+    private ElapsedTime runtime;
 
     private IntakePosition intakePosition;
     private SlidePosition slidePosition;
 
     private int baseDepositorPosition, baseScorePosition;
     public int baseSlidePosition;
-    private static final double COUNTS_PER_REVOLUTION = 1680;
 
-    public Intake (DcMotorEx lift, DcMotorEx slide, DcMotorEx depositor, DcMotorEx intakeLift, Servo basket, CRServo intake, Servo trapdoor, Servo phoneMount) {
+    public Intake (DcMotorEx lift, DcMotorEx slide, DcMotorEx depositor, DcMotorEx intakeLift, Servo markerDepositor, CRServo intake, Servo trapdoor, Servo phoneMount) {
         this.lift = lift;
         this.slide = slide;
         this.depositor = depositor;
         this.intakeLift = intakeLift;
-        this.basket = basket;
+        this.markerDepositor = markerDepositor;
         this.trapdoor = trapdoor;
         this.phoneMount = phoneMount;
         runtime = new ElapsedTime();
@@ -35,9 +34,9 @@ public class Intake{
             depositor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             baseScorePosition = depositor.getCurrentPosition();
         }
-        if(basket != null) {
-            basket.setDirection(Servo.Direction.FORWARD);
-            basket.setPosition(0);
+        if(markerDepositor != null) {
+            markerDepositor.setDirection(Servo.Direction.FORWARD);
+            markerDepositor.setPosition(0);
         }
         this.intake = intake;
         if(slide != null) {
@@ -72,13 +71,13 @@ public class Intake{
         return slidePosition;
     }
 
-    public int getSlideEncoderPosition() { return slide.getCurrentPosition(); }
-
-    public int getDepositorPosition() { return depositor.getCurrentPosition(); }
-
     public void setSlidePosition(SlidePosition position) {
         this.slidePosition = position;
     }
+
+    public int getSlideEncoderPosition() { return slide.getCurrentPosition(); }
+
+    public int getDepositorPosition() { return depositor.getCurrentPosition(); }
 
     public void setTelemetry(Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -111,34 +110,6 @@ public class Intake{
     }
 
     public void intakeBasket(boolean transfer /*Refers to transfer of minerals to depositing bucker*/) {
-        /*if (rightBumper) { //down
-            intakeLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intakeLift.setTargetPosition(330);
-
-            intakeLift.setPower(.7);
-            //while (intakeLift.isBusy()) {
-            telemetry.addData("Motor Position", intakeLift.getCurrentPosition());
-            telemetry.addData("Is Busy", intakeLift.isBusy());
-            telemetry.update();
-            //}
-            //intakeLift.setPower(0);
-        }
-        else if (leftBumper) { //halfway
-            intakeLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intakeLift.setTargetPosition(150);
-
-            intakeLift.setPower(.1);
-            telemetry.addData("Motor Position", intakeLift.getCurrentPosition());
-            telemetry.addData("Is Busy", intakeLift.isBusy());
-            telemetry.update();
-        }
-        else {
-            intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            intakeLift.setPower(0);
-        }*/
-
-
-        //intakeLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         if(intakeLift.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
             intakeLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -153,21 +124,6 @@ public class Intake{
         }
 
         intakeLift.setPower(0);
-
-        /*switch(intakePosition) {
-            case UP:
-                intakeLift.setTargetPosition(baseDepositorPosition);
-                intakeLift.setPower(.5);
-                break;
-            case HORIZONTAL:
-                intakeLift.setTargetPosition(baseDepositorPosition - 150);
-                intakeLift.setPower(.15);
-                break;
-            case DOWN:
-            default:
-                intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                intakeLift.setPower(0);
-                break;*/
     }
 
     public void intakeBasket(double power) {
@@ -224,8 +180,8 @@ public class Intake{
             trapdoor.setPosition(position);
     }
 
-    public void controlBasket(double servo) {
-        basket.setPosition(servo);
+    public void markerDepositor(double servo) {
+        markerDepositor.setPosition(servo);
     }
 
     public void toggleTrapDoor() {
