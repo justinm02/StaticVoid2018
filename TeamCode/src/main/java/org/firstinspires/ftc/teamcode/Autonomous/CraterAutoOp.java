@@ -15,6 +15,8 @@ public class CraterAutoOp extends AutoOp {
         //Descend robot from Lander, move off the hook
         lowerBot();
 
+        longitudinalDistance(6);
+
         rotateDegrees(-90); //turn towards minerals
         //Locates the gold mineral from one of the three given locations
         prospect();
@@ -23,7 +25,7 @@ public class CraterAutoOp extends AutoOp {
         //Move bot based on where the Gold Mineral is, knocks it, and continues into friendly team's crater
         switch(cam.getGoldPosition()) {
             case LEFT:
-                longitudinalDistance(8);
+                longitudinalDistance(5);
                 rotateDegrees(-35);
                 longitudinalDistance(24);
                 longitudinalDistance(-12);
@@ -31,26 +33,29 @@ public class CraterAutoOp extends AutoOp {
                 longitudinalDistance(54);
                 break;
             case RIGHT:
-                longitudinalDistance(12);
+                longitudinalDistance(5);
                 rotateDegrees(45);
-                longitudinalDistance(24);
-                longitudinalDistance(-12);
+                longitudinalDistance(18);
+                longitudinalDistance(-6);
                 rotatePreciseDegrees(-135);
                 longitudinalDistance(54);
                 break;
             case CENTER:
             case NULL:
-                longitudinalDistance(36);
+                longitudinalDistance(18);
                 resetPosition();
-                rotatePreciseDegrees(-90);
-                longitudinalDistance(54);
+                rotatePreciseDegrees(-80);
+                longitudinalDistance(36);
                 break;
         }
-        rotatePreciseDegrees(-43);
-        longitudinalDistance(32);
+        rotateDegrees(125);
+        strafe(26, .3, "left");
+        strafe(4, .3, "right");
+        //rotatePreciseDegrees(135);
+        longitudinalDistance(-40);
         dispenseMarker();
-        rotateDegrees(-10);
-        longitudinalDistance(-56, 0.5f);
+        //strafe(10, .3, "right");
+        longitudinalDistance(60, 0.5f);
         park();
     }
 }

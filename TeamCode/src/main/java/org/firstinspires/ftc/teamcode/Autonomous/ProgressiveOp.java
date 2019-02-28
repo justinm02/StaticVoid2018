@@ -27,6 +27,7 @@ public class ProgressiveOp extends AutoOp {
 
         initialize();
         waitForStart();
+        prospect();
         resetHeading();
         park();
 

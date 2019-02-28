@@ -102,7 +102,7 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     protected void lowerBot(double power) {
-        intake.liftPosition(10000 * LIFT_COUNTS_PER_INCH);
+        intake.liftPosition(5000 * LIFT_COUNTS_PER_INCH);
     }
 
     //Locates the gold mineral from one of the three given locations
@@ -116,20 +116,22 @@ public abstract class AutoOp extends LinearOpMode {
         rotatedRight = false;
         rotatePhoneMount(.5);
 
-        while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL && runtime.seconds() < 8 && opModeIsActive()) {
+        while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL && runtime.seconds() < 6 && opModeIsActive()) {
             cam.betterUpdate(telemetry);
             //telemetry.update();
-            if(runtime.seconds() > 3 && !rotatedRight) {
-                rotatePhoneMount(.7);
+            if(runtime.seconds() > 2 && !rotatedRight) {
+                rotatePhoneMount(.65);
+                rotatedRight = true;
             }
-            if(runtime.seconds() > 6 & !rotatedLeft && cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
-                rotatePhoneMount(.3);
+            if(runtime.seconds() > 4 & !rotatedLeft && cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
+                rotatePhoneMount(.35);
+                rotatedLeft = true;
             }
         }
         if(rotatedRight && !rotatedLeft)
-            rotateDegrees(-10);
+            cam.setGoldPosition(BuggleCam.GOLD_POSITION.RIGHT);
         else if(rotatedRight)
-            rotateDegrees(10);
+            cam.setGoldPosition(BuggleCam.GOLD_POSITION.LEFT);
         cam.stopTFOD();
 
     }
@@ -138,8 +140,8 @@ public abstract class AutoOp extends LinearOpMode {
         intake.controlBasket(1);
         runtime.reset();
         while(runtime.seconds() < 1 && opModeIsActive()) {
-            //telemetry.addData("Status", "Depositing Marker");
-            //telemetry.update();
+            telemetry.addData("Status", "Depositing Marker");
+            telemetry.update();
         }
         intake.controlBasket(0);
     }
@@ -175,9 +177,9 @@ public abstract class AutoOp extends LinearOpMode {
             motor.setPower(-.2);
         }
         while((int) distanceSensor.getDistance(DistanceUnit.CM) > 50 && opModeIsActive()) {
-            //telemetry.addData("Status", "Resetting Position");
-            //telemetry.addData("Distance", (int) distanceSensor.getDistance(DistanceUnit.CM));
-            //telemetry.update();
+            telemetry.addData("Status", "Resetting Position");
+            telemetry.addData("Distance", (int) distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.update();
             if((int) distanceSensor.getDistance(DistanceUnit.CM) < 80)
                 for(DcMotorEx motor : motors)
                     motor.setPower(-.1);
@@ -191,8 +193,8 @@ public abstract class AutoOp extends LinearOpMode {
     public void park() {
         //rotatePreciseDegrees(-170);
         runtime.reset();
-        while(opModeIsActive() && runtime.seconds() < 1.5) {
-            intake.lift(-.3);
+        while(opModeIsActive() && runtime.seconds() < 3) {
+            intake.lift(-.6);
         }
         intake.lift(0);
     }
@@ -291,7 +293,7 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     public void longitudinalDistance(double inches) {
-        longitudinalDistance(inches, .7);
+        longitudinalDistance(inches, .5);
     }
 
     public void longitudinalDistance(double inches, double power) {
@@ -304,9 +306,9 @@ public abstract class AutoOp extends LinearOpMode {
         }
         while(frontLeft.isBusy() && frontRight.isBusy() && rearLeft.isBusy() && rearRight.isBusy() && opModeIsActive()) {
         //&& (!(distanceSensor.getDistance(DistanceUnit.CM) < 5) && !(colorSensor.getDistance(DistanceUnit.CM) < 5))) {
-            /*telemetry.addData("Status", "Moving");
+            telemetry.addData("Status", "Moving");
             telemetry.addData("Desired Heading", desiredHeading);
-            telemetry.addData("Current Heading", currentAngle());*/
+            telemetry.addData("Current Heading", currentAngle());
             //telemetry.update();
             intake.intakeBasket(0);
         }

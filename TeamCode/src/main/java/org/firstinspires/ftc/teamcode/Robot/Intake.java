@@ -36,7 +36,7 @@ public class Intake{
         }
         if(basket != null) {
             basket.setDirection(Servo.Direction.FORWARD);
-            basket.setPosition(1);
+            basket.setPosition(0);
         }
         this.intake = intake;
         if(slide != null) {

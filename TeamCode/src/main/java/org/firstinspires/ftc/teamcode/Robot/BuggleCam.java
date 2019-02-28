@@ -17,6 +17,7 @@ public class BuggleCam {
 
     private int foundMinerals;
 
+
     private GOLD_POSITION goldPosition;
 
     public enum GOLD_POSITION {
@@ -33,41 +34,44 @@ public class BuggleCam {
         foundMinerals = 0;
     }
 
-
+    public void setGoldPosition(GOLD_POSITION position) {
+        this.goldPosition = position;
+    }
 
     public void betterUpdate(Telemetry telemetry) {
-        telemetry.addData("Status", "Prospecting Better");
+        double getBottom = 0;
+        foundMinerals++;
+        this.telemetry.addData("Status", "Prospecting Better");
         updatedRecognitions = tfod.getUpdatedRecognitions();
+        this.telemetry.addData("Second test", updatedRecognitions == null);
         if(updatedRecognitions != null) {
-            System.out.println("Running");
-            telemetry.addData("Recognitions", updatedRecognitions.size());
+            this.telemetry.addData("Recognitions", updatedRecognitions.size());
             if(updatedRecognitions.size() >= 1) {
                 int goldMineralX = -1;
                 int silverMineral1X = -1;
                 int silverMineral2X = -1;
                 int recognitionNum = 0;
                 for(Recognition recognition : updatedRecognitions) {
-                    if(recognition.getLabel().equals("Gold Mineral"))
+                    if(recognition.getLabel().equals("Gold Mineral") && recognition.getBottom() > 900)
                         goldMineralX = (int) (recognition.getLeft() + recognition.getRight()) / 2;
-                    else if (silverMineral1X == -1)
-                        silverMineral1X = (int) (recognition.getRight() + recognition.getLeft()) / 2;
-                    else
-                        silverMineral2X = (int) (recognition.getRight() + recognition.getLeft()) / 2;
-                    telemetry.addData("Recognition" + ++recognitionNum, recognition.getLabel());
-                    telemetry.addData("Recognition Position", (recognition.getLeft() + recognition.getRight()) / 2);
+                    this.telemetry.addData("Recognition" + ++recognitionNum, recognition.getLabel());
+                    this.telemetry.addData("Recognition Position", (recognition.getLeft() + recognition.getRight()) / 2);
+                    this.telemetry.addData("Recognition Y", recognition.getBottom());
+                    getBottom = recognition.getBottom();
                 }
                 if(goldMineralX != -1) {
                     //Test closest value 0, 600, and 1200
                     //Max X value is 220
-                    if(Math.abs(goldMineralX) < Math.abs(goldMineralX - 600) && Math.abs(goldMineralX) < Math.abs(goldMineralX - 1200)){
-                        goldPosition = GOLD_POSITION.LEFT;
-                    } else if(Math.abs(goldMineralX) > Math.abs(goldMineralX - 200) && Math.abs(goldMineralX - 1200) > Math.abs(goldMineralX - 600)) {
-                        goldPosition = GOLD_POSITION.CENTER;
-                    } else {
-                        goldPosition = GOLD_POSITION.RIGHT;
-                    }
+                    goldPosition = GOLD_POSITION.CENTER;
+//                    if(Math.abs(goldMineralX) < Math.abs(goldMineralX - 600) && Math.abs(goldMineralX) < Math.abs(goldMineralX - 1200)){
+//                        goldPosition = GOLD_POSITION.LEFT;
+//                    } else if(Math.abs(goldMineralX) > Math.abs(goldMineralX - 200) && Math.abs(goldMineralX - 1200) > Math.abs(goldMineralX - 600)) {
+//                        goldPosition = GOLD_POSITION.CENTER;
+//                    } else {
+//                        goldPosition = GOLD_POSITION.RIGHT;
+//                    }
                     telemetry.addData("Gold Position", goldPosition);
-                } else if(silverMineral1X != -1 && silverMineral2X != -1) {
+                } /*else if(silverMineral1X != -1 && silverMineral2X != -1) {
                     if(silverMineral2X < silverMineral1X) {
                         int swap = silverMineral1X;
                         silverMineral1X = silverMineral2X;
@@ -86,10 +90,12 @@ public class BuggleCam {
                     } else if(Math.abs(silverMineral1X) > Math.abs(silverMineral1X - 600) && Math.abs(silverMineral1X - 1200) > Math.abs(silverMineral1X - 600)) {
                         goldPosition = GOLD_POSITION.LEFT;
                     }
-                }
+                }*/
             }
         }
-        telemetry.update();
+        this.telemetry.addData("Test", foundMinerals);
+        this.telemetry.addData("Bottom", getBottom);
+        this.telemetry.update();
     }
 
     public GOLD_POSITION getGoldPosition() {
