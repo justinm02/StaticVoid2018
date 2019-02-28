@@ -148,23 +148,18 @@ public class DerpTeleOp extends OpMode {
         if(!gamepad2.a && aDepressed)
             intakeMotors.toggleTrapDoor();
 
-        if(gamepad2.dpad_up)
+        if(gamepad2.dpad_up) {
             intakeMotors.moveDepositor(.3);
-        else if(gamepad2.dpad_down)
+            intakeMotors.setTrapDoorPosition(0);
+        } else if(gamepad2.dpad_down)
             intakeMotors.moveDepositor(-.15);
         else
             intakeMotors.moveDepositor(0);
 
 
-        if(gamepad2.x || gamepad2.b) {
-            telemetry.addData("Slide Position", intakeMotors.moveSlide(gamepad2.x));
+        if(gamepad2.b) {
+            telemetry.addData("Slide Position", intakeMotors.moveSlide());
             telemetry.addData("Slide Target Position", intakeMotors.baseSlidePosition);
-            if (gamepad2.b && intakeMotors.moveSlide(gamepad2.x))
-            {
-                intakeMotors.intakeBasket(true);
-                intakeMotors.intakeBasket(false);
-                intakeMotors.controlBasket(0);
-            }
         }
 
         intakeMotors.moveSlide(-gamepad2.left_stick_y * .5);

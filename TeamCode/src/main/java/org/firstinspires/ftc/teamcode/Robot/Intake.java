@@ -33,6 +33,7 @@ public class Intake{
         if(depositor != null) {
             depositor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             depositor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            baseScorePosition = depositor.getCurrentPosition();
         }
         if(basket != null) {
             basket.setDirection(Servo.Direction.FORWARD);
@@ -46,7 +47,6 @@ public class Intake{
         intakePosition = IntakePosition.UP;
         slidePosition = SlidePosition.IN;
         baseDepositorPosition = intakeLift.getCurrentPosition();
-        baseScorePosition = depositor.getCurrentPosition();
     }
 
     public enum IntakePosition {
@@ -190,22 +190,12 @@ public class Intake{
         intake.setPower(power);
     }
 
-    public boolean moveSlide(boolean full) {
-        //slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    public double moveSlide() {
         slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        if (full)
-            slide.setTargetPosition(baseSlidePosition + 5366);
-        else
-            slide.setTargetPosition(baseSlidePosition + 4100);
+        slide.setTargetPosition(baseSlidePosition + 4100);
         slide.setPower(.5);
 
-        return true; //method finished
-    }
-
-    public void resetSlidePosition() {
-        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        return slide.getCurrentPosition();
     }
 
     public double moveSlide(double power) {
@@ -220,6 +210,18 @@ public class Intake{
             depositor.setPower(.05);
         else
             depositor.setPower(power);
+
+        autoAdjustTrapDoor();
+    }
+
+    public void autoAdjustTrapDoor() {
+        if(depositor.getCurrentPosition() < baseScorePosition + 100)
+            trapdoor.setPosition(1);
+    }
+
+    public void setTrapDoorPosition(double position) {
+        if(trapdoor.getPosition() != position)
+            trapdoor.setPosition(position);
     }
 
     public void controlBasket(double servo) {
