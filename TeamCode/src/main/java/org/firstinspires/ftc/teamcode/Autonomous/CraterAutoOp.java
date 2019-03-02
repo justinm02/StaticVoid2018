@@ -45,13 +45,13 @@ public class CraterAutoOp extends AutoOp {
                 longitudinalDistance(16);
                 resetPosition();
                 rotatePreciseDegrees(-80);
-                longitudinalDistance(36);
+                longitudinalDistance(32);
                 break;
         }
         rotatePreciseDegrees(125);
         strafe(29, .3, "left");
         strafe(2, .3, "right");
-        longitudinalDistance(-40, 0.65f);
+        longitudinalDistance(-36, 0.65f);
         dispenseMarker();
         //rotateDegrees(10);
         longitudinalDistance(32, 0.65f);
