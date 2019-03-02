@@ -10,8 +10,9 @@ public class ProgressiveOp extends AutoOp {
     public void runOpMode() {
         initialize();
         waitForStart();
-        prospect();
-        resetHeading();
+        //prospect();
+        //resetHeading();
+        longitudinalDistance(100, 0.2f);
         park();
     }
 }

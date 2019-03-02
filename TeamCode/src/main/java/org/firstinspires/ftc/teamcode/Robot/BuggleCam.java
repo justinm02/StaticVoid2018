@@ -81,7 +81,7 @@ public class BuggleCam {
 
         //Construct correct parameters for TensorFlow
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.7;
+        tfodParameters.minimumConfidence = 0.4;
 
         //Instantiate TensorFlow Object
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);

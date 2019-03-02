@@ -48,25 +48,21 @@ public abstract class AutoOp extends LinearOpMode {
 
         intake = new Intake(hardwareMap.get(DcMotorEx.class, "lift"),
                 hardwareMap.get(DcMotorEx.class, "slide"),
-                hardwareMap.get(DcMotorEx.class, "intakeLift"),
                 hardwareMap.get(DcMotorEx.class, "depositor"),
+                hardwareMap.get(DcMotorEx.class, "intakeLift"),
                 hardwareMap.servo.get("basket"),
                 hardwareMap.get(CRServo.class, "intake"),
                 hardwareMap.servo.get("trapdoor"),
                 hardwareMap.servo.get("phoneMount"));
         intake.setTelemetry(this.telemetry);
 
-        //intake.markerDepositor(1f);
-
         //Reverse the Right Motors
         rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
@@ -92,7 +88,7 @@ public abstract class AutoOp extends LinearOpMode {
     }
 
     protected void lowerBot(double power) {
-        intake.liftPosition(5000 * LIFT_COUNTS_PER_INCH);
+        intake.liftPosition(6000);
     }
 
     //Locates the gold mineral from one of the three given locations
@@ -104,20 +100,18 @@ public abstract class AutoOp extends LinearOpMode {
         resetHeading();
         rotatedLeft = false;
         rotatedRight = false;
-        rotatePhoneMount(.5);
+        rotatePhoneMount(.45);
 
-        while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL && runtime.seconds() < 6 && opModeIsActive()) {
+        while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL && runtime.seconds() < 4 && opModeIsActive()) {
             cam.betterUpdate(telemetry);
             //telemetry.update();
             if(runtime.seconds() > 2 && !rotatedRight) {
                 rotatePhoneMount(.65);
                 rotatedRight = true;
             }
-            if(runtime.seconds() > 4 & !rotatedLeft && cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL) {
-                rotatePhoneMount(.35);
-                rotatedLeft = true;
-            }
         }
+        if(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL)
+            rotatedLeft = true;
         if(rotatedRight && !rotatedLeft)
             cam.setGoldPosition(BuggleCam.GOLD_POSITION.RIGHT);
         else if(rotatedRight)
@@ -189,6 +183,10 @@ public abstract class AutoOp extends LinearOpMode {
         intake.lift(0);
     }
 
+    public void autoIntake() {
+
+    }
+
     public void rotatePhoneMount(double position) {
         intake.rotatePhoneMount(position);
     }
@@ -222,9 +220,9 @@ public abstract class AutoOp extends LinearOpMode {
             telemetry.update();
             if(Math.abs(desiredHeading - currentAngle()) <= 10) {
                 if(desiredHeading < currentAngle()) {
-                    rotate(power * .2f);
+                    rotate(power * .15f);
                 } else {
-                    rotate(-power * .2f);
+                    rotate(-power * .15f);
                 }
             } else if(Math.abs(desiredHeading - currentAngle()) <= 30) {
                 if(desiredHeading < currentAngle()) {
@@ -298,12 +296,17 @@ public abstract class AutoOp extends LinearOpMode {
             telemetry.addData("Status", "Moving");
             telemetry.addData("Desired Heading", desiredHeading);
             telemetry.addData("Current Heading", currentAngle());
+            //if(Math.abs(frontRight.getTargetPosition() - frontRight.getCurrentPosition()) < 2500) {
+            //intake.intakeBasket(-2);
+            telemetry.addData("Holding Bucket", intake.intakeBasket(-.15));
+            //}
             telemetry.update();
-            intake.intakeBasket(0);
+
         }
         for (DcMotorEx motor : motors) {
             motor.setPower(0);
         }
+        //intake.intakeBasket(0);
         resetEncoders();
     }
 

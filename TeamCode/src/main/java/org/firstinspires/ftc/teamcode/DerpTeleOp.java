@@ -67,15 +67,15 @@ public class DerpTeleOp extends OpMode {
         controlIntake();
         controlLift();
         mecanumTrain();
-        controlMarkerDepositor();
+        //controlMarkerDepositor();
         sendTelemetry();
     }
 
     public void mecanumTrain() {
         if(gamepad1.left_bumper)
-            driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
+            driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_bumper);
         else
-            driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.right_bumper);
+            driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_bumper);
     }
 
     public void controlIntake() {
@@ -88,10 +88,9 @@ public class DerpTeleOp extends OpMode {
 
         if(!gamepad2.a && aDepressed)
             intakeMotors.toggleTrapDoor();
-        aDepressed = gamepad2.a;
 
         if(gamepad2.dpad_up) {
-            intakeMotors.moveDepositor(.3);
+            intakeMotors.moveDepositor(.35);
             intakeMotors.setTrapDoorPosition(0);
         } else if(gamepad2.dpad_down)
             intakeMotors.moveDepositor(-.15);
@@ -102,20 +101,21 @@ public class DerpTeleOp extends OpMode {
         if(gamepad2.b) {
             telemetry.addData("Slide Position", intakeMotors.moveSlide());
             telemetry.addData("Slide Target Position", intakeMotors.baseSlidePosition);
-        }
+        } else
+            intakeMotors.moveSlide(-gamepad2.left_stick_y * .5);
 
-        intakeMotors.moveSlide(-gamepad2.left_stick_y * .5);
-
-        intakeMotors.intakeBasket(gamepad2.right_stick_y * .25); //manual control
+        intakeMotors.intakeBasket(gamepad2.right_stick_y * .5); //manual control
 
         telemetry.addData("Intake Position", intakeMotors.getIntakePosition());
+
+        aDepressed = gamepad2.a;
     }
 
     //Up on left stick to raise lift, down on left stick to retract lift, scales with force on stick
     public void controlLift() {
-        if(gamepad1.dpad_up)
+        if(gamepad1.y)
             intakeMotors.lift(1);
-        else if(gamepad1.dpad_down)
+        else if(gamepad1.a)
             intakeMotors.lift(-1);
         else
             intakeMotors.lift(0);

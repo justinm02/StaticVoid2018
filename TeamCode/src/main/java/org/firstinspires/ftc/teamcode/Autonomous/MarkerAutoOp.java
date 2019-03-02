@@ -14,55 +14,62 @@ public class MarkerAutoOp extends AutoOp {
         waitForStart();
         lowerBot();
 
-        longitudinalDistance(6);
-        rotateDegrees(-90);
+        longitudinalDistance(8);
+        rotatePreciseDegrees(-80);
         //Locates the gold mineral from one of the three given locations
         prospect();
 
-        rotateDegrees(90);
+        //rotateDegrees(90);
         //Move bot based on where the Gold Mineral is, knocks it, and moves to above the rightmost mineral
-        intake.lockIntake();
+        //intake.lockIntake();
         switch(cam.getGoldPosition()) {
             case LEFT:
-                longitudinalDistance(6);
-                rotatePreciseDegrees(-45);
-                longitudinalDistance(32);
-                rotatePreciseDegrees(-90);
-                longitudinalDistance(-24);
+                //longitudinalDistance(12);
+                rotateDegrees(35);
+                longitudinalDistance(27);
+                rotatePreciseDegrees(-85);
+                strafe(20, .3, "right");
+                longitudinalDistance(-20);
                 dispenseMarker();
+                rotatePreciseDegrees(3);
+                strafe(8, .3, "right");
+                strafe(2, .3, "left");
+                longitudinalDistance(36, 0.7f);
                 strafe(10, .3, "right");
-                //rotatePreciseDegrees(3);
-                longitudinalDistance(64, 0.6f);
+                longitudinalDistance(20, 0.7f);
                 park();
                 break;
             case RIGHT:
-                longitudinalDistance(6);
-                rotatePreciseDegrees(45);
+                rotateDegrees(120);
                 longitudinalDistance(24);
-                longitudinalDistance(-18);
-                rotatePreciseDegrees(45);
-                longitudinalDistance(-60);
-                rotatePreciseDegrees(135);
-                longitudinalDistance(-54);
+                longitudinalDistance(-12);
+                rotatePreciseDegrees(50);
+                longitudinalDistance(-42);
+                rotatePreciseDegrees(145);
+                strafe(10, .3, "right");
+                longitudinalDistance(-40, 0.7f);
                 dispenseMarker();
                 rotatePreciseDegrees(3);
-                strafe(10,.3, "right");
-                longitudinalDistance(54, 0.6f);
+                strafe(8,.3, "right");
+                strafe(2, .3, "left");
+                longitudinalDistance(36, 0.7f);
+                strafe(8,.3, "right");
+                longitudinalDistance(16, 0.7f);
                 park();
                 break;
             case CENTER:
             case NULL:
-                //rotateDegrees(-90);
-                longitudinalDistance(40);
+                rotateDegrees(-90);
+                longitudinalDistance(-40);
                 dispenseMarker();
-                resetPosition();
-                rotatePreciseDegrees(-80);
-                longitudinalDistance(35);
-                rotateDegrees(-40);
+                rotatePreciseDegrees(45);
+                strafe(20, .3, "right");
+                longitudinalDistance(45, 0.7f);
                 strafe(10, .3, "right");
-                longitudinalDistance(28);
+                longitudinalDistance(15, 0.7f);
                 park();
                 break;
+
         }
     }
 }

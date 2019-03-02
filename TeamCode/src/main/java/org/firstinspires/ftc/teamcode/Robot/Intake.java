@@ -99,7 +99,7 @@ public class Intake{
         lift.setTargetPosition((int) (ticks));
         lift.setPower(1);
         runtime.reset();
-        while(lift.isBusy() && runtime.seconds() < 3.5) {
+        while(lift.isBusy() && runtime.seconds() < 2.5) {
             telemetry.addData("Status", "Lifting");
             telemetry.addData("Desired Position", ticks);
             telemetry.addData("Current Position", lift.getCurrentPosition());
@@ -126,10 +126,11 @@ public class Intake{
         intakeLift.setPower(0);
     }
 
-    public void intakeBasket(double power) {
-        if(intakeLift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
-            intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    public double intakeBasket(double power) {
+        //if(intakeLift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+        intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeLift.setPower(.5 * power);
+        return intakeLift.getPower();
     }
 
     public void lockIntake() {
@@ -162,7 +163,7 @@ public class Intake{
     }
 
     public void moveDepositor(double power) {
-        if (power > 0 && depositor.getCurrentPosition() > baseScorePosition + 432)
+        if (power > 0 && depositor.getCurrentPosition() > baseScorePosition + 400)
             depositor.setPower(.05);
         else
             depositor.setPower(power);
@@ -171,8 +172,8 @@ public class Intake{
     }
 
     public void autoAdjustTrapDoor() {
-        if(depositor.getCurrentPosition() < baseScorePosition + 100)
-            trapdoor.setPosition(1);
+        if(depositor.getCurrentPosition() < baseScorePosition + 200)
+            setTrapDoorPosition(1);
     }
 
     public void setTrapDoorPosition(double position) {

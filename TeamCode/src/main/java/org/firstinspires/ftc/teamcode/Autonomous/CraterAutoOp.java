@@ -15,34 +15,33 @@ public class CraterAutoOp extends AutoOp {
         //Descend robot from Lander, move off the hook
         lowerBot();
 
-        longitudinalDistance(6);
+        longitudinalDistance(8);
 
-        rotateDegrees(-90); //turn towards minerals
+        rotateDegrees(-80); //turn towards minerals
         //Locates the gold mineral from one of the three given locations
         prospect();
 
-        rotateDegrees(90);
+        //rotateDegrees(90);
         //Move bot based on where the Gold Mineral is, knocks it, and continues into friendly team's crater
         switch(cam.getGoldPosition()) {
             case LEFT:
-                longitudinalDistance(5);
-                rotateDegrees(-35);
+                rotateDegrees(45);
                 longitudinalDistance(24);
                 longitudinalDistance(-12);
-                rotatePreciseDegrees(-55);
-                longitudinalDistance(54);
+                rotatePreciseDegrees(-45);
+                longitudinalDistance(40);
                 break;
             case RIGHT:
-                longitudinalDistance(5);
-                rotateDegrees(45);
+                rotateDegrees(125);
                 longitudinalDistance(18);
-                longitudinalDistance(-6);
-                rotatePreciseDegrees(-135);
-                longitudinalDistance(54);
+                longitudinalDistance(-12);
+                rotatePreciseDegrees(-120);
+                longitudinalDistance(36);
                 break;
             case CENTER:
             case NULL:
-                longitudinalDistance(18);
+                rotateDegrees(80);
+                longitudinalDistance(12);
                 resetPosition();
                 rotatePreciseDegrees(-80);
                 longitudinalDistance(36);
@@ -51,9 +50,12 @@ public class CraterAutoOp extends AutoOp {
         rotateDegrees(125);
         strafe(26, .3, "left");
         strafe(4, .3, "right");
-        longitudinalDistance(-40);
+        longitudinalDistance(-30, 0.65f);
         dispenseMarker();
-        longitudinalDistance(60, 0.5f);
+        //rotateDegrees(10);
+        longitudinalDistance(45, 0.65f);
+        strafe(8, .3, "left");
+        longitudinalDistance(15, .65f);
         park();
     }
 }
