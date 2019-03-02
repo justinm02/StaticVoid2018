@@ -8,6 +8,7 @@ public class CraterAutoOp extends AutoOp {
 
     @Override
     public void runOpMode() {
+        //Hi Justin
         initialize();
 
         waitForStart();
