@@ -27,35 +27,35 @@ public class CraterAutoOp extends AutoOp {
             case LEFT:
                 rotateDegrees(45);
                 longitudinalDistance(24);
-                longitudinalDistance(-12);
+                longitudinalDistance(-6);
                 rotatePreciseDegrees(-45);
-                longitudinalDistance(40);
+                longitudinalDistance(28);
                 break;
             case RIGHT:
                 rotateDegrees(125);
-                longitudinalDistance(18);
-                longitudinalDistance(-12);
+                longitudinalDistance(20);
+                longitudinalDistance(-6);
                 rotatePreciseDegrees(-120);
                 longitudinalDistance(36);
                 break;
             case CENTER:
             case NULL:
                 rotateDegrees(80);
-                longitudinalDistance(12);
+                longitudinalDistance(16);
                 resetPosition();
                 rotatePreciseDegrees(-80);
                 longitudinalDistance(36);
                 break;
         }
-        rotateDegrees(125);
-        strafe(26, .3, "left");
-        strafe(4, .3, "right");
-        longitudinalDistance(-30, 0.65f);
+        rotatePreciseDegrees(125);
+        strafe(29, .3, "left");
+        strafe(2, .3, "right");
+        longitudinalDistance(-40, 0.65f);
         dispenseMarker();
         //rotateDegrees(10);
-        longitudinalDistance(45, 0.65f);
+        longitudinalDistance(32, 0.65f);
         strafe(8, .3, "left");
-        longitudinalDistance(15, .65f);
+        longitudinalDistance(24, .65f);
         park();
     }
 }

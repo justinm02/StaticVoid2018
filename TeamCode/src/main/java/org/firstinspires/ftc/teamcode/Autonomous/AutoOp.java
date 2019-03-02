@@ -100,7 +100,7 @@ public abstract class AutoOp extends LinearOpMode {
         resetHeading();
         rotatedLeft = false;
         rotatedRight = false;
-        rotatePhoneMount(.45);
+        rotatePhoneMount(.48);
 
         while(cam.getGoldPosition() == BuggleCam.GOLD_POSITION.NULL && runtime.seconds() < 4 && opModeIsActive()) {
             cam.betterUpdate(telemetry);
