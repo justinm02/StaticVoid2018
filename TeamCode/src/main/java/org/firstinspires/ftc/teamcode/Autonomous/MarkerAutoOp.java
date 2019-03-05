@@ -30,15 +30,14 @@ public class MarkerAutoOp extends AutoOp {
                 longitudinalDistance(-3);
                 strafe(8, .2, "left");
                 rotatePreciseDegrees(-90);
-                //strafe(20, .2, "right");
                 longitudinalDistance(-24);
+                rotatePreciseDegrees(5);
+                strafe(20, .2, "right");
                 dispenseMarker();
-                rotatePreciseDegrees(3);
-                strafe(14, .2, "right");
-                strafe(2, .3, "left");
+                strafe(4, .3, "left");
                 longitudinalDistance(30, 0.9f);
-                strafe(10, .2, "right");
-                longitudinalDistance(30, 0.9f);
+                strafe(10, .3, "right");
+                longitudinalDistance(36, 0.9f);
                 park();
                 break;
             case RIGHT:
@@ -47,12 +46,12 @@ public class MarkerAutoOp extends AutoOp {
                 longitudinalDistance(-12);
                 rotatePreciseDegrees(50);
                 longitudinalDistance(-42);
-                rotatePreciseDegrees(150);
-                strafe(10, .3, "right");
-                longitudinalDistance(-40, 0.7f);
+                rotatePreciseDegrees(145);
+                strafe(16, .3, "right");
+                longitudinalDistance(-30, 0.7f);
                 dispenseMarker();
-                //rotatePreciseDegrees(3);
-                strafe(6,.3, "right");
+                rotatePreciseDegrees(3);
+                strafe(18,.3, "right");
                 strafe(2, .3, "left");
                 longitudinalDistance(36, 0.9f);
                 strafe(8,.3, "right");
@@ -66,9 +65,9 @@ public class MarkerAutoOp extends AutoOp {
                 dispenseMarker();
                 rotatePreciseDegrees(45);
                 strafe(20, .3, "right");
-                longitudinalDistance(45, 0.7f);
+                longitudinalDistance(45, 0.9f);
                 strafe(10, .3, "right");
-                longitudinalDistance(15, 0.7f);
+                longitudinalDistance(25, 0.9f);
                 park();
                 break;
 

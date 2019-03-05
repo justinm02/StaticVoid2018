@@ -72,10 +72,18 @@ public class DerpTeleOp extends OpMode {
     }
 
     public void mecanumTrain() {
-        if(gamepad1.left_bumper)
-            driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_bumper);
-        else
-            driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_bumper);
+        if(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0 && gamepad1.right_stick_x == 0) {
+            double right = gamepad1.dpad_right ? .7 : 0;
+            double left = gamepad1.dpad_left ? .7 : 0;
+            double forward = gamepad1.dpad_up ? .7 : 0;
+            double backward = gamepad1.dpad_down ? .7 : 0;
+            driveTrain.newOmni(left - right,  forward - backward, 0, gamepad1.right_bumper);
+        } else {
+            if(gamepad1.left_bumper)
+                driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_bumper);
+            else
+                driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_bumper);
+        }
     }
 
     public void controlIntake() {

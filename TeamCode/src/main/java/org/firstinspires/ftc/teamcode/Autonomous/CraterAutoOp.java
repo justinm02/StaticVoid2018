@@ -18,7 +18,7 @@ public class CraterAutoOp extends AutoOp {
 
         longitudinalDistance(8);
 
-        rotateDegrees(-80); //turn towards minerals
+        rotatePreciseDegrees(-80); //turn towards minerals
         //Locates the gold mineral from one of the three given locations
         prospect();
 
@@ -26,9 +26,9 @@ public class CraterAutoOp extends AutoOp {
         //Move bot based on where the Gold Mineral is, knocks it, and continues into friendly team's crater
         switch(cam.getGoldPosition()) {
             case LEFT:
-                rotateDegrees(45);
+                rotatePreciseDegrees(45);
                 longitudinalDistance(24);
-                longitudinalDistance(-6);
+                longitudinalDistance(-10);
                 rotatePreciseDegrees(-45);
                 longitudinalDistance(28);
                 break;
@@ -37,7 +37,7 @@ public class CraterAutoOp extends AutoOp {
                 longitudinalDistance(20);
                 longitudinalDistance(-6);
                 rotatePreciseDegrees(-120);
-                longitudinalDistance(36);
+                longitudinalDistance(40);
                 break;
             case CENTER:
             case NULL:
@@ -48,8 +48,8 @@ public class CraterAutoOp extends AutoOp {
                 longitudinalDistance(32);
                 break;
         }
-        rotatePreciseDegrees(125);
-        strafe(29, .3, "left");
+        rotatePreciseDegrees(120);
+        strafe(32, .3, "left");
         strafe(2, .3, "right");
         longitudinalDistance(-36, 0.65f);
         dispenseMarker();
