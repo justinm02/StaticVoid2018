@@ -8,7 +8,7 @@ import static java.lang.Thread.sleep;
 
 public class Intake{
 
-    private DcMotorEx lift, slide, depositor, intakeLift;
+    private DcMotorEx lift, depositorSlide, depositor, intakeLift;
     private Servo markerDepositor, trapdoor, phoneMount;
     private CRServo intake;
     private Telemetry telemetry;
@@ -20,9 +20,9 @@ public class Intake{
     private int baseDepositorPosition, baseScorePosition;
     public int baseSlidePosition;
 
-    public Intake (DcMotorEx lift, DcMotorEx slide, DcMotorEx depositor, DcMotorEx intakeLift, Servo markerDepositor, CRServo intake, Servo trapdoor, Servo phoneMount) {
+    public Intake (DcMotorEx lift, DcMotorEx depositorSlide, DcMotorEx depositor, DcMotorEx intakeLift, Servo markerDepositor, CRServo intake, Servo trapdoor, Servo phoneMount) {
         this.lift = lift;
-        this.slide = slide;
+        this.depositorSlide = depositorSlide;
         this.depositor = depositor;
         this.intakeLift = intakeLift;
         this.markerDepositor = markerDepositor;
@@ -39,9 +39,9 @@ public class Intake{
             markerDepositor.setPosition(0);
         }
         this.intake = intake;
-        if(slide != null) {
-            slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            baseSlidePosition = slide.getCurrentPosition();
+        if(depositorSlide != null) {
+            depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            baseSlidePosition = depositorSlide.getCurrentPosition();
         }
         intakePosition = IntakePosition.UP;
         slidePosition = SlidePosition.IN;
@@ -75,7 +75,7 @@ public class Intake{
         this.slidePosition = position;
     }
 
-    public int getSlideEncoderPosition() { return slide.getCurrentPosition(); }
+    public int getSlideEncoderPosition() { return depositorSlide.getCurrentPosition(); }
 
     public int getDepositorPosition() { return depositor.getCurrentPosition(); }
 
@@ -148,23 +148,23 @@ public class Intake{
     }
 
     public double moveDepositorSlide(String position) {
-        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if (position.equals("up")) {
-            slide.setTargetPosition(baseSlidePosition - 750);
-            slide.setPower(.75);
+            depositorSlide.setTargetPosition(baseSlidePosition - 750);
+            depositorSlide.setPower(.75);
         }
         else if (position.equals("down")) {
-            slide.setTargetPosition(baseSlidePosition);
-            slide.setPower(-.75);
+            depositorSlide.setTargetPosition(baseSlidePosition);
+            depositorSlide.setPower(-.75);
         }
-        return slide.getCurrentPosition();
+        return depositorSlide.getCurrentPosition();
     }
 
     public double moveDepositorSlide(double power) {
-        if(slide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
-            slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slide.setPower(power);
-        return slide.getCurrentPosition();
+        if(depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+            depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        depositorSlide.setPower(power);
+        return depositorSlide.getCurrentPosition();
     }
 
     public void moveDepositor(double power) {
