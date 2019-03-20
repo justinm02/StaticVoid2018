@@ -64,6 +64,8 @@ public class DerpTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        telemetry.addData("Slide Position", intakeMotors.getSlideEncoderPosition());
+        telemetry.update();
         controlIntake();
         controlLift();
         mecanumTrain();
@@ -107,10 +109,15 @@ public class DerpTeleOp extends OpMode {
 
 
         if(gamepad2.b) {
-            telemetry.addData("Slide Position", intakeMotors.moveSlide());
+            telemetry.addData("Slide Position", intakeMotors.moveDepositorSlide("up"));
             telemetry.addData("Slide Target Position", intakeMotors.baseSlidePosition);
-        } else
-            intakeMotors.moveSlide(-gamepad2.left_stick_y * .5);
+        }
+        else if (gamepad2.x) {
+            telemetry.addData("Slide Position", intakeMotors.moveDepositorSlide("down"));
+            telemetry.addData("Slide Target Position", intakeMotors.baseSlidePosition);
+        }
+        else
+            intakeMotors.moveDepositorSlide(gamepad2.left_stick_y * .5);
 
         intakeMotors.intakeBasket(gamepad2.right_stick_y * .5); //manual control
 

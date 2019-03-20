@@ -147,15 +147,20 @@ public class Intake{
         intake.setPower(power);
     }
 
-    public double moveSlide() {
+    public double moveDepositorSlide(String position) {
         slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slide.setTargetPosition(baseSlidePosition + 4100);
-        slide.setPower(.5);
-
+        if (position.equals("up")) {
+            slide.setTargetPosition(baseSlidePosition - 750);
+            slide.setPower(.75);
+        }
+        else if (position.equals("down")) {
+            slide.setTargetPosition(baseSlidePosition);
+            slide.setPower(-.75);
+        }
         return slide.getCurrentPosition();
     }
 
-    public double moveSlide(double power) {
+    public double moveDepositorSlide(double power) {
         if(slide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slide.setPower(power);
