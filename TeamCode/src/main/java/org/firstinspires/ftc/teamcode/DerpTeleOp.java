@@ -51,7 +51,8 @@ public class DerpTeleOp extends OpMode {
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
         intakeMotors = new Intake(
                 lift,
-                hardwareMap.get(DcMotorEx.class, "slide"),
+                hardwareMap.get(DcMotorEx.class, "depositorSlide"),
+                hardwareMap.get(DcMotorEx.class, "intakeSlide"),
                 hardwareMap.get(DcMotorEx.class, "depositor"),
                 hardwareMap.get(DcMotorEx.class, "intakeLift"),
                 hardwareMap.servo.get("basket"),
@@ -59,12 +60,13 @@ public class DerpTeleOp extends OpMode {
                 hardwareMap.servo.get("trapdoor"),
                 hardwareMap.servo.get("phoneMount"));
 
-        telemetry.addData("Slide position", intakeMotors.getSlideEncoderPosition());
+        telemetry.addData("Slide position", intakeMotors.getDepositorSlideEncoderPosition());
     }
 
     @Override
     public void loop() {
-        telemetry.addData("Slide Position", intakeMotors.getSlideEncoderPosition());
+        telemetry.addData("Depositor Slide Position", intakeMotors.getDepositorSlideEncoderPosition());
+        telemetry.addData("Intake Slide Position", intakeMotors.getIntakeSlideEncoderPosition());
         telemetry.update();
         controlIntake();
         controlLift();
@@ -99,26 +101,37 @@ public class DerpTeleOp extends OpMode {
         if(!gamepad2.a && aDepressed)
             intakeMotors.toggleTrapDoor();
 
-        if(gamepad2.dpad_up) {
+        /*if(gamepad2.dpad_up) {
             intakeMotors.moveDepositor(.35);
             intakeMotors.setTrapDoorPosition(0);
         } else if(gamepad2.dpad_down)
             intakeMotors.moveDepositor(-.15);
         else
-            intakeMotors.moveDepositor(0);
+            intakeMotors.moveDepositor(0);*/
 
-
+        //move depositor slide
         if(gamepad2.b) {
-            telemetry.addData("Slide Position", intakeMotors.moveDepositorSlide("up"));
-            telemetry.addData("Slide Target Position", intakeMotors.baseSlidePosition);
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("up"));
+            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
         }
         else if (gamepad2.x) {
-            telemetry.addData("Slide Position", intakeMotors.moveDepositorSlide("down"));
-            telemetry.addData("Slide Target Position", intakeMotors.baseSlidePosition);
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("down"));
+            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
         }
         else
             intakeMotors.moveDepositorSlide(gamepad2.left_stick_y * .5);
 
+        //move intake slide
+        if(gamepad2.dpad_up) {
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("up"));
+            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
+        }
+        else if (gamepad2.dpad_down) {
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("down"));
+            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
+        }
+
+        //move basket up
         intakeMotors.intakeBasket(gamepad2.right_stick_y * .5); //manual control
 
         telemetry.addData("Intake Position", intakeMotors.getIntakePosition());

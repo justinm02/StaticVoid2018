@@ -8,7 +8,7 @@ import static java.lang.Thread.sleep;
 
 public class Intake{
 
-    private DcMotorEx lift, depositorSlide, depositor, intakeLift;
+    private DcMotorEx lift, depositorSlide, intakeSlide, depositor, intakeLift;
     private Servo markerDepositor, trapdoor, phoneMount;
     private CRServo intake;
     private Telemetry telemetry;
@@ -20,9 +20,10 @@ public class Intake{
     private int baseDepositorPosition, baseScorePosition;
     public int baseSlidePosition;
 
-    public Intake (DcMotorEx lift, DcMotorEx depositorSlide, DcMotorEx depositor, DcMotorEx intakeLift, Servo markerDepositor, CRServo intake, Servo trapdoor, Servo phoneMount) {
+    public Intake (DcMotorEx lift, DcMotorEx depositorSlide, DcMotorEx intakeSlide, DcMotorEx depositor, DcMotorEx intakeLift, Servo markerDepositor, CRServo intake, Servo trapdoor, Servo phoneMount) {
         this.lift = lift;
         this.depositorSlide = depositorSlide;
+        this.intakeSlide = intakeSlide;
         this.depositor = depositor;
         this.intakeLift = intakeLift;
         this.markerDepositor = markerDepositor;
@@ -42,6 +43,9 @@ public class Intake{
         if(depositorSlide != null) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             baseSlidePosition = depositorSlide.getCurrentPosition();
+        }
+        if(intakeSlide != null) {
+            intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         intakePosition = IntakePosition.UP;
         slidePosition = SlidePosition.IN;
@@ -75,7 +79,9 @@ public class Intake{
         this.slidePosition = position;
     }
 
-    public int getSlideEncoderPosition() { return depositorSlide.getCurrentPosition(); }
+    public int getDepositorSlideEncoderPosition() { return depositorSlide.getCurrentPosition(); }
+
+    public int getIntakeSlideEncoderPosition() { return intakeSlide.getCurrentPosition(); }
 
     public int getDepositorPosition() { return depositor.getCurrentPosition(); }
 
@@ -174,6 +180,17 @@ public class Intake{
             depositor.setPower(power);
 
         autoAdjustTrapDoor();
+    }
+
+    public double moveIntakeSlide(String position) {
+        return intakeSlide.getCurrentPosition();
+    }
+
+    public double moveIntakeSlide(double power) {
+        if(intakeSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+            intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        depositorSlide.setPower(power);
+        return intakeSlide.getCurrentPosition();
     }
 
     public void autoAdjustTrapDoor() {
