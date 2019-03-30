@@ -53,7 +53,6 @@ public class DerpTeleOp extends OpMode {
                 lift,
                 hardwareMap.get(DcMotorEx.class, "depositorSlide"),
                 hardwareMap.get(DcMotorEx.class, "intakeSlide"),
-                hardwareMap.get(DcMotorEx.class, "depositor"),
                 hardwareMap.get(DcMotorEx.class, "intakeLift"),
                 hardwareMap.servo.get("basket"),
                 hardwareMap.get(CRServo.class, "intake"),
@@ -65,7 +64,7 @@ public class DerpTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("Depositor Slide Position", intakeMotors.getDepositorSlideEncoderPosition());
+        //telemetry.addData("Depositor Slide Position", intakeMotors.getDepositorSlideEncoderPosition());
         telemetry.addData("Intake Slide Position", intakeMotors.getIntakeSlideEncoderPosition());
         telemetry.update();
         controlIntake();
@@ -112,24 +111,29 @@ public class DerpTeleOp extends OpMode {
         //move depositor slide
         if(gamepad2.b) {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("up"));
-            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
+            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
         }
         else if (gamepad2.x) {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("down"));
-            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
+            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
         }
         else
             intakeMotors.moveDepositorSlide(gamepad2.left_stick_y * .5);
 
         //move intake slide
         if(gamepad2.dpad_up) {
-            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("up"));
-            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
+            telemetry.addData("Intake Slide Position", intakeMotors.moveIntakeSlide("up"));
+            //telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
         }
         else if (gamepad2.dpad_down) {
-            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("down"));
-            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
+            telemetry.addData("Intake Slide Position", intakeMotors.moveIntakeSlide("down"));
+            //telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
         }
+        else {
+            intakeMotors.moveIntakeSlide("neutral");
+        }
+
+
 
         //move basket up
         intakeMotors.intakeBasket(gamepad2.right_stick_y * .5); //manual control
@@ -164,7 +168,7 @@ public class DerpTeleOp extends OpMode {
         telemetry.addData("Target Front Pos", "Left: (%d) | Right: (%d)", frontLeft.getTargetPosition(), frontRight.getTargetPosition());
         telemetry.addData("A Button: ", gamepad2.a);
         telemetry.addData("GamePad2 Right Stick Y", -gamepad2.right_stick_y);
-        telemetry.addData("Depositor position", intakeMotors.getDepositorPosition());
+        //telemetry.addData("Depositor position", intakeMotors.getDepositorPosition());
         telemetry.update();
     }
 }

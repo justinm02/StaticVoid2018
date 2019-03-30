@@ -49,7 +49,6 @@ public abstract class AutoOp extends LinearOpMode {
         intake = new Intake(hardwareMap.get(DcMotorEx.class, "lift"),
                 hardwareMap.get(DcMotorEx.class, "depositorSlide"),
                 hardwareMap.get(DcMotorEx.class, "intakeSlide"),
-                hardwareMap.get(DcMotorEx.class, "depositor"),
                 hardwareMap.get(DcMotorEx.class, "intakeLift"),
                 hardwareMap.servo.get("basket"),
                 hardwareMap.get(CRServo.class, "intake"),
@@ -302,7 +301,7 @@ public abstract class AutoOp extends LinearOpMode {
             //if(Math.abs(frontRight.getTargetPosition() - frontRight.getCurrentPosition()) < 2500) {
             //intake.intakeBasket(-2);
             telemetry.addData("Holding Bucket", intake.intakeBasket(-.15));
-            intake.moveDepositor(.2);
+            //intake.moveDepositor(.2);
             //}
             telemetry.update();
 
