@@ -35,6 +35,7 @@ public class Intake{
         }
         this.intake = intake;
         if(depositorSlide != null) {
+            depositorSlide.setDirection(DcMotor.Direction.REVERSE);
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             baseDepositorSlidePosition = depositorSlide.getCurrentPosition();
         }
@@ -148,15 +149,22 @@ public class Intake{
     }
 
     public double moveDepositorSlide(String position) {
-        depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        if (position.equals("up")) {
-            depositorSlide.setTargetPosition(baseDepositorSlidePosition - 750);
-            depositorSlide.setPower(.75);
+        int finalDepositorSlidePosition = baseDepositorSlidePosition + 4000;
+        boolean upperLimitReached = depositorSlide.getCurrentPosition() >= finalDepositorSlidePosition;
+        boolean lowerLimitReached = depositorSlide.getCurrentPosition() <= baseDepositorSlidePosition + 50;
+
+        if(depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+            depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (position.equals("up") && !upperLimitReached) {
+            depositorSlide.setPower(.7);
         }
-        else if (position.equals("down")) {
-            depositorSlide.setTargetPosition(baseDepositorSlidePosition);
-            depositorSlide.setPower(-.75);
+        else if (position.equals("down") && !lowerLimitReached)
+            depositorSlide.setPower(-.7);
+        else if (position.equals("neutral") || lowerLimitReached || upperLimitReached) {
+            depositorSlide.setPower(0);
         }
+
         return depositorSlide.getCurrentPosition();
     }
 

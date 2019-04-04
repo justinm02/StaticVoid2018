@@ -64,7 +64,7 @@ public class DerpTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        //telemetry.addData("Depositor Slide Position", intakeMotors.getDepositorSlideEncoderPosition());
+        telemetry.addData("Depositor Slide Position", intakeMotors.getDepositorSlideEncoderPosition());
         telemetry.addData("Intake Slide Position", intakeMotors.getIntakeSlideEncoderPosition());
         telemetry.update();
         controlIntake();
