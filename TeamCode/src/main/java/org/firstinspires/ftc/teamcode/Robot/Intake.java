@@ -157,10 +157,10 @@ public class Intake{
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (position.equals("up") && !upperLimitReached) {
-            depositorSlide.setPower(.7);
+            depositorSlide.setPower(1);
         }
         else if (position.equals("down") && !lowerLimitReached)
-            depositorSlide.setPower(-.7);
+            depositorSlide.setPower(-1);
         else if (position.equals("neutral") || lowerLimitReached || upperLimitReached) {
             depositorSlide.setPower(0);
         }
@@ -203,6 +203,14 @@ public class Intake{
 
         return intakeSlide.getCurrentPosition();
     }
+
+    public double moveIntakeSlide(double power) {
+        if(intakeSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+            intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeSlide.setPower(power);
+        return intakeSlide.getCurrentPosition();
+    }
+
 
     /*public void autoAdjustTrapDoor() {
         if(depositor.getCurrentPosition() < baseScorePosition + 200)
