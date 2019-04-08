@@ -151,7 +151,7 @@ public class Intake{
     public double moveDepositorSlide(String position) {
         int finalDepositorSlidePosition = baseDepositorSlidePosition + 4000;
         boolean upperLimitReached = depositorSlide.getCurrentPosition() >= finalDepositorSlidePosition;
-        boolean lowerLimitReached = depositorSlide.getCurrentPosition() <= baseDepositorSlidePosition + 50;
+        boolean lowerLimitReached = depositorSlide.getCurrentPosition() <= baseDepositorSlidePosition + 200;
 
         if(depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -193,10 +193,10 @@ public class Intake{
             intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (position.equals("up") && !upperLimitReached) {
-            intakeSlide.setPower(1);
+            intakeSlide.setPower(.8);
         }
         else if (position.equals("down") && !lowerLimitReached)
-            intakeSlide.setPower(-1);
+            intakeSlide.setPower(-.8);
         else if (position.equals("neutral") || lowerLimitReached || upperLimitReached) {
             intakeSlide.setPower(0);
         }

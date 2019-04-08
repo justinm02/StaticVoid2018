@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot.BuggleCam;
 import org.firstinspires.ftc.teamcode.Robot.Intake;
+import org.firstinspires.ftc.teamcode.Robot.PID;
 
 import java.io.File;
 
@@ -18,6 +19,7 @@ import java.io.File;
 public abstract class AutoOp extends LinearOpMode {
 
     private DcMotorEx rearLeft, rearRight, frontLeft, frontRight;
+    private PID rearLeftPID, rearRightPID, frontLeftPID, frontRightPID;
     protected ElapsedTime runtime;
     private BNO055IMU imu;
     protected DistanceSensor distanceSensor;
@@ -45,6 +47,12 @@ public abstract class AutoOp extends LinearOpMode {
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         motors = new DcMotorEx[] {this.rearLeft, this.rearRight, this.frontLeft, this.frontRight};
+
+        rearLeftPID = new PID(0.38, 0, 0);
+        rearRightPID = new PID(0.38, 0, 0);
+        frontLeftPID = new PID(0.38, 0, 0);
+        frontRightPID = new PID(0.38, 0, 0);
+
 
         intake = new Intake(hardwareMap.get(DcMotorEx.class, "lift"),
                 hardwareMap.get(DcMotorEx.class, "depositorSlide"),
@@ -198,6 +206,10 @@ public abstract class AutoOp extends LinearOpMode {
         rearLeft.setPower(power);
         frontRight.setPower(-power);
         rearRight.setPower(-power);
+    }
+
+    public void rotatePidDegrees(double degrees) {
+
     }
 
     public void rotatePreciseDegrees(double degrees) {
