@@ -105,12 +105,12 @@ public class DerpTeleOp extends OpMode {
 
 
         //move depositor slide
-        if(gamepad1.right_stick_y == -1) {
+        if(gamepad2.x) {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("up"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
             intakeMotors.setTrapDoorPosition(0);
         }
-        else if (gamepad1.right_stick_y == 1) {
+        else if (gamepad2.y) {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("down"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
             intakeMotors.setTrapDoorPosition(0);
@@ -134,7 +134,7 @@ public class DerpTeleOp extends OpMode {
 
 
         //move basket up
-        intakeMotors.intakeBasket(gamepad2.left_stick_y * .75); //manual control
+        intakeMotors.intakeBasket(-gamepad2.left_stick_y * .75); //manual control
 
         telemetry.addData("Intake Position", intakeMotors.getIntakePosition());
 
