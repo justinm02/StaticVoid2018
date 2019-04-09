@@ -227,7 +227,10 @@ public class Intake{
     }
 
     public void toggleTrapDoor() {
-        trapdoor.setPosition(1 - trapdoor.getPosition());
+        if (trapdoor.getPosition() == 1)
+            trapdoor.setPosition(.3);
+        else
+            trapdoor.setPosition(1);
     }
 
     public void rotatePhoneMount(double position) {
