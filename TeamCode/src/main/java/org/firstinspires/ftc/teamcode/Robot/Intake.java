@@ -149,18 +149,20 @@ public class Intake{
     }
 
     public double moveDepositorSlide(String position) {
-        int finalDepositorSlidePosition = baseDepositorSlidePosition + 4500;
+        int finalDepositorSlidePosition = baseDepositorSlidePosition + 5000;
         boolean upperLimitReached = depositorSlide.getCurrentPosition() >= finalDepositorSlidePosition;
         boolean lowerLimitReached = depositorSlide.getCurrentPosition() <= baseDepositorSlidePosition + 200;
 
-        if(depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+        if (depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (position.equals("up") && !upperLimitReached) {
+            trapdoor.setPosition(0);
             depositorSlide.setPower(1);
         }
-        else if (position.equals("down") && !lowerLimitReached)
+        else if (position.equals("down") && !lowerLimitReached) {
             depositorSlide.setPower(-1);
+        }
         else if (position.equals("neutral") || lowerLimitReached || upperLimitReached) {
             depositorSlide.setPower(0);
         }
@@ -193,10 +195,10 @@ public class Intake{
             intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (position.equals("up") && !upperLimitReached) {
-            intakeSlide.setPower(.8);
+            intakeSlide.setPower(1);
         }
         else if (position.equals("down") && !lowerLimitReached)
-            intakeSlide.setPower(-.8);
+            intakeSlide.setPower(-1);
         else if (position.equals("neutral") || lowerLimitReached || upperLimitReached) {
             intakeSlide.setPower(0);
         }
@@ -226,8 +228,10 @@ public class Intake{
         markerDepositor.setPosition(servo);
     }
 
-    public void toggleTrapDoor() {
-        if (trapdoor.getPosition() == 0)
+    public void toggleTrapDoor(boolean initialize) {
+        if (initialize)
+            trapdoor.setPosition(.55);
+        else if (trapdoor.getPosition() == 0 || trapdoor.getPosition() == .5)
             trapdoor.setPosition(.7);
         else
             trapdoor.setPosition(0);

@@ -59,6 +59,9 @@ public class DerpTeleOp extends OpMode {
                 hardwareMap.servo.get("trapdoor"),
                 hardwareMap.servo.get("phoneMount"));
 
+        //instantiate trapdoor
+        intakeMotors.toggleTrapDoor(true);
+
         telemetry.addData("Slide position", intakeMotors.getDepositorSlideEncoderPosition());
     }
 
@@ -90,33 +93,33 @@ public class DerpTeleOp extends OpMode {
     }
 
     public void controlIntake() {
-        if(gamepad2.left_bumper)
+        if(gamepad2.left_trigger > 0)
             intakeMotors.outtake(1);
-        else if (gamepad2.right_bumper)
+        else if (gamepad2.right_trigger > 0)
             intakeMotors.intake(1);
         if(!gamepad2.left_bumper && !gamepad2.right_bumper)
             intakeMotors.intake(0);
 
-        if(gamepad1.b && !trapDoorMoved) {
-            intakeMotors.toggleTrapDoor();
-            trapDoorMoved = true;
-        } else if (trapDoorMoved && !gamepad1.b)
-            trapDoorMoved = false;
+        if((gamepad1.b || gamepad2.b) /*&& !trapDoorMoved()*/) {
+            intakeMotors.toggleTrapDoor(false);
+            //trapDoorMoved = true;
+        } /*else if (trapDoorMoved && !gamepad1.b)*/
+            //trapDoorMoved = false;
 
 
         //move depositor slide
-        if(gamepad2.x) {
+        if(gamepad2.right_bumper || gamepad1.right_bumper) {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("up"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
             intakeMotors.setTrapDoorPosition(0);
         }
-        else if (gamepad2.y) {
+        else if (gamepad2.left_bumper || gamepad1.left_bumper) {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("down"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
             intakeMotors.setTrapDoorPosition(0);
         }
-        else
-            intakeMotors.moveDepositorSlide(gamepad2.left_stick_y * .5);
+        /*else
+            intakeMotors.moveDepositorSlide(gamepad2.left_stick_y * .5);*/
 
         //move intake slide
         if(gamepad2.right_stick_y < 0) {
