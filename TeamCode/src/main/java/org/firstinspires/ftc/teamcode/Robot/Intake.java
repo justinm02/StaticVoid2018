@@ -130,13 +130,13 @@ public class Intake{
     public double intakeBasket(double power) {
         //if(intakeLift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
         intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if(power < 0 && intakeLift.getCurrentPosition() > baseScorePosition - 300)
+        if(power < 0 && intakeLift.getCurrentPosition() < baseDepositorPosition + 100)
             intakeLift.setPower(0);
-        else if(power > 0 && intakeLift.getCurrentPosition() < baseScorePosition + 300)
+        else if(power > 0 && intakeLift.getCurrentPosition() > baseDepositorPosition + 200)
             intakeLift.setPower(0);
         else
             intakeLift.setPower(.5 * power);
-        return intakeLift.getPower();
+        return intakeLift.getCurrentPosition();
     }
 
     public void lockIntake() {
