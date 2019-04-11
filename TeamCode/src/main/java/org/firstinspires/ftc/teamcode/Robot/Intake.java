@@ -130,7 +130,9 @@ public class Intake{
     public double intakeBasket(double power) {
         //if(intakeLift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
         intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if(power < 0 && intakeLift.getCurrentPosition() > baseScorePosition + 200)
+        if(power < 0 && intakeLift.getCurrentPosition() > baseScorePosition - 300)
+            intakeLift.setPower(0);
+        else if(power > 0 && intakeLift.getCurrentPosition() < baseScorePosition + 300)
             intakeLift.setPower(0);
         else
             intakeLift.setPower(.5 * power);
@@ -197,12 +199,12 @@ public class Intake{
         if(intakeSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if (position.equals("up")) {
+        if (position.equals("up") && !upperLimitReached) {
             intakeSlide.setPower(1);
         }
-        else if (position.equals("down"))
+        else if (position.equals("down") && !lowerLimitReached)
             intakeSlide.setPower(-1);
-        else if (position.equals("neutral")) {
+        else if (position.equals("neutral") || upperLimitReached || lowerLimitReached) {
             intakeSlide.setPower(0);
         }
 
@@ -242,6 +244,12 @@ public class Intake{
 
     public void rotatePhoneMount(double position) {
         phoneMount.setPosition(position);
+    }
+
+    public void resetEncoderPositions() {
+        baseDepositorPosition = intakeLift.getCurrentPosition();
+        baseIntakeSlidePosition = intakeSlide.getCurrentPosition();
+        baseDepositorSlidePosition = depositorSlide.getCurrentPosition();
     }
 
 }
