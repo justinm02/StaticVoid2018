@@ -17,7 +17,7 @@ public class Intake{
     private IntakePosition intakePosition;
     private SlidePosition slidePosition;
 
-    private int baseDepositorPosition, baseScorePosition;
+    private int baseDepositorPosition, baseScorePosition, baseIntakeBasketPosition;
     public int baseDepositorSlidePosition, baseIntakeSlidePosition;
 
     public Intake (DcMotorEx lift, DcMotorEx depositorSlide, DcMotorEx intakeSlide, DcMotorEx intakeLift, Servo markerDepositor, CRServo intake, Servo trapdoor, Servo phoneMount) {
@@ -130,7 +130,10 @@ public class Intake{
     public double intakeBasket(double power) {
         //if(intakeLift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
         intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeLift.setPower(.5 * power);
+        if(power < 0 && intakeLift.getCurrentPosition() > baseScorePosition + 200)
+            intakeLift.setPower(0);
+        else
+            intakeLift.setPower(.5 * power);
         return intakeLift.getPower();
     }
 
@@ -160,7 +163,7 @@ public class Intake{
             trapdoor.setPosition(0);
             depositorSlide.setPower(1);
         }
-        else if (position.equals("down") && !lowerLimitReached) {
+        else if (position.equals("down")) {
             depositorSlide.setPower(-1);
         }
         else if (position.equals("neutral") || lowerLimitReached || upperLimitReached) {
@@ -194,12 +197,12 @@ public class Intake{
         if(intakeSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if (position.equals("up") && !upperLimitReached) {
+        if (position.equals("up")) {
             intakeSlide.setPower(1);
         }
-        else if (position.equals("down") && !lowerLimitReached)
+        else if (position.equals("down"))
             intakeSlide.setPower(-1);
-        else if (position.equals("neutral") || lowerLimitReached || upperLimitReached) {
+        else if (position.equals("neutral")) {
             intakeSlide.setPower(0);
         }
 
