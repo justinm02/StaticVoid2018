@@ -138,9 +138,6 @@ public class DerpTeleOp extends OpMode {
         if((gamepad2.start && gamepad2.x) || (gamepad1.start && gamepad1.x))
             intakeMotors.resetEncoderPositions();
 
-
-        //move basket up
-
         telemetry.addData("Intake Basket Position", intakeMotors.intakeBasket(gamepad2.left_stick_y * .75)); //manual control
 
         telemetry.addData("Intake Position", intakeMotors.getIntakePosition());

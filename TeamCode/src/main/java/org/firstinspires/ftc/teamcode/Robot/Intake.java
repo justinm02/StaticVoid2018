@@ -154,9 +154,9 @@ public class Intake{
     }
 
     public double moveDepositorSlide(String position) {
-        int finalDepositorSlidePosition = baseDepositorSlidePosition + 5000;
+        int finalDepositorSlidePosition = baseDepositorSlidePosition + 2500;
         boolean upperLimitReached = depositorSlide.getCurrentPosition() >= finalDepositorSlidePosition;
-        boolean lowerLimitReached = depositorSlide.getCurrentPosition() <= baseDepositorSlidePosition + 200;
+        boolean lowerLimitReached = depositorSlide.getCurrentPosition() <= baseDepositorSlidePosition + 100;
 
         if (depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -192,18 +192,18 @@ public class Intake{
     }*/
 
     public double moveIntakeSlide(String position) {
-        int finalIntakeSlidePosition = baseIntakeSlidePosition + 2825;
-        boolean upperLimitReached = intakeSlide.getCurrentPosition() >= finalIntakeSlidePosition;
-        boolean lowerLimitReached = intakeSlide.getCurrentPosition() <= baseIntakeSlidePosition + 175;
+        int finalIntakeSlidePosition = baseIntakeSlidePosition - 2700;
+        boolean upperLimitReached = intakeSlide.getCurrentPosition() <= finalIntakeSlidePosition;
+        boolean lowerLimitReached = intakeSlide.getCurrentPosition() >= baseIntakeSlidePosition - 1000;
 
         if(intakeSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (position.equals("up") && !upperLimitReached) {
-            intakeSlide.setPower(1);
+            intakeSlide.setPower(-1);
         }
         else if (position.equals("down") && !lowerLimitReached)
-            intakeSlide.setPower(-1);
+            intakeSlide.setPower(1);
         else if (position.equals("neutral") || upperLimitReached || lowerLimitReached) {
             intakeSlide.setPower(0);
         }
@@ -236,8 +236,8 @@ public class Intake{
     public void toggleTrapDoor(boolean initialize) {
         if (initialize)
             trapdoor.setPosition(.55);
-        else if (trapdoor.getPosition() == 0 || trapdoor.getPosition() == .5)
-            trapdoor.setPosition(.7);
+        else if (trapdoor.getPosition() == 0 || trapdoor.getPosition() == .55)
+            trapdoor.setPosition(.6);
         else
             trapdoor.setPosition(0);
     }
