@@ -70,10 +70,10 @@ public class DriveTrain {
         final double rightFrontPower = Range.clip(x * Math.sin(powerAngle) - rightX, -1.0, 1.0);
         final double rightRearPower = Range.clip(x * Math.cos(powerAngle) - rightX, -1.0, 1.0);
 
-        frontLeft.setPower(leftFrontPower * (precision ? 0.2 : .7));
-        rearLeft.setPower(leftRearPower * (precision ? 0.2 : .7));
-        frontRight.setPower(rightFrontPower * (precision ? 0.2 : .7));
-        rearRight.setPower(rightRearPower * (precision ? 0.2 : .7));
+        frontLeft.setPower(leftFrontPower * (precision ? 0.2 : 1));
+        rearLeft.setPower(leftRearPower * (precision ? 0.2 : 1));
+        frontRight.setPower(rightFrontPower * (precision ? 0.2 : 1));
+        rearRight.setPower(rightRearPower * (precision ? 0.2 : 1));
     }
 
     public double getMagnitude(double a, double b) {

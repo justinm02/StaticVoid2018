@@ -73,7 +73,6 @@ public class DerpTeleOp extends OpMode {
         controlIntake();
         controlLift();
         mecanumTrain();
-        //controlMarkerDepositor();
         sendTelemetry();
     }
 
@@ -81,14 +80,17 @@ public class DerpTeleOp extends OpMode {
         if(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0 && gamepad1.right_stick_x == 0) {
             double right = gamepad1.dpad_right ? .7 : 0;
             double left = gamepad1.dpad_left ? .7 : 0;
-            //double forward = gamepad1.dpad_up ? .7 : 0;
-            //double backward = gamepad1.dpad_down ? .7 : 0;
-            driveTrain.newOmni(left - right,  0, 0, gamepad1.right_bumper);
+            double forward = gamepad1.dpad_up ? .7 : 0;
+            double backward = gamepad1.dpad_down ? .7 : 0;
+            if(gamepad1.left_bumper)
+                driveTrain.newOmni(right - left,  backward - forward, 0, gamepad1.right_trigger != 0);
+            else
+                driveTrain.newOmni(left - right,  forward - backward, 0, gamepad1.right_trigger != 0);
         } else {
             if(gamepad1.left_bumper)
-                driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_bumper);
+                driveTrain.newOmni(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_trigger != 0);
             else
-                driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_bumper);
+                driveTrain.newOmni(-gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x * .8f, gamepad1.right_trigger != 0);
         }
     }
 
@@ -108,18 +110,25 @@ public class DerpTeleOp extends OpMode {
 
 
         //move depositor slide
-        if(gamepad2.right_bumper) {
+        if(gamepad1.right_bumper) {
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("encoderDown"));
+            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
+            intakeMotors.setTrapDoorPosition(0);
+        } else if(gamepad1.right_trigger != 0) {
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("encoderUp"));
+            telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
+        } else if(gamepad2.right_bumper) {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("up"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
             intakeMotors.setTrapDoorPosition(0);
         }
-        else if (gamepad1.right_bumper || gamepad2.left_bumper) {
+        else if (gamepad2.left_bumper) {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("down"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
             intakeMotors.setTrapDoorPosition(0);
         }
         else
-            intakeMotors.moveDepositorSlide("neutral");
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("neutral"));
 
         //move intake slide
         if(gamepad2.right_stick_y < 0) {
