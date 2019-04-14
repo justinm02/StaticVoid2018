@@ -154,43 +154,57 @@ public class Intake{
     }
 
     public double moveDepositorSlide(String position) {
-        int finalDepositorSlidePosition = baseDepositorSlidePosition + 10500;
+        int finalDepositorSlidePosition = baseDepositorSlidePosition - 5250;
         boolean upperLimitReached = depositorSlide.getCurrentPosition() >= finalDepositorSlidePosition;
-        boolean lowerLimitReached = depositorSlide.getCurrentPosition() <= baseDepositorSlidePosition + 500;
+        boolean lowerLimitReached = depositorSlide.getCurrentPosition() <= baseDepositorSlidePosition - 250;
 
         //if ((position.equals("up") || position.equals("down")) && depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             //depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if ((position.equals("neutral")) && depositorSlide.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
             depositorSlide.setPower(0);
-            return -1080;
+            //return -1080;
         } else if (position.equals("up") && !upperLimitReached) {
             trapdoor.setPosition(0);
             depositorSlide.setPower(1);
         } else if (position.equals("down") && !lowerLimitReached) {
             depositorSlide.setPower(-1);
-        } else if(depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION) {
+        } else if(depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION
+                && Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) >= 50) {
             depositorSlide.setPower(1);
             if(trapdoor.getPosition() != 0)
                 trapdoor.setPosition(0);
-            return 1111;
+            //return 1111;
         } else if (position.equals("encoderDown")) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            depositorSlide.setTargetPosition(baseDepositorSlidePosition + 500);
-            return 4020;
+            depositorSlide.setTargetPosition(baseDepositorSlidePosition - 250);
+            //return 4020;
         } else if(position.equals("encoderUp")) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositorSlide.setTargetPosition(finalDepositorSlidePosition);
-            return 5030;
+            //return 5030;
         } else if(depositorSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
             depositorSlide.setPower(0);
 
-        if((Math.abs(finalDepositorSlidePosition - depositorSlide.getCurrentPosition()) <= 50)
-                || (Math.abs(baseDepositorPosition + 500 - depositorSlide.getCurrentPosition()) <= 50))
+        if(Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) <= 50) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            depositorSlide.setPower(0);
+            return 12345;
+        }
 
         return depositorSlide.getCurrentPosition();
     }
+
+    public double moveDepositorSlideFreely(String position) {
+        if(position.equals("up"))
+            depositorSlide.setPower(-1);
+        else if(position.equals("down"))
+            depositorSlide.setPower(1);
+        else
+            depositorSlide.setPower(0);
+        return depositorSlide.getCurrentPosition();
+    }
+
     public double moveDepositorSlide(double power) {
         if(depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

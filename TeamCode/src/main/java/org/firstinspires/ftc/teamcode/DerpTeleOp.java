@@ -102,10 +102,10 @@ public class DerpTeleOp extends OpMode {
         if(!(gamepad2.left_trigger > 0) && !(gamepad2.right_trigger > 0))
             intakeMotors.intake(0);
 
-        if(gamepad2.b && !trapDoorMoved && !gamepad2.start) {
+        if(gamepad1.b && !trapDoorMoved && !gamepad1.start) {
             intakeMotors.toggleTrapDoor(false);
             trapDoorMoved = true;
-        } else if (trapDoorMoved && (!gamepad2.b))
+        } else if (trapDoorMoved && (!gamepad1.b))
             trapDoorMoved = false;
 
 
@@ -118,17 +118,17 @@ public class DerpTeleOp extends OpMode {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("encoderUp"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
         } else if(gamepad2.right_bumper) {
-            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("up"));
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlideFreely("up"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
             intakeMotors.setTrapDoorPosition(0);
         }
         else if (gamepad2.left_bumper) {
-            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("down"));
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlideFreely("down"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
             intakeMotors.setTrapDoorPosition(0);
         }
         else
-            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("neutral"));
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlideFreely("neutral"));
 
         //move intake slide
         if(gamepad2.right_stick_y < 0) {
@@ -157,7 +157,7 @@ public class DerpTeleOp extends OpMode {
     public void controlLift() {
         if(gamepad1.y)
             intakeMotors.lift(1);
-        else if(gamepad1.a)
+        else if(gamepad1.a && !gamepad1.start)
             intakeMotors.lift(-1);
         else
             intakeMotors.lift(0);
