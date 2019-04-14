@@ -169,19 +169,20 @@ public class Intake{
             depositorSlide.setPower(1);
         } else if (position.equals("down") && !lowerLimitReached) {
             depositorSlide.setPower(-1);
-        } else if (position.equals("encoderDown") || depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION) {
+        } else if(depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION) {
+            depositorSlide.setPower(1);
+            if(trapdoor.getPosition() != 0)
+                trapdoor.setPosition(0);
+            return 1111;
+        } else if (position.equals("encoderDown")) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositorSlide.setTargetPosition(baseDepositorSlidePosition + 500);
-            depositorSlide.setPower(-1);
-            trapdoor.setPosition(0);
             return 4020;
-        } else if(position.equals("encoderUp") || depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION) {
+        } else if(position.equals("encoderUp")) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositorSlide.setTargetPosition(finalDepositorSlidePosition);
-            depositorSlide.setPower(1);
-            trapdoor.setPosition(0);
             return 5030;
-        }else if(depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION)
+        } else if(depositorSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
             depositorSlide.setPower(0);
 
         if((Math.abs(finalDepositorSlidePosition - depositorSlide.getCurrentPosition()) <= 50)
