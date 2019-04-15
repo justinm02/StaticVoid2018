@@ -128,7 +128,7 @@ public class DerpTeleOp extends OpMode {
             intakeMotors.setTrapDoorPosition(0);
         }
         else
-            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlideFreely("neutral"));
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("neutral"));
 
         //move intake slide
         if(gamepad2.right_stick_y < 0) {
