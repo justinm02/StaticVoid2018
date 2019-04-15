@@ -35,7 +35,8 @@ public class Intake{
         }
         this.intake = intake;
         if(depositorSlide != null) {
-            depositorSlide.setDirection(DcMotor.Direction.REVERSE);
+            //depositorSlide.setDirection(DcMotor.Direction.REVERSE);
+            depositorSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             baseDepositorSlidePosition = depositorSlide.getCurrentPosition();
         }
@@ -155,8 +156,8 @@ public class Intake{
 
     public double moveDepositorSlide(String position) {
         int finalDepositorSlidePosition = baseDepositorSlidePosition - 5250;
-        boolean upperLimitReached = depositorSlide.getCurrentPosition() >= finalDepositorSlidePosition;
-        boolean lowerLimitReached = depositorSlide.getCurrentPosition() <= baseDepositorSlidePosition - 250;
+        boolean upperLimitReached = depositorSlide.getCurrentPosition() <= finalDepositorSlidePosition;
+        boolean lowerLimitReached = depositorSlide.getCurrentPosition() >= baseDepositorSlidePosition - 250;
 
         //if ((position.equals("up") || position.equals("down")) && depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             //depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -164,7 +165,7 @@ public class Intake{
         if ((position.equals("neutral")) && depositorSlide.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
             depositorSlide.setPower(0);
             //return -1080;
-        } else if (position.equals("up") && !upperLimitReached) {
+        } /*else if (position.equals("up") && !upperLimitReached) {
             trapdoor.setPosition(0);
             depositorSlide.setPower(1);
         } else if (position.equals("down") && !lowerLimitReached) {
@@ -175,7 +176,7 @@ public class Intake{
             if(trapdoor.getPosition() != 0)
                 trapdoor.setPosition(0);
             //return 1111;
-        } else if (position.equals("encoderDown")) {
+        }*/ else if (position.equals("encoderDown")) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositorSlide.setTargetPosition(baseDepositorSlidePosition - 250);
             //return 4020;
