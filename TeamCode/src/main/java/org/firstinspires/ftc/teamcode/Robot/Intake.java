@@ -16,12 +16,14 @@ public class Intake{
 
     private IntakePosition intakePosition;
     private SlidePosition slidePosition;
+    private DigitalChannel digitalTouch;
 
     private int baseDepositorPosition, baseScorePosition, baseIntakeBasketPosition;
     public int baseDepositorSlidePosition, baseIntakeSlidePosition;
 
-    public Intake (DcMotorEx lift, DcMotorEx depositorSlide, DcMotorEx intakeSlide, DcMotorEx intakeLift, Servo markerDepositor, CRServo intake, Servo trapdoor, Servo phoneMount) {
+    public Intake (DcMotorEx lift, DigitalChannel digitalTouch, DcMotorEx depositorSlide, DcMotorEx intakeSlide, DcMotorEx intakeLift, Servo markerDepositor, CRServo intake, Servo trapdoor, Servo phoneMount) {
         this.lift = lift;
+        this.digitalTouch = digitalTouch;
         this.depositorSlide = depositorSlide;
         this.intakeSlide = intakeSlide;
         this.intakeLift = intakeLift;
@@ -160,7 +162,7 @@ public class Intake{
         boolean lowerLimitReached = depositorSlide.getCurrentPosition() >= baseDepositorSlidePosition - 250;
 
         //if ((position.equals("up") || position.equals("down")) && depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
-            //depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if ((position.equals("neutral")) && depositorSlide.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
             depositorSlide.setPower(0);
@@ -170,21 +172,24 @@ public class Intake{
             depositorSlide.setPower(1);
         } else if (position.equals("down") && !lowerLimitReached) {
             depositorSlide.setPower(-1);
-        } else if (position.equals("encoderDown")) {
-            depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            depositorSlide.setTargetPosition(baseDepositorSlidePosition - 250);
+        } else if (position.equals("encoderDown") && digitalTouch.getState()) {
+            //depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //depositorSlide.setTargetPosition(baseDepositorSlidePosition - 250);
+            depositorSlide.setPower(-1);
             return 4020;
-        } else if(position.equals("encoderUp")) {
+        } else if (position.equals("encoderUp")) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositorSlide.setTargetPosition(finalDepositorSlidePosition);
             return 5030;
-        } else if(depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION
-                && Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) >= 50) {
+        }
+        else if(depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION
+                && Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) >= 50
+                && !digitalTouch.getState()) {
             depositorSlide.setPower(1);
             if(trapdoor.getPosition() != 0)
                 trapdoor.setPosition(0);
             return 1111;
-        } else if(depositorSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
+        } else if(depositorSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION || !digitalTouch.getState())
             depositorSlide.setPower(0);
 
         if(Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) <= 50) {

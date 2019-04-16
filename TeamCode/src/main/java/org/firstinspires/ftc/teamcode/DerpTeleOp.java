@@ -51,6 +51,7 @@ public class DerpTeleOp extends OpMode {
         driveTrain = new DriveTrain(rearLeft, rearRight, frontLeft, frontRight);
         intakeMotors = new Intake(
                 lift,
+                hardwareMap.get(DigitalChannel.class, "touch"),
                 hardwareMap.get(DcMotorEx.class, "depositorSlide"),
                 hardwareMap.get(DcMotorEx.class, "intakeSlide"),
                 hardwareMap.get(DcMotorEx.class, "intakeLift"),

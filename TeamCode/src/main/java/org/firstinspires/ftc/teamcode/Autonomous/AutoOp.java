@@ -55,6 +55,7 @@ public abstract class AutoOp extends LinearOpMode {
 
 
         intake = new Intake(hardwareMap.get(DcMotorEx.class, "lift"),
+                hardwareMap.get(DigitalChannel.class, "touch"),
                 hardwareMap.get(DcMotorEx.class, "depositorSlide"),
                 hardwareMap.get(DcMotorEx.class, "intakeSlide"),
                 hardwareMap.get(DcMotorEx.class, "intakeLift"),
