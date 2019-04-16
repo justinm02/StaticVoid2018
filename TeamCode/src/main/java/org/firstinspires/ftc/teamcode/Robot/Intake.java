@@ -24,6 +24,7 @@ public class Intake{
     public Intake (DcMotorEx lift, DigitalChannel digitalTouch, DcMotorEx depositorSlide, DcMotorEx intakeSlide, DcMotorEx intakeLift, Servo markerDepositor, CRServo intake, Servo trapdoor, Servo phoneMount) {
         this.lift = lift;
         this.digitalTouch = digitalTouch;
+        this.digitalTouch.setMode(DigitalChannel.Mode.INPUT);
         this.depositorSlide = depositorSlide;
         this.intakeSlide = intakeSlide;
         this.intakeLift = intakeLift;
@@ -156,7 +157,7 @@ public class Intake{
         intake.setPower(power);
     }
 
-    public double moveDepositorSlide(String position) {
+    public String moveDepositorSlide(String position) {
         int finalDepositorSlidePosition = baseDepositorSlidePosition - 5250;
         boolean upperLimitReached = depositorSlide.getCurrentPosition() <= finalDepositorSlidePosition;
         boolean lowerLimitReached = depositorSlide.getCurrentPosition() >= baseDepositorSlidePosition - 250;
@@ -166,39 +167,39 @@ public class Intake{
 
         if ((position.equals("neutral")) && depositorSlide.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
             depositorSlide.setPower(0);
-            return -1080;
-        } else if (position.equals("up") && !upperLimitReached) {
+            return "No power" + " Digital Touch Sensor: " + digitalTouch.getState();
+        } else if (position.equals("up") && upperLimitReached) {
             trapdoor.setPosition(0);
             depositorSlide.setPower(1);
         } else if (position.equals("down") && !lowerLimitReached) {
             depositorSlide.setPower(-1);
-        } else if (position.equals("encoderDown") && digitalTouch.getState()) {
-            //depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //depositorSlide.setTargetPosition(baseDepositorSlidePosition - 250);
+        } else if (position.equals("encoderDown") /*&& !digitalTouch.getState()*/) {
+            depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            depositorSlide.setTargetPosition(baseDepositorSlidePosition - 250);
             depositorSlide.setPower(-1);
-            return 4020;
+            return "Moving Down w/ Encoders";
         } else if (position.equals("encoderUp")) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositorSlide.setTargetPosition(finalDepositorSlidePosition);
-            return 5030;
+            return "Moving Up w/ Encoders";
         }
         else if(depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION
-                && Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) >= 50
-                && !digitalTouch.getState()) {
+                && Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) >= 75
+                && digitalTouch.getState()) {
             depositorSlide.setPower(1);
             if(trapdoor.getPosition() != 0)
                 trapdoor.setPosition(0);
-            return 1111;
+            return "Moving With Encoders";
         } else if(depositorSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION || !digitalTouch.getState())
             depositorSlide.setPower(0);
 
-        if(Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) <= 50) {
+        if(Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) <= 75) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             depositorSlide.setPower(0);
-            return 12345;
+            return "No power because of Encoders";
         }
 
-        return depositorSlide.getCurrentPosition();
+        return depositorSlide.getCurrentPosition() + " Digital Touch Sensor: " + digitalTouch.getState();
     }
 
     public double moveDepositorSlideFreely(String position) {
