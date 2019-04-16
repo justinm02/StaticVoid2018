@@ -267,7 +267,7 @@ public class Intake{
     public void toggleTrapDoor(boolean initialize) {
         if (initialize)
             trapdoor.setPosition(.55);
-        else if (trapdoor.getPosition() == 0 || trapdoor.getPosition() == .55)
+        else if (trapdoor.getPosition() == 0)
             trapdoor.setPosition(.75);
         else
             trapdoor.setPosition(0);
