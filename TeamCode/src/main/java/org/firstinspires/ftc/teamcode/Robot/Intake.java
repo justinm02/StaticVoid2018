@@ -48,6 +48,8 @@ public class Intake{
             intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             baseIntakeSlidePosition = intakeSlide.getCurrentPosition();
         }
+        intakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        phoneMount.setPosition(.48);
         intakePosition = IntakePosition.UP;
         slidePosition = SlidePosition.IN;
         baseDepositorPosition = intakeLift.getCurrentPosition();
@@ -168,11 +170,6 @@ public class Intake{
         if ((position.equals("neutral")) && depositorSlide.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
             depositorSlide.setPower(0);
             return "No power" + " Digital Touch Sensor: " + digitalTouch.getState();
-        } else if (position.equals("up") && upperLimitReached) {
-            trapdoor.setPosition(0);
-            depositorSlide.setPower(1);
-        } else if (position.equals("down") && !lowerLimitReached) {
-            depositorSlide.setPower(-1);
         } else if (position.equals("encoderDown") /*&& !digitalTouch.getState()*/) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositorSlide.setTargetPosition(baseDepositorSlidePosition - 250);
@@ -190,9 +187,11 @@ public class Intake{
             if(trapdoor.getPosition() != 0)
                 trapdoor.setPosition(0);
             return "Moving With Encoders";
-        } else if(depositorSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION || !digitalTouch.getState())
+        } else if(depositorSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION || !digitalTouch.getState()) {
             depositorSlide.setPower(0);
-
+            depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            depositorSlide.setTargetPosition(depositorSlide.getCurrentPosition());
+        }
         if(Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) <= 75) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             depositorSlide.setPower(0);
@@ -272,9 +271,9 @@ public class Intake{
 
     public void toggleTrapDoor(boolean initialize) {
         if (initialize)
-            trapdoor.setPosition(.55);
+            trapdoor.setPosition(.35);
         else if (trapdoor.getPosition() == 0)
-            trapdoor.setPosition(.75);
+            trapdoor.setPosition(.55);
         else
             trapdoor.setPosition(0);
     }

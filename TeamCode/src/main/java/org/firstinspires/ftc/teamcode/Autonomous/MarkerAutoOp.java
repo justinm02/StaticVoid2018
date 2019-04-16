@@ -25,43 +25,46 @@ public class MarkerAutoOp extends AutoOp {
         switch(cam.getGoldPosition()) {
             case LEFT:
                 //longitudinalDistance(12);
-                rotateDegrees(35);
+                rotatePreciseDegrees(45);
                 longitudinalDistance(27);
                 longitudinalDistance(-3);
+                rotatePhoneMount(.48);
                 strafe(8, .2, "left");
                 rotatePreciseDegrees(-90);
                 longitudinalDistance(-24);
-                rotatePreciseDegrees(5);
+                rotatePreciseDegrees(10);
                 strafe(20, .2, "right");
                 dispenseMarker();
-                strafe(4, .3, "left");
-                longitudinalDistance(30, 0.9f);
-                strafe(10, .3, "right");
-                longitudinalDistance(36, 0.9f);
+                //strafe(4, .3, "left");
+                longitudinalDistance(30, 0.5f);
+                strafe(15, .3, "right");
+                longitudinalDistance(36, 0.5f);
                 park();
                 break;
             case RIGHT:
-                rotateDegrees(120);
+                rotatePreciseDegrees(130);
                 longitudinalDistance(24);
-                longitudinalDistance(-12);
+                longitudinalDistance(-13);
+                rotatePhoneMount(.48);
                 rotatePreciseDegrees(50);
-                longitudinalDistance(-42);
+                longitudinalDistance(-39);
                 rotatePreciseDegrees(140);
                 strafe(16, .3, "right");
-                longitudinalDistance(-30, 0.7f);
+                longitudinalDistance(-40, 0.9f);
                 dispenseMarker();
                 rotatePreciseDegrees(3);
                 strafe(18,.3, "right");
                 strafe(2, .3, "left");
                 longitudinalDistance(36, 0.9f);
-                strafe(8,.3, "right");
-                longitudinalDistance(20, 0.9f);
+                //strafe(8,.3, "right");
+                longitudinalDistance(20, 0.5f);
                 park();
                 break;
             case CENTER:
             case NULL:
-                rotateDegrees(-90);
+                rotatePreciseDegrees(-85);
                 longitudinalDistance(-40);
+                rotatePhoneMount(.48);
                 dispenseMarker();
                 rotatePreciseDegrees(45);
                 strafe(20, .3, "right");

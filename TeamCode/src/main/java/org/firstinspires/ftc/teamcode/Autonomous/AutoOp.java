@@ -22,7 +22,7 @@ public abstract class AutoOp extends LinearOpMode {
     private PID rearLeftPID, rearRightPID, frontLeftPID, frontRightPID;
     protected ElapsedTime runtime;
     private BNO055IMU imu;
-    protected DistanceSensor distanceSensor;
+    //protected DistanceSensor distanceSensor;
     private DcMotorEx[] motors;
 
     private double desiredHeading;
@@ -74,7 +74,7 @@ public abstract class AutoOp extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         imu.initialize(parameters);
 
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+        //distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         //Instantiates a Camera Object for use with Mineral Detection
         cam = new BuggleCam(this.telemetry, hardwareMap.appContext.getResources().getIdentifier(
@@ -164,7 +164,7 @@ public abstract class AutoOp extends LinearOpMode {
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
 
-    public void resetPosition() {
+    /*public void resetPosition() {
         for(DcMotorEx motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motor.setPower(-.2);
@@ -181,15 +181,15 @@ public abstract class AutoOp extends LinearOpMode {
             motor.setPower(0);
         }
         resetEncoders();
-    }
+    }*/
 
     public void park() {
         //rotatePreciseDegrees(-170);
         runtime.reset();
         while(opModeIsActive() && runtime.seconds() < 3) {
             intake.lift(-.6);
-            if(runtime.seconds() < 1.5)
-                intake.intakeBasket(.5);
+            //if(runtime.seconds() < 1.5)
+                //intake.intakeBasket(.5);
         }
         intake.lift(0);
     }
