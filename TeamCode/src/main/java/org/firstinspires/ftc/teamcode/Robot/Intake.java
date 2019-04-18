@@ -38,7 +38,7 @@ public class Intake{
         }
         this.intake = intake;
         if(depositorSlide != null) {
-            //depositorSlide.setDirection(DcMotor.Direction.REVERSE);
+            depositorSlide.setDirection(DcMotor.Direction.REVERSE);
             depositorSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             baseDepositorSlidePosition = depositorSlide.getCurrentPosition();
@@ -134,14 +134,14 @@ public class Intake{
     }
 
     public double intakeBasket(double power) {
-        //if(intakeLift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
-        intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if(power < 0 && intakeLift.getCurrentPosition() < baseDepositorPosition)
+        if(intakeLift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+            intakeLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        /*if(power < 0 && intakeLift.getCurrentPosition() < baseDepositorPosition)
             intakeLift.setPower(0);
         else if(power > 0 && intakeLift.getCurrentPosition() > baseDepositorPosition + 200)
             intakeLift.setPower(0);
-        else
-            intakeLift.setPower(.65 * power);
+        else*/
+            intakeLift.setPower(.80 * power);
         return intakeLift.getCurrentPosition();
     }
 
@@ -160,17 +160,21 @@ public class Intake{
     }
 
     public String moveDepositorSlide(String position) {
-        int finalDepositorSlidePosition = baseDepositorSlidePosition - 5250;
-        boolean upperLimitReached = depositorSlide.getCurrentPosition() <= finalDepositorSlidePosition;
-        boolean lowerLimitReached = depositorSlide.getCurrentPosition() >= baseDepositorSlidePosition - 250;
+        int finalDepositorSlidePosition = baseDepositorSlidePosition - 4650;
+        /*boolean upperLimitReached = depositorSlide.getCurrentPosition() >= finalDepositorSlidePosition;
+        boolean lowerLimitReached = depositorSlide.getCurrentPosition() >= baseDepositorSlidePosition - 250;*/
 
         //if ((position.equals("up") || position.equals("down")) && depositorSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
         //depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //if(Math.abs(depositorSlide.getCurrentPosition() - baseDepositorPosition) <= 250)
+        //    setTrapDoorPosition(.25);
 
         if ((position.equals("neutral")) && depositorSlide.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
             depositorSlide.setPower(0);
             return "No power" + " Digital Touch Sensor: " + digitalTouch.getState();
         } else if (position.equals("encoderDown") /*&& !digitalTouch.getState()*/) {
+            trapdoor.setPosition(0);
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositorSlide.setTargetPosition(baseDepositorSlidePosition - 250);
             depositorSlide.setPower(-1);
@@ -178,14 +182,15 @@ public class Intake{
         } else if (position.equals("encoderUp")) {
             depositorSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             depositorSlide.setTargetPosition(finalDepositorSlidePosition);
+            trapdoor.setPosition(0);
+            //depositorSlide.setPower(1);
             return "Moving Up w/ Encoders";
         }
         else if(depositorSlide.getMode() == DcMotor.RunMode.RUN_TO_POSITION
-                && Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) >= 75
+                && Math.abs(depositorSlide.getTargetPosition() - depositorSlide.getCurrentPosition()) >= 150
                 && digitalTouch.getState()) {
+            trapdoor.setPosition(0);
             depositorSlide.setPower(1);
-            if(trapdoor.getPosition() != 0)
-                trapdoor.setPosition(0);
             return "Moving With Encoders";
         } else if(depositorSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION || !digitalTouch.getState()) {
             depositorSlide.setPower(0);
@@ -202,10 +207,14 @@ public class Intake{
     }
 
     public double moveDepositorSlideFreely(String position) {
-        if(position.equals("up"))
+        if(position.equals("up") && depositorSlide.getCurrentPosition() > baseDepositorSlidePosition - 4650) {
+            trapdoor.setPosition(0);
             depositorSlide.setPower(-1);
-        else if(position.equals("down"))
+        }
+        else if(position.equals("down") && digitalTouch.getState()) {
+            trapdoor.setPosition(0);
             depositorSlide.setPower(1);
+        }
         else
             depositorSlide.setPower(0);
         return depositorSlide.getCurrentPosition();
@@ -230,7 +239,7 @@ public class Intake{
     public double moveIntakeSlide(String position) {
         int finalIntakeSlidePosition = baseIntakeSlidePosition - 2700;
         boolean upperLimitReached = intakeSlide.getCurrentPosition() <= finalIntakeSlidePosition;
-        boolean lowerLimitReached = intakeSlide.getCurrentPosition() >= baseIntakeSlidePosition - 1000;
+        boolean lowerLimitReached = intakeSlide.getCurrentPosition() >= baseIntakeSlidePosition - 600;
 
         if(intakeSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -247,10 +256,11 @@ public class Intake{
         return intakeSlide.getCurrentPosition();
     }
 
-    public double moveIntakeSlide(double power) {
+    public double moveIntakeSlideFreely(String position) {
         if(intakeSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
             intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeSlide.setPower(power);
+        if(position.equals("up"))
+            intakeSlide.setPower(-.75);
         return intakeSlide.getCurrentPosition();
     }
 
@@ -261,8 +271,7 @@ public class Intake{
     }*/
 
     public void setTrapDoorPosition(double position) {
-        if(trapdoor.getPosition() != position)
-            trapdoor.setPosition(position);
+        trapdoor.setPosition(position);
     }
 
     public void markerDepositor(double servo) {
@@ -271,7 +280,7 @@ public class Intake{
 
     public void toggleTrapDoor(boolean initialize) {
         if (initialize)
-            trapdoor.setPosition(.35);
+            trapdoor.setPosition(.3);
         else if (trapdoor.getPosition() == 0)
             trapdoor.setPosition(.55);
         else

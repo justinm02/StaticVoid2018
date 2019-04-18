@@ -32,13 +32,15 @@ public class MarkerAutoOp extends AutoOp {
                 strafe(8, .2, "left");
                 rotatePreciseDegrees(-90);
                 longitudinalDistance(-24);
-                rotatePreciseDegrees(10);
-                strafe(20, .2, "right");
+                rotatePreciseDegrees(5);
+                strafe(24, .2, "right");
                 dispenseMarker();
-                //strafe(4, .3, "left");
+                strafe(2, .3, "left");
                 longitudinalDistance(30, 0.5f);
-                strafe(15, .3, "right");
+                //strafe(10, .3, "right");
+                rotatePreciseDegrees(0);
                 longitudinalDistance(36, 0.5f);
+                rotatePreciseDegrees(-3);
                 park();
                 break;
             case RIGHT:
@@ -50,14 +52,16 @@ public class MarkerAutoOp extends AutoOp {
                 longitudinalDistance(-39);
                 rotatePreciseDegrees(140);
                 strafe(16, .3, "right");
-                longitudinalDistance(-40, 0.9f);
+                longitudinalDistance(-36, 0.9f);
                 dispenseMarker();
                 rotatePreciseDegrees(3);
-                strafe(18,.3, "right");
+                strafe(6,.3, "right");
                 strafe(2, .3, "left");
                 longitudinalDistance(36, 0.9f);
                 //strafe(8,.3, "right");
-                longitudinalDistance(20, 0.5f);
+                rotatePreciseDegrees(0);
+                longitudinalDistance(28, 0.5f);
+                rotatePreciseDegrees(-3);
                 park();
                 break;
             case CENTER:
@@ -70,7 +74,9 @@ public class MarkerAutoOp extends AutoOp {
                 strafe(20, .3, "right");
                 longitudinalDistance(45, 0.9f);
                 strafe(10, .3, "right");
+                rotatePreciseDegrees(0);
                 longitudinalDistance(25, 0.9f);
+                rotatePreciseDegrees(-3);
                 park();
                 break;
 

@@ -109,14 +109,16 @@ public class DerpTeleOp extends OpMode {
         } else if (trapDoorMoved && (!gamepad1.b))
             trapDoorMoved = false;
 
+        if(gamepad2.b && !gamepad2.start)
+            intakeMotors.setTrapDoorPosition(.3);
 
         //move depositor slide
         if(gamepad1.right_bumper) {
-            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("encoderDown"));
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlideFreely("down"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
             intakeMotors.setTrapDoorPosition(0);
         } else if(gamepad1.right_trigger != 0) {
-            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("encoderUp"));
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlideFreely("up"));
             telemetry.addData("Depositor Slide Target Position", intakeMotors.baseDepositorSlidePosition);
         } else if(gamepad2.right_bumper) {
             telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlideFreely("up"));
@@ -129,7 +131,7 @@ public class DerpTeleOp extends OpMode {
             intakeMotors.setTrapDoorPosition(0);
         }
         else
-            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlide("neutral"));
+            telemetry.addData("Depositor Slide Position", intakeMotors.moveDepositorSlideFreely("neutral"));
 
         //move intake slide
         if(gamepad2.right_stick_y < 0) {
@@ -140,7 +142,9 @@ public class DerpTeleOp extends OpMode {
             telemetry.addData("Intake Slide Position", intakeMotors.moveIntakeSlide("down"));
             //telemetry.addData("Depositor Slide Target Position", intakeMotors.baseSlidePosition);
         }
-        else {
+        else if(gamepad2.y) {
+            intakeMotors.moveIntakeSlideFreely("up");
+        } else {
             intakeMotors.moveIntakeSlide("neutral");
         }
 

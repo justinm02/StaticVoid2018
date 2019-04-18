@@ -188,8 +188,8 @@ public abstract class AutoOp extends LinearOpMode {
         runtime.reset();
         while(opModeIsActive() && runtime.seconds() < 3) {
             intake.lift(-.6);
-            //if(runtime.seconds() < 1.5)
-                //intake.intakeBasket(.5);
+            if(runtime.seconds() < 1.5)
+                intake.intakeBasket(.5);
         }
         intake.lift(0);
     }
@@ -313,7 +313,7 @@ public abstract class AutoOp extends LinearOpMode {
             telemetry.addData("Current Heading", currentAngle());
             //if(Math.abs(frontRight.getTargetPosition() - frontRight.getCurrentPosition()) < 2500) {
             //intake.intakeBasket(-2);
-            telemetry.addData("Holding Bucket", intake.intakeBasket(-.15));
+            //telemetry.addData("Holding Bucket", intake.intakeBasket(-.15));
             //intake.moveDepositor(.2);
             //}
             telemetry.update();
