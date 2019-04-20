@@ -14,7 +14,7 @@ public class MarkerAutoOp extends AutoOp {
         waitForStart();
         lowerBot();
 
-        longitudinalDistance(8);
+        longitudinalDistance(7);
         rotatePreciseDegrees(-80);
         //Locates the gold mineral from one of the three given locations
         prospect();
@@ -31,14 +31,15 @@ public class MarkerAutoOp extends AutoOp {
                 rotatePhoneMount(.48);
                 strafe(8, .2, "left");
                 rotatePreciseDegrees(-90);
+                strafe(4, .2, "right");
                 longitudinalDistance(-24);
                 rotatePreciseDegrees(5);
-                strafe(24, .2, "right");
+                strafe(20, .2, "right");
                 dispenseMarker();
                 strafe(2, .3, "left");
                 longitudinalDistance(30, 0.5f);
                 //strafe(10, .3, "right");
-                rotatePreciseDegrees(0);
+                //rotatePreciseDegrees(0);
                 longitudinalDistance(36, 0.5f);
                 rotatePreciseDegrees(-3);
                 park();
@@ -52,6 +53,7 @@ public class MarkerAutoOp extends AutoOp {
                 longitudinalDistance(-39);
                 rotatePreciseDegrees(140);
                 strafe(16, .3, "right");
+                strafe(4, .3, "left");
                 longitudinalDistance(-36, 0.9f);
                 dispenseMarker();
                 rotatePreciseDegrees(3);
@@ -59,7 +61,7 @@ public class MarkerAutoOp extends AutoOp {
                 strafe(2, .3, "left");
                 longitudinalDistance(36, 0.9f);
                 //strafe(8,.3, "right");
-                rotatePreciseDegrees(0);
+                //rotatePreciseDegrees(0);
                 longitudinalDistance(28, 0.5f);
                 rotatePreciseDegrees(-3);
                 park();
@@ -69,7 +71,7 @@ public class MarkerAutoOp extends AutoOp {
                 rotatePreciseDegrees(-85);
                 longitudinalDistance(-40);
                 rotatePhoneMount(.48);
-                dispenseMarker();
+                dispenseMarker()
                 rotatePreciseDegrees(45);
                 strafe(20, .3, "right");
                 longitudinalDistance(45, 0.9f);

@@ -38,7 +38,7 @@ public class Intake{
         }
         this.intake = intake;
         if(depositorSlide != null) {
-            depositorSlide.setDirection(DcMotor.Direction.REVERSE);
+            //depositorSlide.setDirection(DcMotor.Direction.REVERSE);
             depositorSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             depositorSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             baseDepositorSlidePosition = depositorSlide.getCurrentPosition();
@@ -106,7 +106,7 @@ public class Intake{
         lift.setTargetPosition((int) (ticks));
         lift.setPower(1);
         runtime.reset();
-        while(lift.isBusy() && runtime.seconds() < 2.5) {
+        while(lift.isBusy() && runtime.seconds() < 3.0) {
             telemetry.addData("Status", "Lifting");
             telemetry.addData("Desired Position", ticks);
             telemetry.addData("Current Position", lift.getCurrentPosition());
@@ -207,7 +207,7 @@ public class Intake{
     }
 
     public double moveDepositorSlideFreely(String position) {
-        if(position.equals("up") && depositorSlide.getCurrentPosition() > baseDepositorSlidePosition - 4650) {
+        if(position.equals("up") && depositorSlide.getCurrentPosition() < baseDepositorSlidePosition + 4650) {
             trapdoor.setPosition(0);
             depositorSlide.setPower(-1);
         }
